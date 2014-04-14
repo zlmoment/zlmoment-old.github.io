@@ -1,0 +1,506 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Archives: 2013/4 | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+<h2 class="archive-title">2013/4</h2>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-04-25T04:57:00.000Z"><a href="/2013/04/24/cuda-parallel-reduction/">Apr 24 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/04/24/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Parallel Reduction是NVIDIA-CUDA自带的例子，也几乎是所有CUDA学习者的的必看算法。在这个算法的优化中，Mark Harris为我们实现了7种不同的优化版本，将Bandwidth几乎提高到了峰值。相信我们通过仔细研读这个过程，一定能对CUDA程序的优化有更加深刻的认识。下面我们来一一细看这几种优化方案，<strong>数据和思想均摘录自官方SDK中Samples的算法说明</strong>。</p>
+<h3 id="parallel-reduction">Parallel Reduction</h3>
+<p>Parallel Reduction可以理解为将一个数组中的所有数相加求和的过程并行化。一般来讲，我们并行化的思路是基于“树”的二元规约，如下图：</p>
+<p><a href="/images/2013/04/parallel_reduction_tree_based.png"><img src="/images/2013/04/parallel_reduction_tree_based.png" alt=""></a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2013/04/24/cuda-parallel-reduction/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-04-10T22:27:00.000Z"><a href="/2013/04/10/basics-of-mpi/">Apr 10 2013</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2013/04/10/basics-of-mpi/">MPI 并行程序设计基础</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>有两门课的作业要用到MPI，“高性能计算环境”和“并行与分布式系统”，所以简单了解了一下MPI的基础知识。MPI并不是并行程序设计的唯一方法，但却是一种行之有效的方法。而且MPI已在几乎所有主流的并行机上得到实现，具有很高的可移植性，适用范围非常广泛。这是一篇学习笔记，因此不会面面俱到。</p>
+<h3 id="-mpi">什么是MPI</h3>
+<p>MPI是Massage Passing Interface的简写，是消息传递函数库的标准规范，由MPI论坛开发，支持Fortran和C，主要用于进程（Process）间通信。</p>
+<p>在MPI中，数据被显式由从一个进程发送给另一个进程，一个称为发送方，一个称为接收方。</p>
+<h3 id="hello-world">Hello World</h3>
+<p>让我们从一个最简单的MPI Hello World程序开始。</p>
+<pre><code>#include &quot;mpi.h&quot;
+#include &lt;stdio.h&gt;
+int main( int argc, char *argv[] )
+{
+    MPI_Init( &amp;argc, &amp;argv );
+    printf( &quot;Hello, world!\n&quot; );
+    MPI_Finalize();
+    return 0;
+}
+</code></pre><p>Notes:</p>
+<ol>
+<li><p>必须包含 <code>mpi.h</code> 头文件；</p>
+</li>
+<li><p>MPI函数返回出错代码或 <code>MPI_SUCCESS</code> .</p>
+</li>
+</ol>
+<p>编译并运行我们的程序（关于编译和运行本文后面有详细介绍）：</p>
+<pre><code>$ mpicc -o hello hello.c
+$ mpirun -np 4 hello
+Hello World!
+Hello World!
+Hello World!
+Hello World!
+</code></pre><h3 id="mpi-">MPI程序基础结构</h3>
+<h4 id="-">执行流程</h4>
+<p>MPI程序的结构如下图所示：</p>
+<p><a href="/images/2013/04/mpi_structure.png"><img src="/images/2013/04/mpi_structure.png" alt=""></a></p>
+<p><strong>MPI初始化</strong></p>
+<pre><code>:::BASH
+int MPI_Init(int *argc, char **argv)
+</code></pre><p>MPI_Init 是MPI程序的第一个调用，它完成MPI程序的所有初始化工作，启动MPI环境，标志并行代码的开始。</p>
+<p><strong>MPI结束</strong></p>
+<pre><code>:::BASH
+int MPI_Finalize(void)
+</code></pre><p>MPI_Finalize 是MPI程序的最后一个调用，它结束MPI程序的运行，标志并行代码的结束，结束除主进程外其它进程。其之后串行代码仍可在主进程(rank = 0)上继续运行。</p>
+<p>在写MPI程序时，我们常需要知道以下两个问题的答案：</p>
+<ul>
+<li><p>任务由<code>多少</code>个进程来进行并行计算(How many processes are participating in this computation)？</p>
+</li>
+<li><p>我是<code>哪一个</code>进程(Which one am I)？</p>
+</li>
+</ul>
+<p>MPI提供了下列函数来回答这些问题：</p>
+<p><strong>MPI_Comm_size</strong></p>
+<p>MPI用 <code>MPI_Comm_size</code> 获得进程个数 p</p>
+<pre><code>:::C
+int MPI_Comm_size(MPI_Comm comm, int *size);
+</code></pre><p><strong>MPI_Comm_rank</strong></p>
+<p>MPI用 <code>MPI_Comm_rank</code> 获得进程的一个叫rank的值，该rank值为 0 到 p-1 间的整数，相当于进程的ID。</p>
+<pre><code>:::C
+int MPI_Comm_rank(MPI_Comm comm, int *rank);
+</code></pre><p>下面我们用改进版的Hello World来看一下其用法：</p>
+<pre><code>:::C
+#include &lt;stdio.h&gt;
+#include &quot;mpi.h&quot;
+int main( int argc, char *argv[] )
+{
+    int rank, size;
+    MPI_Init( &amp;argc, &amp;argv );
+    MPI_Comm_rank( MPI_COMM_WORLD, &amp;rank );
+    MPI_Comm_size( MPI_COMM_WORLD, &amp;size );
+    printf(&quot;I am %d of %d\n&quot;, rank, size );
+    MPI_Finalize();
+    return 0;
+}
+</code></pre><p>运行结果：</p>
+<pre><code>:::BASH
+$ mpicc –o hello hello.c
+$ mpirun -np 4 hello
+I am 0 of 4
+I am 1 of 4
+I am 2 of 4
+I am 3 of 4
+</code></pre><h4 id="-">消息发送和接受</h4>
+<p>MPI消息的发送和接收模型如下：</p>
+<p><a href="/images/2013/04/mpi_msg.png"><img src="/images/2013/04/mpi_msg.png" alt=""></a></p>
+<p>消息由一个进程发送给另一进程。在这个过程中，我们需要明确一下问题：</p>
+<ul>
+<li><p><code>data</code>怎样表示？</p>
+</li>
+<li><p>怎样标识进程？</p>
+</li>
+<li><p>这个过程有什么后果？</p>
+</li>
+</ul>
+<p>让我们通过一个程序来学习消息的发送与接收。</p>
+<pre><code>:::C
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &quot;mpi.h&quot;
+
+int main(int argc,char *argv[])
+{
+    int numprocs, myid, source; 
+    MPI_Status status;
+    char message[100];
+    MPI_Init(&amp;argc, &amp;argv); 
+    MPI_Comm_rank(MPI_COMM_WORLD, &amp;myid); 
+    MPI_Comm_size(MPI_COMM_WORLD, &amp;numprocs);
+    if(myid!=0)
+    {
+        sprintf(message, &quot;Greetings from process %d!&quot;,myid);
+        MPI_Send(message,strlen(message)+1, MPI_CHAR, 0, 99, MPI_COMM_WORLD);
+    } 
+    else 
+    {   /* myid == 0 */
+        for (source = 1; source &lt; numprocs; source++) {
+            MPI_Recv(message, 100, MPI_CHAR, source, 99, MPI_COMM_WORLD, &amp;status);
+            printf(&quot;%s\n&quot;, message);
+        }
+    }
+    MPI_Finalize();
+    return 0;
+}
+</code></pre><p>说明：</p>
+<p><strong>通信空间: MPI_COMM_WORLD</strong></p>
+<p>多个进程可以形成组(group)，一个信息的发送和接收都必须在同一个命名空间(context)，一个组和命名空间一起形成一个通信空间(communicator)。<code>MPI_COMM_WORLD</code> 是一个默认的通信空间，它的组包含了程序的所有初始进程。</p>
+<p><strong>Point to Point</strong></p>
+<p>即单个进程对单个进程的通信，分为阻塞和非阻塞两种方式：</p>
+<ol>
+<li><p><code>Blocking(阻塞)</code> ：一个例程须等待操作完成才返回，返回后用户可以重新使用调用中所占用的资源。</p>
+</li>
+<li><p><code>Non-blocking(非阻塞)</code> ：一个例程不必等待操作完成便可返回，但这并不意味着所占用的资源可被重用。</p>
+</li>
+</ol>
+<p><strong>发送消息(阻塞)</strong></p>
+<pre><code>:::C
+int MPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm);
+</code></pre><p>其中，</p>
+<pre><code>:::BASH
+IN buf      :发送缓冲区的起始地址
+IN count    :要发送信息的元素个数
+IN datatype :发送信息的数据类型
+IN dest     :目标进程的rank值
+IN tag      :消息标签
+IN comm     :通信空间
+</code></pre><p>当此函数返回时，数据已经到达系统，buffer可以重新使用，但此时信息不一定已经被目标进程完成接收。</p>
+<p><strong>接受消息(阻塞)</strong></p>
+<pre><code>:::C
+int MPI_Recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status);
+</code></pre><p>其中，</p>
+<pre><code>:::BASH
+OUT buf     :接收缓冲区的起始地址
+IN count    :要接收信息的元素个数
+IN datatype :接收信息的数据类型
+IN source   :源进程的rank值
+IN tag      :消息标签
+IN comm     :通信空间
+OUT status  :status对象，包含实际接收到的消息的有关信息
+</code></pre><p>当此函数返回时，数据已经被目标进程从系统接收完成，buffer可以重新使用。</p>
+<p><strong>消息匹配</strong></p>
+<p>MPI消息包括 <code>信封</code> 和 <code>数据</code> 两个部分， <code>信封</code> 指发送或接收消息的对象及相关信息，而 <code>数据</code> 是这个消息将要传递的内容。</p>
+<pre><code>:::BASH
+MPI_Send(buf, count, datatype, dest, tag, comm)
+          |     |        |       |    |     |
+          ----- 数据 -----        --- 信封 ---
+
+MPI_Recv(buf, count, datatype, source, tag, comm, *status)
+          |     |        |       |    |      |
+          ----- 数据 -----        --- 信封 ----
+</code></pre><p>接收buffer必须至少可以容纳count个由datatype参数指明类型的数据。如果接收buf太小，将导致溢出、出错。</p>
+<p>接收方的Source可以为 <code>MPI_ANY_SOURCE</code> ，代表可以接收任意处理器来的数据(任意消息来源)；Tag可以为 <code>MPI_ANY_TAG</code> ，代表可以匹配任意tag值的消息(任意tag消息）。在阻塞式消息传送中不允许Source==Dest，否则会导致死锁。</p>
+<p>至此，我们可以看出，上例中信息流的方向如下图所示：</p>
+<p><a href="/images/2013/04/mpi_msgroute.png"><img src="/images/2013/04/mpi_msgroute.png" alt=""></a></p>
+<h4 id="-">错误处理</h4>
+<p>通常情况下，一个错误会导致所有的进程崩溃，为了避免，用户可以让子程序在出错时返回错误代码(在C++中可以抛出异常)，或者自定义错误处理函数等。</p>
+<h4 id="-">更多信息</h4>
+<p>我们可以使用接收函数中的 <code>status</code> 来接收更多信息。</p>
+<pre><code>:::C
+int recvd_tag, recvd_from, recvd_count;
+MPI_Status status;
+MPI_Recv(..., MPI_ANY_SOURCE, MPI_ANY_TAG, ..., &amp;status )
+recvd_tag  = status.MPI_TAG;
+recvd_from = status.MPI_SOURCE;
+MPI_Get_count( &amp;status, datatype, &amp;recvd_count ); //返回实际接收到消息的长度
+</code></pre><h4 id="-">编译和运行</h4>
+<p>我们可以用 <code>mpicc</code> 编译并连接用C语言编写的MPI程序，或者使用 <code>mpiCC</code> 编译并连接用C++语言编写的MPI程序。用 <code>mpicc</code> 编译时，就像用一般的C编译器一样，可以使用一般的编译选项，用法与原来的编译器相同。编译完成后，我们可以使用 <code>mpirun –np N [program]</code> 运行程序，其中 <code>N</code> 为同时运行的进程数， <code>[program]</code> 为可执行程序的文件名。</p>
+<p>除此之外，还有一些其它的运行方式，即从文件中读取配置。</p>
+<pre><code>:::BASH
+mpirun –p4pg [pgfile] [program]
+</code></pre><p>其中， <code>[pgfile]</code> 为配置文件，其格式为:</p>
+<pre><code>:::BASH
+&lt;机器名&gt; &lt;进程数&gt; &lt;程序名&gt; 
+&lt;机器名&gt; &lt;进程数&gt; &lt;程序名&gt; 
+&lt;机器名&gt; &lt;进程数&gt; &lt;程序名&gt;
+</code></pre><p>或者</p>
+<pre><code>:::BASH
+mpirun –machinefile [machinefile] -np [N] [program]
+</code></pre><p>其中，<code>[machinefile]</code> 为配置文件，其格式为:</p>
+<pre><code>:::BASH
+&lt;机器名&gt; 
+&lt;机器名&gt; 
+&lt;机器名&gt;
+</code></pre><h3 id="-">避免死锁</h3>
+<p>为了避免死锁，尽量保持发送和接受成对出现。</p>
+<p>不安全的通信调用：</p>
+<pre><code>:::BASH
+  Process 0      Process 1
+----------------------------
+   Send(1)        Send(0)
+   Recv(1)        Recv(0)
+</code></pre><p>安全的通信调用：</p>
+<pre><code>:::BASH
+  Process 0      Process 1
+----------------------------
+   Send(1)        Recv(0)
+   Recv(1)        Send(0)
+</code></pre><p>或者使用非阻塞调用：</p>
+<pre><code>:::BASH
+  Process 0      Process 1
+----------------------------
+   Isend(1)       Isend(0)
+   Irecv(1)       Irecv(0)
+   Waitall        Waitall
+</code></pre><p>除此之外，还有很多知识点没有介绍，如果以后有机会，我会进行更深一步的探讨。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  
+
+  <nav id="pagination">
+  
+  
+  <div class="clearfix"></div>
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/20/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/24/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/10/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/21/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/04/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>对MVC架构的简单解读 | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  <meta name="description" content="因最近开发的需要，开始自学PHP，学习中的一些心得和技巧将会记录在博客里。作为一名初学者，我选择了使用SpeedPHP开发框架，因为它是个轻量级的框架。这篇文章是SP教程里的，简单摘录一下，以加深理解。
+本文将讲述在网络系统（WEB系统）开发中，MVC（模型-视图-控制器）架构的理念、设计以及在sp">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="对MVC架构的简单解读"/>
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2011-03-06T05:42:16.000Z"><a href="/2011/03/05/intro-of-mvc-structure/">Mar 5 2011</a></time>
+      
+      
+  
+    <h1 class="title">对MVC架构的简单解读</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>因最近开发的需要，开始自学PHP，学习中的一些心得和技巧将会记录在博客里。作为一名初学者，我选择了使用SpeedPHP开发框架，因为它是个轻量级的框架。这篇文章是SP教程里的，简单摘录一下，以加深理解。</p>
+<p>本文将讲述在网络系统（WEB系统）开发中，MVC（模型-视图-控制器）架构的理念、设计以及在sp框架中的实际应用方式等。</p>
+<p>我们可以将MVC简单地理解成：</p>
+<p>和访问者交互的是控制层（Controller层），控制器（controller）是同类交互的集合，每一个交互的操作，都对应了一个动作（action）。在sp框架中，全部的控制器类都必须继承于spController。</p>
+<p>对数据库进行存取的是模型层（Model层），在sp框架中，全部的模型器类都必须继承于spModel。</p>
+<p>显示页面模板的是视图层（View层），在sp框架中，视图层被集成到了控制器内，所以在实际开发中，视图层所要制作的只有页面模板。</p>
+<p>上面简单描述了MVC架构的理解。下面讲述一下关于sp框架中的MVC理念，可能比较抽象而不好理解，但是还请耐心去阅读，毕竟在实际开发中，对MVC理念的理解是非常必要和重要的。</p>
+<p>sp框架中的MVC理念，是将网络系统划分为三个关注点：交互、数据、页面模板；也就是我们设计或分析一个网络系统，就可以从这三个角度去进行：</p>
+<p><strong>交互：</strong></p>
+<p>表现在系统提供了哪些功能，这些功能可以划分为哪些大类，每一个大类的功能分别都有些什么操作等等。</p>
+<p>比如PHP论坛系统，我们可以粗略划分成板块、帖子、用户、站内信息、后台管理等几大类的功能，然后用户的功能里面又包括了注册、登录、修改用户信息等等的多个操作。</p>
+<p>对应sp框架的控制层（controller层）而言，一个功能大类可以说是一个控制器类（当然，如果该类型概况的范围比较大，那么还需要继续拆分成多个控制器类），单个类型内的每一个功能就是一个动作（action，控制器类的方法函数）。然后根据访问者对系统的每一次操作，sp框架都会自动选择对应控制器类中的对应动作进行处理。</p>
+<p><strong>数据：</strong></p>
+<p>表现在系统对数据库进行了那些操作。网络系统几乎都需要和数据库打交道。那么，在进行对交互的分析和对系统本身的分析后，我们也大致上可以归纳系统需要哪些数据了。然后我们将这些数据整理归类，最终可以得出系统需要的数据表是哪些。</p>
+<p>就刚才的PHP论坛，按照“板块、帖子、用户、站内信息、后台管理”这五个分类功能，我们可以基本归纳出它们需要：板块记录表、帖子记录表、用户表、站内信息表、后台设置表等等。</p>
+<p>对应sp框架的模型层（Model层）而言，一个表可以说就是对应了一个模型类。而sp框架中的模型父类（spModel）为这些模型类提供大部分与数据库存取的功能。</p>
+<p><strong>页面模板：</strong></p>
+<p>每一个网络系统的开发中，我们都将需要制作相当数量的页面。简单来说，控制器的每一个动作（action）都有可能产生一个页面，所以在理清所有交互，完成控制器的设计后（未写代码前），我们就可以得到需要的页面模板的清单了。然后在模板引擎的帮助下，页面模板的制作可以与控制器的开发同时进行，以提高开发效率。</p>
+<p>按照上面的PHP论坛交互的设计，那么我们可以得到的页面模板有许多，比如板块方面，有首页模板、分区模板、板块模板等；帖子方面有帖子内容模板、发帖模板、回帖模板等。</p>
+<p>sp框架将视图层（View层）集成到了控制器内，所以在开发中，控制器将会把需要的数据发送到模板上面。而视图层所需要的开发，就仅是按照模板的语法进行页面模板的制作即可。</p>
+<p>根据“交互、数据、页面模板”这三个关注点，那么我们就可以比较全面地去分析和设计一个网络系统了。请注意这三个关注点并非孤立的，而“交互”正是“数据”与“页面模板”的基础，所以对“交互”的分析务必要做到正确并且完善。如果您希望了解更多关于系统分析与设计方面的知识，请到sp网站上面阅读相关文章。</p>
+<p>当我们理解了MVC后，下一步我们可以开始进入实战，来制作一个简单的留言本程序了。</p>
+<p>关于留言板程序，如果有机会，我会再做一个详细分析放上来的。PHP框架开发非常重要的基础就是理解MVC架构，这只是一个简单的入门介绍而已，深入的学习还在后头。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/MVC, PHP/">MVC, PHP</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/20/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/24/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/10/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/21/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/04/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

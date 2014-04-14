@@ -1,0 +1,344 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Decorator,Python | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+<h2 class="archive-title tag">Decorator,Python</h2>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2012-05-12T04:38:01.000Z"><a href="/2012/05/11/python-decorator/">May 11 2012</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2012/05/11/python-decorator/">Python中的装饰器Decorator</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Stackoverflow上面有一个问题（<a href="http://stackoverflow.com/questions/739654/understanding-python-decorators" target="_blank">Here</a>），问题是这样的：</p>
+<p>如果使用如下的代码：</p>
+<pre><code>:::Python
+@makebold
+@makeitalic
+def say():
+    return &quot;Hello&quot;
+</code></pre><p>打印出如下的输出：</p>
+<pre><code>:::HTML
+&lt;b&gt;&lt;i&gt;Hello&lt;/i&gt;&lt;/b&gt;
+</code></pre><p>你会怎么做？最后给出的答案是：</p>
+<pre><code>:::Python
+def makebold(fn):
+    def wrapped():
+        return &quot;&lt;b&gt;&quot; + fn() + &quot;&lt;/b&gt;&quot;
+    return wrapped
+
+def makeitalic(fn):
+    def wrapped():
+        return &quot;&lt;i&gt;&quot; + fn() + &quot;&lt;/i&gt;&quot;
+    return wrapped
+
+@makebold
+@makeitalic
+def hello():
+    return &quot;hello world&quot;
+
+print hello() ## 返回 &lt;b&gt;&lt;i&gt;hello world&lt;/i&gt;&lt;/b&gt;
+</code></pre><p>其中的@其实就是Python的装饰器。</p>
+<p>装饰器模式可以在不影响其它对象的情况下，以动态、透明的方式给单个对象添加职责，也能够处理那些可以撤销的职责。经常用于日志记录、性能测试等场合。</p>
+<p>想象一下这个很常见的场景，你写了一个方法只提供给以登陆的用户访问，你可以写以下代码：</p>
+<pre><code>:::Python
+def A():
+    if user.is_login():
+        do something
+    else:
+        pass
+</code></pre><p>这当然没什么问题，但是你又写了一个方法B，也要求只有登录用户可以访问，于是有写了以下代码：</p>
+<pre><code>:::Python
+def B():
+    if user.is_login():
+        do something
+    else:
+        pass
+</code></pre><p>问题出来了，如果不是两个方法而是一堆方法，你可能就有点受不了啦。当然聪明的你可以想出这个方法：</p>
+<pre><code>:::Python
+def A():
+    pass
+def B():
+    pass
+def login_required(fn):
+    def ff():
+        if user.is_login():
+            fn()
+        else:
+            pass
+    return ff
+
+A = login_required(A)
+B = login_required(B)
+</code></pre><p>你可能没有想到，对于这么好用的东西，python优雅的支持，这就是@修饰符：</p>
+<pre><code>:::Python
+def login_required(fn):
+    def ff():
+        if user.is_login():
+            fn()
+        else:
+            pass
+    return ff
+
+@login_required
+def A():
+    pass
+@login_required
+def B():
+    pass
+</code></pre><p><strong>在方法A上边写一个@修饰符，调用方法A的时候会调用修饰符后边的方法B，方法B以A方法为参数，而且需要返回一个可调用的对象，这个可调用的对象会使用A方法提供的参数执行。</strong>看这个例子：</p>
+<pre><code>:::Python
+#!/usr/bin/env python  
+
+def a(fn):
+    print &#39;a&#39;
+    def d(st):
+        print st+&#39;d&#39;
+    return d
+
+def b(fn):
+    print &#39;b&#39;
+    return fn
+
+@a
+@b
+def c(st):
+    print st
+
+c(&#39;c&#39;)
+</code></pre><p>输出结果是：bacd</p>
+<p>我们调用c(&#39;c&#39;)的时候会先调用b(c)，b(c)打印字符&quot;b&quot;然后返回c，然后再调用a(c)，a(c)打印字符&quot;a&quot;，然后返回方法d，然后再执行d(&#39;c&#39;)，打印cd。</p>
+<p>参考资料：<a href="http://blog.csdn.net/shangzhihaohao" target="_blank">http://blog.csdn.net/shangzhihaohao</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  
+
+  <nav id="pagination">
+  
+  
+  <div class="clearfix"></div>
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/20/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/24/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/10/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/21/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/04/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

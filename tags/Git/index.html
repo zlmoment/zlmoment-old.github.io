@@ -1,0 +1,352 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Git | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+<h2 class="archive-title tag">Git</h2>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2012-01-30T05:35:33.000Z"><a href="/2012/01/29/git-notes/">Jan 29 2012</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2012/01/29/git-notes/">Git 学习笔记</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>学习Git的笔记，会不定期更新。</p>
+<p>我的Github地址：<a href="https://github.com/zlmoment" target="_blank"><a href="https://github.com/uutroy">https://github.com/uutroy</a></a></p>
+<p>首先推荐两篇非常好的入门：</p>
+<ul>
+<li><a href="http://gitimmersion.com/" target="_blank">Git Immersion</a></li>
+</ul>
+<ul>
+<li><a href="http://www.ralfebert.de/tutorials/git/#commit_a" target="_blank">Git Tutorial</a></li>
+</ul>
+<p>一般流程：取代码 → 更新到最新版本 → 修改代码 → 提交</p>
+<h2 id="creating-a-new-repository">Creating a new repository</h2>
+<blockquote>
+<p>$ git init</p>
+</blockquote>
+<h2 id="-">取代码及修改全局设置</h2>
+<p>git在创建提交的时候会记录你的名字和email地址，所以你应该告诉git这些内容。可以使用’git config’命令来设置，如果传递参数’-global’ ，它会将这些值记录在~/.gitconfig文件里，作为这些配置的默认值。</p>
+<p>设置用户名与邮箱</p>
+<blockquote>
+<p>git config –global user.name “name”</p>
+</blockquote>
+<p>git config –global user.email “username@email.com”</p>
+<p>查看设置值</p>
+<blockquote>
+<p>git config user.name</p>
+</blockquote>
+<p>从已有的git库中提取代码</p>
+<blockquote>
+<p>git clone git@github.com:appname.git myrepo</p>
+</blockquote>
+<h2 id="-">每次更改代码的操作</h2>
+<p>更新本地代码到最新版本（需要merge才能合到本地代码中）</p>
+<blockquote>
+<p>git fetch</p>
+</blockquote>
+<p>合并更新后的代码到本地</p>
+<blockquote>
+<p>git merge</p>
+</blockquote>
+<p>更新代码方式的另一种方法(git pull是git fetch和git merge命令的一个组合)</p>
+<blockquote>
+<p>git pull</p>
+</blockquote>
+<p>修改代码后，查看已修改的内容</p>
+<blockquote>
+<p>git diff –cached</p>
+</blockquote>
+<p>将新增加文件加入到git中</p>
+<blockquote>
+<p>git add file1 file2 file3</p>
+</blockquote>
+<p>从git中删除文件</p>
+<blockquote>
+<p>git rm file1</p>
+</blockquote>
+<p>git rm -r dir1</p>
+<p>提交修改</p>
+<blockquote>
+<p>git commit -m ‘this is memo’</p>
+</blockquote>
+<p>如果想省掉提交之前的 git add 命令，可以直接用</p>
+<blockquote>
+<p>git commit -a -m ‘this is memo’</p>
+</blockquote>
+<p>commit和commit -a的区别,：</p>
+<p>commit -a相当于：</p>
+<p>第一步：自动地add所有改动的代码，使得所有的开发代码都列于index file中</p>
+<p>第二步：自动地删除那些在index file中但不在工作树中的文件</p>
+<p>第三步：执行commit命令来提交</p>
+<p>提交所有修改到远程服务器：</p>
+<blockquote>
+<p>git push</p>
+</blockquote>
+<h2 id="-">其它常用命令</h2>
+<p>显示commit日志</p>
+<blockquote>
+<p>git log</p>
+</blockquote>
+<p>不仅显示commit日志，而且同时显示每次commit的代码改变。</p>
+<blockquote>
+<p>git log -p</p>
+</blockquote>
+<p>回滚代码：</p>
+<blockquote>
+<p>git revert HEAD</p>
+</blockquote>
+<p>你也可以revert更早的commit，例如：</p>
+<blockquote>
+<p>git revert HEAD^</p>
+</blockquote>
+<p>将branchname分支合并到当前分支中。(如果合并发生冲突，需要自己解决冲突)</p>
+<blockquote>
+<p>git merge branchname</p>
+</blockquote>
+<p>解决冲突</p>
+<p>当merge命令自身无法解决冲突的时候，它会将工作树置于一种特殊的状态，并且给用户提供冲突信息，以期用户可以自己解决这些问题。当然在这个时候，未发生冲突的代码已经被git merge登记在了index file里了。如果你这个时候使用git diff，显示出来的只是发生冲突的代码信息。</p>
+<p>在你解决了冲突之前，发生冲突的文件会一直在index file中被标记出来。这个时候，如果你使用git commit提交的话，git会提示：filename.txt needs merge</p>
+<p>在发生冲突的时候，如果你使用git status命令，那么会显示出发生冲突的具体信息。</p>
+<p>在你解决了冲突之后，你可以使用如下步骤来提交：</p>
+<p>第一步(如果需要增加文件)：</p>
+<blockquote>
+<p>git add file1</p>
+</blockquote>
+<p>第二步：</p>
+<blockquote>
+<p>git commit</p>
+</blockquote>
+<p>参考资料：<a href="http://blog.enjoyrails.com/2008/12/31/git%E4%B8%80%E5%88%86%E9%92%9F%E6%95%99%E7%A8%8B/" target="_blank">《Git一分钟教程》</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  
+
+  <nav id="pagination">
+  
+  
+  <div class="clearfix"></div>
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/20/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/24/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/10/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/21/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/04/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

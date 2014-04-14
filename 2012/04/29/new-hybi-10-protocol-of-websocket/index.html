@@ -1,0 +1,404 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WebSocket新版Hybi-10协议介绍 | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  <meta name="description" content="不知道问什么，网上的几乎所有关于WebSocket的讲解都是旧版协议，开源的PHP-WebSocket也早不更新了。一开始还以为是服务器程序的原因，后来发现是协议变更了。而且好不容易将握手协议更换为新版后，发现传送的数据都是乱码（见这里），原来数据报文的格式也进行了非常大的变更！
+之前我们曾介绍过基">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="WebSocket新版Hybi-10协议介绍"/>
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2012-04-30T00:03:08.000Z"><a href="/2012/04/29/new-hybi-10-protocol-of-websocket/">Apr 29 2012</a></time>
+      
+      
+  
+    <h1 class="title">WebSocket新版Hybi-10协议介绍</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>不知道问什么，网上的几乎所有关于WebSocket的讲解都是旧版协议，开源的PHP-WebSocket也早不更新了。一开始还以为是服务器程序的原因，后来发现是协议变更了。而且好不容易将握手协议更换为新版后，发现传送的数据都是乱码（见<a href="http://weibo.com/1784705505/ygyi4A0Pj" target="_blank">这里</a>），原来数据报文的格式也进行了非常大的变更！</p>
+<p>之前我们曾介绍过基于WebSocket协议的服务器实现，但那篇文章中提到的WebSocket协议标准还是草案7.5、7.6的标准，如今只有Safari支持此版本的协议，Chrome和Firefox最新版都已升级至Hybi-10（<a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10" target="_blank">协议地址</a>）。因此，我们再来介绍一下WebSocket新版协议Hybi-10。这次协议变更非常大，主要集中在握手协议和数据传输的格式上。下面我们来详细介绍一下。</p>
+<h3 id="-">握手协议</h3>
+<p>我们先来看一下大致的区别：</p>
+<ol>
+<li>最老的websocket草案标准中是没有安全key，草案7.5、7.6中有两个安全key，而现在的草案10中只有一个安全key，即将7.5、7.6中http头中的&quot;Sec-WebSocket-Key1&quot;与&quot;Sec-WebSocket-Key2&quot;合并为了一个&quot;Sec-WebSocket-Key&quot;</li>
+</ol>
+<ol>
+<li>把http头中Upgrade的值由&quot;WebSocket&quot;修改为了&quot;websocket&quot;；http头中的&quot;-Origin&quot;修改为了&quot;Sec-WebSocket-Origin&quot;;</li>
+</ol>
+<ol>
+<li>增加了http头&quot;Sec-WebSocket-Accept&quot;，用来返回原来草案7.5、7.6服务器返回给客户端的握手验证，原来是以内容的形式返回，现在是放到了http头中；另外服务器返回客户端的验证方式也有变化。</li>
+</ol>
+<p>服务器生成验证的方式变化较大，我们来做一介绍。</p>
+<p>旧版：</p>
+<pre><code>GET / HTTP/1.1
+Upgrade: WebSocket
+Connection: Upgrade
+Host: 127.0.0.1:1337
+Origin: http://127.0.0.1:8000
+Cookie: sessionid=xxxx; calView=day; dayCurrentDate=1314288000000
+Sec-WebSocket-Key1: cV`p1* 42#7  ^9}_ 647  08{
+Sec-WebSocket-Key2: O8 415 8x37R A8   4
+;&quot;######
+</code></pre><p>旧版生成Token的方法如下：</p>
+<p>取出Sec-WebSocket-Key1中的所有数字字符形成一个数值，这里是1427964708，然后除以Key1中的空格数目，得到一个数值，保留该数值整数位，得到数值N1；对Sec-WebSocket-Key2采取同样的算法，得到第二个整数N2；把N1和N2按照Big-Endian字符序列连接起来，然后再与另外一个Key3连接，得到一个原始序列ser_key。Key3是指在握手请求最后，有一个8字节的奇怪的字符串“;”######”，这个就是Key3。然后对ser_key进行一次md5运算得出一个16字节长的digest，这就是老版本协议需要的token，然后将这个token附在握手消息的最后发送回Client，即可完成握手。</p>
+<p>新版：</p>
+<pre><code>GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:1337
+Sec-WebSocket-Origin: http://127.0.0.1:8000
+Sec-WebSocket-Key: erWJbDVAlYnHvHNulgrW8Q==
+Sec-WebSocket-Version: 8
+Cookie: csrftoken=xxxxxx; sessionid=xxxxx
+</code></pre><p>新版生成Token的方法如下：</p>
+<p>首先服务器将key（长度24）截取出来，如4tAjitqO9So2Wu8lkrsq3w==，用它和自定义的一个字符串（长度36）258EAFA5-E914-47DA-95CA-C5AB0DC85B11连接起来，然后把这一字符串进行SHA-1算法加密，得到长度为20字节的二进制数据，再将这些数据经过Base64编码，最终得到服务端的密钥，也就是ser_key。服务器将ser_key附在返回值Sec-WebSocket-Accept后，至此握手成功。</p>
+<h3 id="-">数据报文格式</h3>
+<p>旧版协议比较简单，仅仅是在原始数据前加了个’\x00′，在最后面加了个’\xFF’，即假如Client发送一个字符串’test’，实际上WebSocket Server收到的数据是：’x00test\xFF’，所以只需要剥离掉首尾那两个字符就可以了。</p>
+<p>新版的协议对这部分规定比较复杂，以下是其格式标准：（下图在Firefox可能会出现错乱，请换用Chrome）</p>
+<pre><code>      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-------+-+-------------+-------------------------------+
+     |F|R|R|R| opcode|M| Payload len |    Extended payload length    |
+     |I|S|S|S|  (4)  |A|     (7)     |             (16/63)           |
+     |N|V|V|V|       |S|             |   (if payload len==126/127)   |
+     | |1|2|3|       |K|             |                               |
+     +-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +
+     |     Extended payload length continued, if payload len == 127  |
+     + - - - - - - - - - - - - - - - +-------------------------------+
+     |                               |Masking-key, if MASK set to 1  |
+     +-------------------------------+-------------------------------+
+     | Masking-key (continued)       |          Payload Data         |
+     +-------------------------------- - - - - - - - - - - - - - - - +
+     :                     Payload Data continued ...                :
+     + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+     |                     Payload Data continued ...                |
+     +---------------------------------------------------------------+
+</code></pre><p><strong>FIN：</strong>1位，用来表明这是一个消息的最后的消息片断，当然第一个消息片断也可能是最后的一个消息片断；</p>
+<p><strong>RSV1, RSV2, RSV3:</strong> 分别都是1位，如果双方之间没有约定自定义协议，那么这几位的值都必须为0,否则必须断掉WebSocket连接；</p>
+<p><strong>Opcode:</strong>4位操作码，定义有效负载数据，如果收到了一个未知的操作码，连接也必须断掉，以下是定义的操作码：</p>
+<ul>
+<li>%x0 表示连续消息片断</li>
+</ul>
+<ul>
+<li>%x1 表示文本消息片断</li>
+</ul>
+<ul>
+<li>%x2 表未二进制消息片断</li>
+</ul>
+<ul>
+<li>%x3-7 为将来的非控制消息片断保留的操作码</li>
+</ul>
+<ul>
+<li>%x8 表示连接关闭</li>
+</ul>
+<ul>
+<li>%x9 表示心跳检查的ping</li>
+</ul>
+<ul>
+<li>%xA 表示心跳检查的pong</li>
+</ul>
+<ul>
+<li>%xB-F 为将来的控制消息片断的保留操作码</li>
+</ul>
+<p><strong>Mask:</strong>1位，定义传输的数据是否有加掩码,如果设置为1,掩码键必须放在masking-key区域，客户端发送给服务端的所有消息，此位的值都是1；</p>
+<p><strong>Payload length: </strong>传输数据的长度，以字节的形式表示：7位、7+16位、或者7+64位。如果这个值以字节表示是0-125这个范围，那这个值就表示传输数据的长度；如果这个值是126，则随后的两个字节表示的是一个16进制无符号数，用来表示传输数据的长度；如果这个值是127,则随后的是8个字节表示的一个64位无符合数，这个数用来表示传输数据的长度。多字节长度的数量是以网络字节的顺序表示。负载数据的长度为扩展数据及应用数据之和，扩展数据的长度可能为0,因而此时负载数据的长度就为应用数据的长度。</p>
+<p><strong>Masking-key:</strong>0或4个字节，客户端发送给服务端的数据，都是通过内嵌的一个32位值作为掩码的；掩码键只有在掩码位设置为1的时候存在。
+<strong>Payload data: </strong> (x+y)位，负载数据为扩展数据及应用数据长度之和。
+<strong>Extension data:</strong>x位，如果客户端与服务端之间没有特殊约定，那么扩展数据的长度始终为0，任何的扩展都必须指定扩展数据的长度，或者长度的计算方式，以及在握手时如何确定正确的握手方式。如果存在扩展数据，则扩展数据就会包括在负载数据的长度之内。
+<strong>Application data:</strong>y位，任意的应用数据，放在扩展数据之后，应用数据的长度=负载数据的长度-扩展数据的长度。</p>
+<p>以下是Python实现的解码和编码，兼容新旧版协议，仅供参考：</p>
+<pre><code>:::Python
+def send_data(self, raw_str):
+    if self.sockets[self][&#39;new_version&#39;]:
+        back_str = []
+        back_str.append(&#39;\x81&#39;)
+        data_length = len(raw_str)
+
+        if data_length &lt;= 125:
+            back_str.append(chr(data_length))
+        else:
+            back_str.append(chr(126))
+            back_str.append(chr(data_length &gt;&gt; 8))
+            back_str.append(chr(data_length &amp; 0xFF))
+
+        back_str = &quot;&quot;.join(back_str) + raw_str
+        self.transport.write(back_str)
+    else:
+        back_str = &#39;\x00%s\xFF&#39; % (raw_str)
+        self.transport.write(back_str)
+
+def parse_recv_data(self, msg):
+    raw_str = &#39;&#39;
+
+    if self.sockets[self][&#39;new_version&#39;]:
+        code_length = ord(msg[1]) &amp; 127
+
+        if code_length == 126:
+            masks = msg[4:8]
+            data = msg[8:]
+        elif code_length == 127:
+            masks = msg[10:14]
+            data = msg[14:]
+        else:
+            masks = msg[2:6]
+            data = msg[6:]
+
+        i = 0
+        for d in data:
+            raw_str += chr(ord(d) ^ ord(masks[i%4]))
+            i += 1
+    else:
+        raw_str = msg.split(&quot;\xFF&quot;)[0][1:]
+
+    return raw_str
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/websocket/">websocket</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/20/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/24/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/10/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/21/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/04/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

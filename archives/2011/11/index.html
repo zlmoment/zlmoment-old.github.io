@@ -1,0 +1,368 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Archives: 2011/11 | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+<h2 class="archive-title">2011/11</h2>
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2011-11-20T03:39:56.000Z"><a href="/2011/11/19/thinking-of-multi-level-classification/">Nov 19 2011</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2011/11/19/thinking-of-multi-level-classification/">关于多级分类的一个思考</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>最近做的几个项目都设计到了多级分类，不太清楚数据表怎样设计。经过一番探究后，发现一般有以下几种解决方案：</p>
+<ul>
+<li>每级分类一张表</li>
+</ul>
+<ul>
+<li>只有一张分类表</li>
+</ul>
+<ul>
+<li>一张分类名称表+一张分类关系表</li>
+</ul>
+<p>第三种方法是参考了Wordpress本身的分类方法，个人感觉用在手里的项目中有点大材小用，于是主要目标是在前两种中选择一种。</p>
+<p>首先来看第一种，这是一般最先想到的方法，而且相对比较简单。但马上一想就会发现这种方法的弊端，如果只有两级分类还可以凑合，但如果涉及到多级分类或无限极分类就麻烦了，如果是五级分类就会有五张表，这明显不以维护而且不符合数据库设计原则。</p>
+<p>再来看第二种方案：</p>
+<p>如果只有一张表，那么我们必须能够标识各个分类之间的层次关系，层级等级。第一次的设计是这样的：</p>
+<blockquote>
+<p>cid</p>
+<p>cname（分类名称）</p>
+<p>parentcid（上级分类ID）</p>
+<p>cat_level（当前分类层次）</p>
+</blockquote>
+<p>貌似很完美的样子，而且支持无限级分类。但在使用过程中发现一个问题：虽然有一个分类层次，但排序后它们的层次还是无法直接显示出来。（在其中一个项目中曾经使用过这种方法，当时的解决方案是在View层又加了一次排序来动态的生成HTML代码，每次排序都要遍历一次父类，很恐怖。）。于是，第二次设计修改如下：</p>
+<blockquote>
+<p>cid</p>
+<p>cname（分类名称）</p>
+<p>parentcid（上级分类ID）</p>
+<p>cat_level（当前分类层次）</p>
+<p>cat_path（当前分类路径）</p>
+</blockquote>
+<p>其中增加了一个字段分类路径，意思是当前分类到顶级分类的完整路径，以一级ID,二级ID，…..，当前级ID的格式存储。如1,2,2。这样的好处是，我们按分类路径进行一下排序会发现它自然地按照层级关系读取出数据来了，层次清晰，简单明了。</p>
+<p>好了，先说到这儿，关于更多的多级分类的数据表设计我们以后再深入讨论。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2011-11-17T07:57:09.000Z"><a href="/2011/11/17/childhood-of-programming-and-computer/">Nov 17 2011</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2011/11/17/childhood-of-programming-and-computer/">那些年与编程和计算机有关的小事儿</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>不知道写这种文章算不算回忆录，因为说回忆录未免有些早。记得初中的时候写过一本《我的小学回忆录》，将从入学一年级第一天起开始能想起来的人和事都记录了下来，如今这本未出版的手写书已不知去向，小学的记忆也越来越模糊。忽然想不如趁着现在对一些往事还尚存记忆，稍微回忆一下，也算对自己的鼓励吧。</p>
+<p>从小就是一个对电脑比较感兴趣的人，有时候兴趣是没有理由的，因为那时周围很多同学使用电脑仅限于聊QQ和半条命，而我却对除此之外的一些其它东西有着非常浓厚的兴趣。印象比较深的是买了很多很多的电脑书籍，当时最惬意的事情就是趴在桌前，做完作业后看那本比砖头还厚的《电脑医院》，一看就是四五个小时，后来还照葫芦画瓢写了个破坏注册表的.reg脚本，号称是我制造的第一个电脑病毒！</p>
+<p>由于很多电脑名词不明白，便买书、查资料。什么《注册表终极操作》、《BIOS配置指南》、《电脑上网故障1000问》、《榨干你的电脑》等等，还有全年的《电脑迷》、《电脑爱好者》、《IT新闻周刊》和不怎么看得懂的《CHIP新电脑》等。尤记得当时第一次重装系统时的激动，第一次电脑崩溃时的伤心，第一次编译通过一个程序，第一次入侵别人电脑等等的第一次，现在回想起来，真有一番体味。</p>
+<p>跟所有少年一样，在当时那个年龄段，都有一个黑客梦。当时最崇拜的人是陈盈豪，因为他的CIH病毒第一次颠覆了我的观念：病毒原来还可以破坏硬件设备！不过我始终没有去静下心来潜心研究那些汇编代码，不过那段经历确实小小地满足了一个少年的黑客梦，至少，成功盗过QQ，成功入侵肉鸡植入灰鸽子，成功进入某网站根目录....不过作为一个遵循黑客守则的少年，盗来的QQ一个都没动过，灰鸽子也没干过不好的事情，入侵网络更是进一下就退出了而已。</p>
+<p>当然，后来不再继续研究“黑客”，开始研究正道。但之前crack、0day的一些经历还是让我学到了很多很多东西。永远感激一个论坛，让我得以成长，著名的看雪论坛。</p>
+<p>说到后来的编程，不得不提到Delphi 7，这是成功生产出我人生中第一款像样软件的工具和语言。当时其实什么也不懂，也不知道什么是面向对象，什么是数据库，也没又编程基础，但好在Delphi 7有很多例子，结果照猫画虎竟也做出了我的处女作软件，是一款心理测试的程序，叫做“美丽预测”。当时还加了注册码，哈哈，现在想想真是有意思。当时比较火的软件站有天空和华军，于是便试着做了一些投递。只有很少一部分软件站收录了“美丽预测”，而现在，这款软件已经在网上完全找不到踪影了，不过在家里的电脑里，永远珍藏着它的所有源代码和所有版本。感谢当时用到的SetupFactory和其它各类工具。当时我初三。</p>
+<p><img src="/images/2011/11/200910181953287680.jpg" alt=""></p>
+<p>后来有一段时间我下载了最新版的Delphi，结果发现已经不再是使用Pascal了。Delphi 7还是那个永远的Delphi 7，因为它是记忆中的经典，至少对于我来说，是的。</p>
+<p>再后来，有了基础，便开始接触到MS的VS系列，其实这不是第一次接触VS系列，真正的第一次接触还是在小学时，传统的DOS机器上的Fox。时间太久，以至于都不记得Fox是用来干嘛的了，只记得黑屏白字和打出的一张张表格（貌似是数据表吧）。图形界面出来后，虽然带来的极大的方便，但那种没有鼠标，清一色的方正牌机器，黑屏白字和大大的显示器，还是我对电脑的第一印象呢。</p>
+<p>接下来，我也不知道何时起，开始迷上了互联网编程。当时傻傻地用FrontPage做了自己的“李昭谕工作室”网站，还帮同学做了“某某军事图片网站”，当时是用扫描仪一张一张将图片扫描进电脑，然后用扫描仪自带的编辑软件编辑图片（当时不会PS），然后一张张放到网页做好链接等等。当时感觉FrontPage简直就是神器啊！什么都可以做，乐此不疲。直至后来，开始学习了HTML和CSS后，才发现用记事本手动写网页才是最好的方法，FP和DW都是浮云。不过那段回忆真得很美好，当时所有做好的网站都已经打包放在家里的电脑上，偶尔去看看，看看当时傻傻的我。</p>
+<p>这大概就是童年时代一些与编程和计算机有关的小事儿了，当然不是全部，还有很多经典的回忆片段没有写下来，还有一些经典的工具软件没有记下来。不过还是在此缅怀一下那些逝去的经典软件，那些经典的黑客工具，还有那些逝去的记忆。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  
+    <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2011-11-10T03:15:03.000Z"><a href="/2011/11/09/deployment-of-thinkphp/">Nov 9 2011</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2011/11/09/deployment-of-thinkphp/">ThinkPHP部署二三事儿</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>费尽周折，终于得以进入信息中心的机房一探究竟了。学校所有的服务器和托管服务器都在这里，内景也跟之前想象的差不多，整齐的一排排机柜，各种颜色的指示灯和密密麻麻的网线，还有很强大的冷却空调。不过唯一不爽的是巨大的噪音。</p>
+<p>今天是去部署ThinkPHP刚做的一套系统，和安秦共同完成的。从上周六到今天，除了上课时间外火力全开，终于如期完成。当然还有不如意的地方，马上进入内测阶段，接受考验，哈哈。</p>
+<p>简单总结一下今天遇到的各种奇奇怪怪的问题，经过我们五个小时的探索，还好都算解决了。不过也看出来自己真正薄弱的地方，下一步继续努力。</p>
+<p>我们把原服务器格式化重新安装了Ubuntu 11.04。之前想安装Windows Server 2003，不过又想正好借机实践一下近期学的Linux知识，于是果断换了Ubuntu系统。考虑到使用方便问题，没有用Server版，桌面版够用。</p>
+<p>安装的过程还算顺利，服务器配置很强大，跑个Ubuntu还是很顺利的。然后就遇到了第一个问题，也是我们今天遇到的最坑爹，最苦恼，最没有办法的问题。。</p>
+<p>由于是内网部署，我们配好静态IP后，竟然发现不能访问！可以ping通，但访问时一直都是Forbidden状态。我们上网查各种方法来试图解决，都无法打通内网和外网这个桥梁。唯一能访问的知识同域内的几个网站，比如特思论坛。更痛苦的是无法连接上交大的开源镜像，导致Ubuntu无法配置PHP服务器环境。。。</p>
+<p>其实问题很简单，管理员的内外网端口映射已经做好，但防火墙配置出现问题，把我们的所有请求都拦截了...也就是说，我们需要联系管理员配置下网络防火墙即可。。。</p>
+<p>接着我们配置好了PHP运行环境，将我们的项目进行部署。这里的问题都是关于ThinkPHP的了，大牛可以直接略过。</p>
+<p><strong>乱码问题</strong></p>
+<p>嗯，不用多说，MySQL编码的问题...</p>
+<p><strong>权限问题</strong></p>
+<p>ThinkPHP的Runtime文件夹需要755的权限，直接从Windows环境下拷过去的项目一定要重新配置下权限。</p>
+<p><strong>找不到Public模块</strong></p>
+<p>我们用.htaccess配置了URLRewrite，把index.php隐去了，但奇怪的是诸如<a href="http://localhost/Public/...的地址全部都显示为“无法找到Public模块。”Public是个共用文件夹，我们把一些图片，CSS和JS放在里面，但ThinkPHP却去加载Public" target="_blank">http://localhost/Public/...的地址全部都显示为“无法找到Public模块。”Public是个共用文件夹，我们把一些图片，CSS和JS放在里面，但ThinkPHP却去加载Public</a> Action，导致无法找到模块。</p>
+<p>起初以为是.htaccess的问题，安秦把重写规则改了好多遍依旧不能解决问题，ThinkPHP的URLMODE试了一遍也不行。我隐约记得以前写过一个ThinkPHP项目中遇到过同样的问题，但后来怎么解决的却始终想不起来。正当问题进入“白热化”阶段，我们准备写一个PublicAction来捕捉所有请求的时候，终于。。。</p>
+<p>问题是，在Windows下面URL是不区分大小写的，但在Linux下面，大家应该都清楚吧，case sensitive！</p>
+<p>好了，问题解决了。</p>
+<p>明天下午继续去解决防火墙问题，不出差错，马上就可以上线咯！</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+  
+
+  <nav id="pagination">
+  
+  
+  <div class="clearfix"></div>
+</nav>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/20/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/24/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/10/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/21/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/04/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
