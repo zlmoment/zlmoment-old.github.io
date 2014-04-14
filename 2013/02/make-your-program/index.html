@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Make Your Program | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  <meta name="description" content="这学期选了两门挺有意思的课，一门叫Programming High Performance Computing，还有一门Parallel and Distributed Processing。两周刚刚上下来，感觉传递的知识量有我之前悠哉悠哉一学期学到的都多。不知道是美国本科生的基础好还是美国大学的教">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Make Your Program"/>
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-02-05T23:04:00.000Z"><a href="/2013/02/make-your-program/">Feb 5 2013</a></time>
+      
+      
+  
+    <h1 class="title">Make Your Program</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>这学期选了两门挺有意思的课，一门叫Programming High Performance Computing，还有一门Parallel and Distributed Processing。两周刚刚上下来，感觉传递的知识量有我之前悠哉悠哉一学期学到的都多。不知道是美国本科生的基础好还是美国大学的教育好，同班的美国同学接受这些知识看起来都毫无压力。不过语言确实是一个因素，比如HPC的老师两节课讲了几十个英文缩写，还都与电路有关，感觉回到了当年狂补计算机组成原理的时候。这些英文缩写估计对于美国学生接受起来要更好一点吧。我只有更努力了。</p>
+<p>重新好好学习一下以前的知识，认真记住。PDP的教授第一节课说了一句话让我印象非常深刻，他说：“They value you not because what you can search but what you can do.”其实非常羡慕老教授课堂上信手拈来的各种复杂代码和命令参数，只靠Google是不行的。</p>
+<p>本篇博客就来复习一下Makefile吧，这两门课每次交作业都要求必须包含Makefile，就像HPC的Slides中说的：“Real programmers use Makefiles!”</p>
+<h3 id="outline">Outline</h3>
+<ul>
+<li><p>What&#39;s Makefile</p>
+</li>
+<li><p>Generating Multiple Targets</p>
+</li>
+<li><p>Macros</p>
+</li>
+</ul>
+<h3 id="what-s-makefile">What&#39;s Makefile</h3>
+<p>Under the UNIX shell, make is a command generator. The makefile is a description file which creates a sequence of commands for execution by the UNIX shell.</p>
+<p>Generally, a program is built from one or more files and each of these files may have other files as prerequisites in turn. In a makefile, the prerequisites should be carefully stated. There are two important types of lines in a description file. A dependency line or rule line contains a colon, and a command line always starts <strong>with a tab</strong>.</p>
+<p>To the left of the colon on the dependency line is a target; to the right of the colon are the target&#39;s prerequisites. If myprog has prerequisites a.c and b.c, we have</p>
+<pre><code> myprog :  a.c  b.c
+</code></pre><p>The command lines just tells make how to make the target. For example,</p>
+<pre><code> myprog : a.c b.c
+      gcc -o myprog a.c b.c
+</code></pre><p>Then, type <code>make</code>, the UNIX prompt will excute the command as you typed.</p>
+<h3 id="generating-multiple-targets">Generating Multiple Targets</h3>
+<p>If we want to generate more than one programs, for example, let program prog01 depend on a.c and b.c, prog02 depend on m.c and n.c, and prog03 depend on u.c, v.c and w.c. </p>
+<pre><code> all : prog01 prog02 prog03
+
+ prog01 : a.c b.c
+      gcc -o prog01 a.c b.c
+
+ prog02 : m.c n.c
+      gcc -o prog02 m.c n.c
+
+ prog03 : u.c v.c w.c
+      gcc -o prog03 u.c v.c w.c
+</code></pre><p>Thus, if one of these three programs is not up-to-date, <code>all</code> will be generated which in turn causes all programs compiled. If the dependency line defining <code>all</code> is the first line of your Makefile, just type <code>make</code> will be the same as typing <code>make all</code>.</p>
+<h3 id="macros">Macros</h3>
+<p>A macro definition is a line containing an equal sign (=). When make encounters a name that appears to the left of the equal sign, that name is replaced by the contents to the right of the equal sign. It is not necessary to delimit the text string with double quote (&quot;) or single quote (&#39;). If they are used, they become part of the text string.</p>
+<p>If we have the macro definition as follows,</p>
+<pre><code> NAME = Zhaoyu Li
+</code></pre><p>Then subsequent references to <code>${NAME}</code> or <code>$(NAME)</code> are interpreted as <code>Zhaoyu Li</code>.</p>
+<h3 id="examples">Examples</h3>
+<p>Here are two examples,</p>
+<pre><code> SUBDIRS = src analyze
+
+ all: subdirs test analysis
+      @echo &quot;After Build, run &#39;make analysis&#39; to run analysis&quot;
+
+ test: 
+      @echo &quot;About to self-test&quot;; ./src/hw1
+
+ analysis: 
+      @cd analyze &amp;&amp; make analysis
+
+ subdirs:
+      @for dir in $(SUBDIRS); do \
+           $(MAKE) -C $$dir; \
+      done
+
+ clean:
+      @for dir in $(SUBDIRS); do \
+           $(MAKE) -C $$dir clean; \
+      done
+</code></pre><p>Let&#39;s see another example. Suppose you are provided with two files, MyThreads.h and MyThreads.o. The former is a header file that has to be included into your source files and the latter is a library of functions for you to use. In other words, your source files in which multithreaded capability is used depend on MyThreads.h and your executable depends on MyThreads.o.</p>
+<p>Suppose your assignment has the following files, prog01.c (the main function), and abc.c, def.c and xyz.c. All of these files contain access to multithread functions defined in MyThreads.h. You also designed some utility functions collected in files ut1.c and ut2.c. None of these two have access to the multithread capability. However, in your judgment, you believe any change made to ut1.c and ut2.c requires recompilation of abc.c and xyz.c. Therefore, on the source level, prog01.c, abc.c, def.c and xyz.c depend on MyThreads.h, and abc.c and xyz.c also depend on ut1.c and ut2.c. Suppose the final executable is to be called prog01.</p>
+<pre><code> CC = gcc -ansi
+
+ prog01 : prog01.o abc.o def.o xyz.o ut1.o ut2.o MyThreads.o
+      ${CC} -o prog01 prog01.o abc.o def.o xyz.o ut1.o ut2.o MyThreads.o -lthread
+
+ prog01.o : prog01.c MyThreads.h
+      ${CC} -c prog01.c
+
+ abc.o : abc.c c ut2.c MyThreads.h
+      ${CC} -c abc.c
+ def.o : def.c MyThreads.h
+      ${CC} -c def.c
+ xyz.o : xyz.c ut1.c ut2.c MyThreads.h
+      ${CC} -c xyz.c
+
+ ut1.o : ut1.c
+      ${CC} -c ut1.c
+ ut2.o : ut2.c
+      ${CC} -c ut2.c
+</code></pre><p>Above is the basic concepts of Makefile. If you want to be more expert, try the offcial documents.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/makefile/">makefile</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

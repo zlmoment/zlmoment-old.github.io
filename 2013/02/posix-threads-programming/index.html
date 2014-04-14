@@ -1,0 +1,456 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>POSIX Threads Programming | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  <meta name="description" content="I am writing this article for a memo of CS8860, Parallel and distributed system.
+Overview
+Technically, a thread is defined as an independent stream of">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="POSIX Threads Programming"/>
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-02-03T00:35:00.000Z"><a href="/2013/02/posix-threads-programming/">Feb 2 2013</a></time>
+      
+      
+  
+    <h1 class="title">POSIX Threads Programming</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>I am writing this article for a memo of CS8860, Parallel and distributed system.</p>
+<h3 id="overview">Overview</h3>
+<p>Technically, a thread is defined as an independent stream of instructions that can be scheduled to run as such by the operating system.</p>
+<p>In the UNIX environment a thread:</p>
+<ul>
+<li><p>Exists within a process and uses the process resources</p>
+</li>
+<li><p>Has its own independent flow of control as long as its parent process exists and the OS supports it</p>
+</li>
+<li><p>Duplicates only the essential resources it needs to be independently schedulable</p>
+</li>
+<li><p>May share the process resources with other threads that act equally independently (and dependently)</p>
+</li>
+<li><p>Dies if the parent process dies - or something similar</p>
+</li>
+<li><p>Is &quot;lightweight&quot; because most of the overhead has already been accomplished through the creation of its process.</p>
+</li>
+</ul>
+<p>All threads within a process share the same address space.</p>
+<h3 id="several-common-models">Several common models</h3>
+<p>Several common models for threaded programs exist:</p>
+<ul>
+<li><p><strong>Manager/worker:</strong> a single thread, the manager assigns work to other threads, the workers. Typically, the manager handles all input and parcels out work to the other tasks. At least two forms of the manager/worker model are common: static worker pool and dynamic worker pool.</p>
+</li>
+<li><p><strong>Pipeline:</strong> a task is broken into a series of suboperations, each of which is handled in series, but concurrently, by a different thread. An automobile assembly line best describes this model.</p>
+</li>
+<li><p><strong>Peer:</strong> similar to the manager/worker model, but after the main thread creates other threads, it participates in the work.</p>
+</li>
+</ul>
+<h3 id="shared-memory-model-">Shared Memory Model:</h3>
+<ul>
+<li><p>All threads have access to the same global, shared memory</p>
+</li>
+<li><p>Threads also have their own private data</p>
+</li>
+<li><p>Programmers are responsible for synchronizing access (protecting) globally shared data.</p>
+</li>
+</ul>
+<h3 id="the-pthreads-api">The Pthreads API</h3>
+<p>The Pthreads API contains around 100 subroutines. This article will focus on a subset of these.</p>
+<h3 id="compiling-threaded-programs">Compiling Threaded Programs</h3>
+<pre><code>INTEL Linux:          icc -pthread
+PGI Linux:            pgcc -lpthread
+GNU Linux:            gcc -pthread
+</code></pre><h3 id="threading-management">Threading Management</h3>
+<p><strong> Creating and Terminating Threads </strong></p>
+<p>Initially, your <code>main()</code> program comprises a single, default thread. All other threads must be explicitly created by the programmer.</p>
+<p><code>pthread_create</code> creates a new thread and makes it executable. This routine can be called any number of times from anywhere within your code.</p>
+<p><code>pthread_create</code> arguments:</p>
+<ul>
+<li><p><code>thread:</code> An opaque, unique identifier for the new thread returned by the subroutine.</p>
+</li>
+<li><p><code>attr:</code> An opaque attribute object that may be used to set thread attributes. You can specify a thread attributes object, or NULL for the default values.</p>
+</li>
+<li><p><code>start_routine:</code> the C routine that the thread will execute once it is created.</p>
+</li>
+<li><p><code>arg:</code> A single argument that may be passed to start_routine. It must be passed by reference as a pointer cast of type void. NULL may be used if no argument is to be passed.</p>
+</li>
+</ul>
+<p>Once created, threads are peers, and may create other threads. There is no implied hierarchy or dependency between threads.</p>
+<p>There are several ways in which a thread may be terminated:</p>
+<ul>
+<li><p>The thread returns normally from its starting routine. It&#39;s work is done.</p>
+</li>
+<li><p>The thread makes a call to the <code>pthread_exit</code> subroutine - whether its work is done or not.</p>
+</li>
+<li><p>The thread is canceled by another thread via the <code>pthread_cancel</code> routine.</p>
+</li>
+<li><p>The entire process is terminated due to making a call to either the <code>exec()</code> or <code>exit()</code></p>
+</li>
+<li><p>If <code>main()</code> finishes first, without calling <code>pthread_exit</code> explicitly itself</p>
+</li>
+</ul>
+<p>Pay attention, the pthread_exit() routine does not close files; any files opened inside the thread will remain open after the thread is terminated.</p>
+<p>Example:</p>
+<pre><code>#include &lt;pthread.h&gt; 
+#include &lt;stdio.h&gt; 
+#define NUM_THREADS  5 
+
+void *PrintHello(void *threadid) 
+{ 
+   int tid; 
+   tid = (int)threadid; 
+   printf(&quot;Hello World! It&#39;s me, thread #%d!\n&quot;, tid); 
+   pthread_exit(NULL); 
+} 
+
+int main (int argc, char *argv[]) 
+{ 
+   pthread_t threads[NUM_THREADS]; 
+   int rc, t; 
+   for(t=0; t&lt;NUM_THREADS; t++){ 
+      printf(&quot;In main: creating thread %d\n&quot;, t); 
+      rc = pthread_create(&amp;threads[t], NULL, PrintHello, (void *)t); 
+      if (rc){ 
+         printf(&quot;ERROR; return code from pthread_create() is %d\n&quot;, rc); 
+         exit(-1); 
+      } 
+   } 
+   pthread_exit(NULL); 
+}
+</code></pre><p><strong> Passing Arguments to Threads </strong></p>
+<p>All arguments must be passed by reference and cast to (void *).</p>
+<p><strong> Joining and Detaching Threads </strong></p>
+<pre><code>:::C
+int pthread_join(pthread_t target_thread, void **status);
+</code></pre><p>&quot;Joining&quot; is one way to accomplish synchronization between threads. This means that some other thread is required to call pthread_join to collect a terminated thread, in a fashion similar to the requirement for a parent process to collect status for terminated child processes.For example:</p>
+<p><a href="/images/2013/02/forkjoin.gif"><img src="/images/2013/02/forkjoin.gif" alt=""></a></p>
+<p>The <code>pthread_join()</code> subroutine blocks the calling thread until the specified threadid thread terminates.</p>
+<p>To explicitly create a thread as joinable or detached, the attr argument in the <code>pthread_create()</code> routine is used. The typical 4 step process is:</p>
+<ul>
+<li><p>Declare a pthread attribute variable of the <code>pthread_attr_t</code> data type</p>
+</li>
+<li><p>Initialize the attribute variable with <code>pthread_attr_init()</code></p>
+</li>
+<li><p>Set the attribute detached status with <code>pthread_attr_setdetachstate()</code></p>
+</li>
+<li><p>When done, free library resources used by the attribute with p<code>thread_attr_destroy()</code></p>
+</li>
+</ul>
+<p>Example:</p>
+<pre><code>:::C
+/*****************************************************************************
+ * FILE: join.c
+ * DESCRIPTION:
+ *   This example demonstrates how to &quot;wait&quot; for thread completions by using
+ *   the Pthread join routine.  Threads are explicitly created in a joinable
+ *   state for portability reasons. Use of the pthread_exit status argument is
+ *   also shown. Compare to detached.c
+ * AUTHOR: 8/98 Blaise Barney
+ * LAST REVISED:  01/30/09
+ ******************************************************************************/
+#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define NUM_THREADS    4
+
+void *BusyWork(void *t)
+{
+    int i;
+    long tid;
+    double result=0.0;
+    tid = (long)t;
+    printf(&quot;Thread %ld starting...\n&quot;,tid);
+    for (i=0; i&lt;1000000; i++)
+    {
+        result = result + sin(i) * tan(i);
+    }
+    printf(&quot;Thread %ld done. Result = %e\n&quot;,tid, result);
+    pthread_exit((void*) t);
+}
+
+int main (int argc, char *argv[])
+{
+    pthread_t thread[NUM_THREADS];
+    pthread_attr_t attr;
+    int rc;
+    long t;
+    void *status;
+
+    /* Initialize and set thread detached attribute */
+    pthread_attr_init(&amp;attr);
+    pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_JOINABLE);
+
+    for(t=0; t&lt;NUM_THREADS; t++) {
+        printf(&quot;Main: creating thread %ld\n&quot;, t);
+        rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (void *)t);
+        if (rc) {
+            printf(&quot;ERROR; return code from pthread_create() is %d\n&quot;, rc);
+            exit(-1);
+        }
+    }
+
+    /* Free attribute and wait for the other threads */
+    pthread_attr_destroy(&amp;attr);
+    for(t=0; t&lt;NUM_THREADS; t++) {
+        rc = pthread_join(thread[t], &amp;status);
+        if (rc) {
+            printf(&quot;ERROR; return code from pthread_join() is %d\n&quot;, rc);
+            exit(-1);
+        }
+        printf(&quot;Main: completed join with thread %ld having a status of %ld\n&quot;,t,(long)status);
+    }
+
+    printf(&quot;Main: program completed. Exiting.\n&quot;);
+    pthread_exit(NULL);
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/pthread/">pthread</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

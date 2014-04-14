@@ -1,0 +1,412 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>IPC Semaphores | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  <meta name="description" content="Initializing a Semaphore Set
+The function semget() initializes or gains access to a semaphore.
+:::C
+int semget(key_t key, int nsems, int semflg);
+
+The">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="IPC Semaphores"/>
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2013-02-12T03:48:00.000Z"><a href="/2013/02/ipc-semaphores/">Feb 11 2013</a></time>
+      
+      
+  
+    <h1 class="title">IPC Semaphores</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h3 id="initializing-a-semaphore-set">Initializing a Semaphore Set</h3>
+<p>The function <code>semget()</code> initializes or gains access to a semaphore.</p>
+<pre><code>:::C
+int semget(key_t key, int nsems, int semflg);
+</code></pre><ul>
+<li><p>The <code>key</code> argument is a access value associated with the semaphore ID.</p>
+</li>
+<li><p>The <code>nsems</code> argument specifies the number of elements in a semaphore array. The call fails when nsems is greater than the number of elements in an existing array; when the correct count is not known, supplying 0 for this argument ensures that it will succeed.</p>
+</li>
+<li><p>The <code>semflg</code> argument specifies the initial access permissions and creation control flags.</p>
+</li>
+</ul>
+<p>When the call succeeds, it returns the semaphore ID (semid).</p>
+<pre><code>:::C
+#include &lt;sys/types.h&gt; 
+#include &lt;sys/ipc.h&gt; 
+#include &lt;sys/sem.h&gt; 
+
+... 
+key_t key; /* key to pass to semget() */ 
+int semflg; /* semflg to pass tosemget() */ 
+int nsems; /* nsems to pass to semget() */ 
+int semid; /* return value from semget() */ 
+
+... 
+
+key = 123456; 
+nsems = 1;
+semflg = IPC_CREAT | 0666; // Flag to create with rw permissions
+// Create the semaphore
+// The return value is the semaphore set identifier
+if ((semid = semget(key, nsems, semflg)) == -1) {
+    perror(&quot;semget: semget failed&quot;); 
+     exit(1); 
+} 
+else 
+   ...
+</code></pre><h3 id="controlling-semaphores">Controlling Semaphores</h3>
+<p><code>semctl()</code> changes permissions and other characteristics of a semaphore set. It is prototyped as follows:</p>
+<pre><code>:::C
+int semctl(int semid, int semnum, int cmd, union semun arg);
+</code></pre><p>It must be called with a valid semaphore ID, semid. The <code>semnum</code> value selects a semaphore within an array by its index. The <code>cmd</code> argument is one of the following control flags:</p>
+<p>GETVAL
+-- Return the value of a single semaphore.</p>
+<p>SETVAL
+-- Set the value of a single semaphore. In this case, arg is taken as arg.val, an int.</p>
+<p>GETPID
+-- Return the PID of the process that performed the last operation on the semaphore or array.</p>
+<p>GETNCNT
+-- Return the number of processes waiting for the value of a semaphore to increase.</p>
+<p>GETZCNT
+-- Return the number of processes waiting for the value of a particular semaphore to reach zero.</p>
+<p>GETALL
+-- Return the values for all semaphores in a set. In this case, arg is taken as arg.array, a pointer to an array of unsigned shorts (see below).</p>
+<p>SETALL
+-- Set values for all semaphores in a set. In this case, arg is taken as arg.array, a pointer to an array of unsigned shorts.</p>
+<p>IPC_STAT
+-- Return the status information from the control structure for the semaphore set and place it in the data structure pointed to by arg.buf, a pointer to a buffer of type semid_ds.</p>
+<p>IPC_SET
+-- Set the effective user and group identification and permissions. In this case, arg is taken as arg.buf.</p>
+<p>IPC_RMID
+-- Remove the specified semaphore set.</p>
+<p>The fourth argument <code>union semun</code> arg is optional, depending upon the operation requested. If required it is of type union semun, which must be explicitly declared by the application program as:</p>
+<pre><code>:::C
+union semun {
+   int val;
+   struct semid_ds *buf;
+   ushort *array;
+} arg;
+
+:::C
+#include &lt;sys/types.h&gt; 
+#include &lt;sys/ipc.h&gt;
+#include &lt;sys/sem.h&gt; 
+
+// Initialize the semaphore
+union semun {
+   int val;
+   struct semid_ds *buf;
+   ushort *array;
+} arg;
+
+int semnum = ....;
+int cmd = GETALL;   /* get value */
+
+... 
+if (semctl(semid, semnum, cmd, arg) &lt; 0) { 
+    perror(&quot;semctl: semctl failed&quot;); 
+    exit(1); 
+}
+else
+    ...
+</code></pre><h3 id="semaphore-operations">Semaphore Operations</h3>
+<p><code>semop()</code> performs operations on a semaphore set.</p>
+<pre><code>:::C
+int semop(int semid, struct sembuf *sops, size_t nsops);
+</code></pre><p>The <code>sops</code> argument is a pointer to an array of structures, each containing the following information about a semaphore operation:</p>
+<pre><code>:::C
+The semaphore number
+The operation to be performed
+Control flags, if any.
+</code></pre><p>The <code>sembuf</code> structure specifies a semaphore operation, as defined in <code>sys/sem.h</code>.</p>
+<pre><code>:::C
+struct sembuf {
+    ushort_t    sem_num;        /* semaphore number */
+    short       sem_op;         /* semaphore operation */
+    short       sem_flg;        /* operation flags */
+};
+</code></pre><p>The operation to be performed is determined as follows:</p>
+<pre><code>:::C
+A positive integer increments the semaphore value by that amount.
+A negative integer decrements the semaphore value by that amount. An attempt to set a semaphore to a value less than zero fails or blocks, depending on whether IPC_NOWAIT is in effect.
+A value of zero means to wait for the semaphore value to reach zero.
+
+
+:::C
+#include &lt;sys/types.h&gt; 
+#include &lt;sys/ipc.h&gt; 
+#include &lt;sys/sem.h&gt; 
+
+... 
+int i; 
+int nsops; /* number of operations to do */ 
+int semid; /* semid of semaphore set */ 
+struct sembuf *sops; /* ptr to operations to perform */ 
+
+... 
+// semop performs the operations on the semaphore:
+if ((semid = semop(semid, sops, nsops)) == -1) 
+{ 
+    perror(&quot;semop: semop failed&quot;); 
+    exit(1);
+} 
+else 
+    (void) fprintf(stderr, &quot;semop: returned %d\n&quot;, i); 
+    ...
+</code></pre><h3 id="-">补充</h3>
+<p>以一个停车场的运作为例。简单起见，假设停车场只有三个车位，一开始三个车位都是空的。这时如果同时来了五辆车，看门人允许其中三辆直接进入，然后放下车拦，剩下的车则必须在入口等待，此后来的车也都不得不在入口处等待。这时，有一辆车离开停车场，看门人得知后，打开车拦，放入外面的一辆进去，如果又离开两辆，则又可以放入两辆，如此往复。</p>
+<p>在这个停车场系统中，车位是公共资源，每辆车好比一个线程，看门人起的就是信号量的作用。</p>
+<p>抽象的来讲，信号量的特性如下：信号量是一个非负整数（车位数），所有通过它的线程/进程（车辆）都会将该整数减一（通过它当然是为了使用资源），当该整数值为零时，所有试图通过它的线程都将处于等待状态。在信号量上我们定义两种操作： Wait（等待） 和 Release（释放）。当一个线程调用Wait操作时，它要么得到资源然后将信号量减一，要么一直等下去（指放入阻塞队列），直到信号量大于等于一时。Release（释放）实际上是在信号量上执行加操作，对应于车辆离开停车场，该操作之所以叫做“释放”是因为释放了由信号量守护的资源。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/ipc,semaphores/">ipc,semaphores</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

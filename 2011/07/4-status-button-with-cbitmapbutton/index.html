@@ -1,0 +1,305 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>用CBitmapButton实现按钮四态的方法 | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  <meta name="description" content="今天上午由于特殊原因重装了系统，下午四点左右开始了交大一软通的界面绘制。这次一软通界面全面更新，各种控件该自绘的自绘，该贴图的贴图，力争给用户最好的视觉和操作体验。
+第二个选项卡效果是鼠标悬浮时的效果，其实这不是TabControl，而是普普通通的Button，但用到了按钮的四态。
+下面简单总结一下">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="用CBitmapButton实现按钮四态的方法"/>
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2011-07-16T04:00:08.000Z"><a href="/2011/07/4-status-button-with-cbitmapbutton/">Jul 15 2011</a></time>
+      
+      
+  
+    <h1 class="title">用CBitmapButton实现按钮四态的方法</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>今天上午由于特殊原因重装了系统，下午四点左右开始了交大一软通的界面绘制。这次一软通界面全面更新，各种控件该自绘的自绘，该贴图的贴图，力争给用户最好的视觉和操作体验。</p>
+<p>第二个选项卡效果是鼠标悬浮时的效果，其实这不是TabControl，而是普普通通的Button，但用到了按钮的四态。</p>
+<p>下面简单总结一下四态按钮的实现，以备日后之需。</p>
+<p>为了实现一些按钮的特效，网上遍布着从CButton派生的各种各样的按钮类，其中最为著名的就是CButtonST类。但考虑到各方面原因，最好的选择还是自己努力实现想要的效果，一方面可以消除代码冗余，另一方面自己也学习到了知识。</p>
+<p>今天的主角是CBitmapButton类，可以参考MSDN自带的例子“CTRLTEST”学习CBitmapButton的用法。这里简单总结一些要点：</p>
+<p>按钮选中Owner Draw属性，不需要选择Bitmap属性；</p>
+<p>按钮成员变量的类型定义为CBitmapButton，不可用ClassWizard生成CButton类进行修改，否则会出错；</p>
+<p>将位图与按钮进行关联，一般有两种方法：</p>
+<p>（一）使用CBitmapButton::LoadBitmaps装载各种状态的图片,使用SubclassDlgItem关联到想要的按钮，使用CBitmapButton::SizeToContent函数使按钮适合图片大小。注意Loadbitmaps一定要在关联到按钮之前进行！</p>
+<p>（二）使用CBitmapButton::AutoLoad函数关联到想要的按钮。</p>
+<p>在第三点中推荐使用第二种方法，但有一些注意事项：</p>
+<p>A、之前不能使用CBitmapButton::LoadBitmaps装载各种状态的图片，否则会出错。</p>
+<p>B、AutoLoad函数完成的关联和改变按钮大小的CBitmapButton::SizeToContent函数的功能。</p>
+<p>C、CBitmapButton::AutoLoad使用的位图是默认资源ID的，即它会自动装载相关资源位图。位图的资源ID格式为：&quot;按钮Caption+U&quot;、&quot;按钮Caption+D&quot;、&quot;按钮Caption+F&quot;、&quot;按钮Caption+X&quot;，分别代表Up、Down、Focus、Disable状态。如资源编辑时，希望关联的按钮的Caption为Test，那么其默认装载的位图资源的ID为：&quot;TestU&quot;/&quot;TestD&quot;/&quot;TestF&quot;/&quot;TestX&quot;，注意分号&quot;&quot;也是其ID的一部分。
+最后，将按钮的MouseMove消息在PreTranslateMessage中处理即可，代码如下：</p>
+<pre><code>BOOL Cyrt30Dlg::PreTranslateMessage(MSG* pMsg)
+{
+    if(WM_MOUSEMOVE == pMsg-&gt;message)
+    {
+        POINT p;
+        GetCursorPos(&amp;p);
+        CString s;
+        CWnd *hwnd=GetDlgItem(IDC_TabNav);
+        s.Format(&quot;%d&quot;,hwnd=WindowFromPoint(p));
+
+        CWnd *hwndTabNav=GetDlgItem(IDC_TabNav);
+                if (hwndTabNav == hwnd)
+        {
+            if (GetFocus()!=hwndTabNav)
+                hwndTabNav-&gt;SetFocus();
+        }
+        else
+        {
+            if (GetFocus() == hwndTabNav )
+                GetDlgItem(IDC_NULL)-&gt;SetFocus();
+
+        }
+    }
+    return CDialogEx::PreTranslateMessage(pMsg);
+}
+</code></pre><p>这样，就可以完美实现四态按钮了。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/basic-of-gcc/">GCC 基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'hackecho';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
