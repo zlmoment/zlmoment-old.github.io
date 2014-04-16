@@ -50,6 +50,292 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2012-04-17T05:46:21.000Z"><a href="/2012/04/socket-programming-in-php/">Apr 17 2012</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2012/04/socket-programming-in-php/">PHP中的Socket编程</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>关于PHP socket的资料网上着实不多，或者讲的都不是很全面。为了更好地用PHP来处理socket，天堂皓月博客特地来简单总结一下其用法，尽量会做到深入浅出：）</p>
+<h3 id="-">文章结构：</h3>
+<ul>
+<li>Socket基础知识</li>
+</ul>
+<ul>
+<li>编写服务器</li>
+</ul>
+<ul>
+<li>编写客户端</li>
+</ul>
+<ul>
+<li>总结</li>
+</ul>
+<p>通过这三部分你将会体验到Socket的魅力，并了解怎样去编写一个服务器，怎样通过Sockets连接到服务器，服务器怎样处理信息并将信息发送给相应的客户端。</p>
+<p>不管你信不信，只要你用过PHP，就一定用过Sockets。HTTP服务器就是一个Socket服务器，浏览器就是客户端，也就是最简单的C/S模式。</p>
+<h3 id="socket-">Socket基础知识</h3>
+<p>我们可以把Socket当做是一种数据结构，客户端和服务器间通过这种数据结构来交换数据。服务器开始监听连接，当客户端想要连接服务器时，会通过服务器监听的端口开启一个会话，服务器收到客户端的请求后，建立连接完毕，然后继续监听下一次连接。</p>
+<p>要产生一个Socket，你我们需要三个变量：一个协议（protocol）、一个socket类型（socket type）和一个公共协议类型（common protocol type）。下面将会详细介绍各个部分的具体内容。</p>
+<p><strong>协议</strong></p>
+<ul>
+<li>AF_INET：这是大多数用来产生socket的协议，使用TCP或UDP来传输，用在IPv4的地址</li>
+</ul>
+<ul>
+<li>AF_INET6：与上面类似，不过是来用在IPv6的地址</li>
+</ul>
+<ul>
+<li>AF_UNIX：本地协议，使用在Unix和Linux系统上，它很少使用，一般都是当客户端和服务器在同一台及其上的时候使用</li>
+</ul>
+<p><strong>Socket类型</strong></p>
+<ul>
+<li>SOCK_STREAM：这个协议是按照顺序的、可靠的、数据完整的基于字节流的连接。这是一个使用最多的socket类型，这个socket是使用TCP来进行传输。</li>
+</ul>
+<ul>
+<li>SOCK_DGRAM：这个协议是无连接的、固定长度的传输调用。该协议是不可靠的，使用UDP来进行它的连接。</li>
+</ul>
+<ul>
+<li>SOCK_SEQPACKET：这个协议是双线路的、可靠的连接，发送固定长度的数据包进行传输。必须把这个包完整的接受才能进行读取。</li>
+</ul>
+<ul>
+<li>SOCK_RAW：这个socket类型提供单一的网络访问，这个socket类型使用ICMP公共协议。（ping、traceroute使用该协议）</li>
+</ul>
+<ul>
+<li>SOCK_RDM：这个类型是很少使用的，在大部分的操作系统上没有实现，它是提供给数据链路层使用，不保证数据包的顺序</li>
+</ul>
+<p><strong>公共协议</strong></p>
+<ul>
+<li>ICMP：互联网控制消息协议，主要使用在网关和主机上，用来检查网络状况和报告错误信息</li>
+</ul>
+<ul>
+<li>UDP：用户数据报文协议，它是一个无连接，不可靠的传输协议</li>
+</ul>
+<ul>
+<li>TCP：传输控制协议，这是一个使用最多的可靠的公共协议，它能保证数据包能够到达接受者那儿，如果在传输过程中发生错误，那么它将重新发送出错数据包。</li>
+</ul>
+<p>在PHP中我们使用socket_create()函数来产生一个Socket。socket_create()函数运行成功返回一个包含Socket的资源类型，如果没有成功则返回false。</p>
+<p>1 resource socket_create(int protocol, int socketType, int commonProtocol);</p>
+<p>PHP提供了很多操作Socket的函数。现在我们来看一个例子，了解PHP是如何产生、接受和监听一个socket。</p>
+<pre><code>:::PHP
+&lt;?php
+$commonProtocol = getprotobyname(“tcp”);
+$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
+socket_bind($socket, ‘localhost’, 1337);
+socket_listen($socket);
+// More socket functionality to come
+?&gt;
+</code></pre><p>我们来详细解释一下上面这个程序（基于行号）：</p>
+<p>第二行：使用公共协议名字来获取一个协议类型。在这里使用的是TCP公共协议，如果你想使用UDP或者ICMP协议，就应该把getprotobyname()函数的参数改为“udp”或“icmp”。我们也可以不使用getprotobyname()函数而是直接指定SOL_TCP或SOL_UDP。</p>
+<p>第三行：产生一个Socket并且返回一个Socket资源的实例。</p>
+<p>第四行：有了一个Socket资源的实例以后，就必须把Socket绑定到一个IP地址和某一端口上。在这里绑定socket到本地计算机（127.0.0.1）的1337端口。</p>
+<p>第五行：然后就需要监听所有进来的socket连接。</p>
+<p>这时，我们就需要了解一下PHP中Socket函数的使用方法了。官方手册的介绍非常不错（<a href="http://www.php.net/manual/en/ref.sockets.php" target="_blank">猛戳这个链接</a>），下面只是简单列举几个最常用的。</p>
+<ul>
+<li>socket_accept() 接受一个Socket连接</li>
+</ul>
+<ul>
+<li>socket_bind() 把socket绑定在一个IP地址和端口上</li>
+</ul>
+<ul>
+<li>socket_close() 关闭一个socket资源</li>
+</ul>
+<ul>
+<li>socket_connect() 开始一个socket连接</li>
+</ul>
+<ul>
+<li>socket_create_listen() 在指定端口打开一个socket监听</li>
+</ul>
+<ul>
+<li>socket_create() 产生一个socket，相当于产生一个socket的数据结构</li>
+</ul>
+<ul>
+<li>socket_get_option() 获取socket选项</li>
+</ul>
+<ul>
+<li>socket_getpeername() 获取远程主机的ip地址</li>
+</ul>
+<ul>
+<li>socket_getsockname() 获取本地socket的ip地址</li>
+</ul>
+<ul>
+<li>socket_listen() 监听由指定socket的所有连接</li>
+</ul>
+<ul>
+<li>socket_read() 读取指定长度的数据</li>
+</ul>
+<ul>
+<li>socket_readv() 读取从分散/聚合数组过来的数据</li>
+</ul>
+<ul>
+<li>socket_recv() 从socket里结束数据到缓存</li>
+</ul>
+<ul>
+<li>socket_recvfrom() 接受数据从指定的socket，如果没有指定则默认当前socket</li>
+</ul>
+<ul>
+<li>socket_recvmsg() 从iovec里接受消息</li>
+</ul>
+<ul>
+<li>socket_select() 多路选择</li>
+</ul>
+<ul>
+<li>socket_send() 这个函数发送数据到已连接的socket</li>
+</ul>
+<ul>
+<li>socket_sendmsg() 发送消息到socket</li>
+</ul>
+<ul>
+<li>socket_sendto() 发送消息到指定地址的socket</li>
+</ul>
+<ul>
+<li>socket_set_block() 在socket里设置为块模式</li>
+</ul>
+<ul>
+<li>socket_set_nonblock() socket里设置为非块模式</li>
+</ul>
+<ul>
+<li>socket_set_option() 设置socket选项</li>
+</ul>
+<ul>
+<li>socket_shutdown() 这个函数允许你关闭读、写、或者指定的socket</li>
+</ul>
+<ul>
+<li>socket_write() 写数据到socket缓存</li>
+</ul>
+<p>关于PHP Socket的基础知识就介绍到这里，还有不明白的可查看官方手册。下面介绍编写一个Socket服务器。</p>
+<h3 id="-">编写服务器</h3>
+<p>现在我们把第一个例子完善，使其能够监听一个指定的Socket并处理用户的连接。</p>
+<pre><code>:::PHP
+&lt;?php
+$commonProtocol = getprotobyname(&quot;tcp&quot;);
+$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
+socket_bind($socket, &#39;localhost&#39;, 1337);
+socket_listen($socket);
+// Accept any incoming connections to the server
+$connection = socket_accept($socket);
+if($connection)
+{
+   socket_write($connection, &quot;You have connected to the socket...\n\r&quot;);
+}
+?&gt;
+</code></pre><p>注意这不是一个Web页面，如果你尝试使用Web浏览器来运行这个脚本，那么很有可能它会超过PHP运行30秒的限时。当然你可以使用下面的代码来设置一个无限的运行时间</p>
+<blockquote>
+<p>set_time_limit(0);</p>
+</blockquote>
+<p>但最好的办法还是直接使用命令提示符来运行：</p>
+<blockquote>
+<p>php server.php</p>
+</blockquote>
+<p>但截至目前，上面的服务器端有<strong>三个问题</strong>：</p>
+<ol>
+<li>它不能接受多个连接。</li>
+</ol>
+<ol>
+<li>它只完成唯一的一个命令。</li>
+</ol>
+<ol>
+<li>你不能通过Web浏览器连接这个服务器。</li>
+</ol>
+<p>在上一个代码的基础上再改进，使用下面的代码来做新服务器端：</p>
+<pre><code>:::PHP
+&lt;?php
+// Set up our socket 
+$commonProtocol = getprotobyname(&quot;tcp&quot;);
+$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
+socket_bind($socket, &#39;localhost&#39;, 1337);
+socket_listen($socket);
+// Initialize the buffer 
+$buffer = &quot;NO DATA&quot;;
+while(true)
+{
+    // Accept any connections coming in on this socket
+    $connection = socket_accept($socket);
+    printf(&quot;Socket connected\r\n&quot;);
+    // Check to see if there is anything in the buffer
+    if($buffer != &quot;&quot;)
+    {
+        printf(&quot;Something is in the buffer...sending data...\r\n&quot;);
+        socket_write($connection, $buffer . &quot;\r\n&quot;);
+        printf(&quot;Wrote to socket\r\n&quot;);
+    }
+    else
+    {
+        printf(&quot;No Data in the buffer\r\n&quot;);
+    }
+    // Get the input
+    while($data = socket_read($connection, 1024, PHP_NORMAL_READ))
+    {
+        $buffer = $data;
+        socket_write($connection, &quot;Information Received\r\n&quot;);
+        printf(&quot;Buffer: &quot; . $buffer . &quot;\r\n&quot;);
+    }
+    socket_close($connection);
+    printf(&quot;Closed the socket\r\n\r\n&quot;);
+}
+?&gt;
+</code></pre><p>这段程序初始化一个socket并且打开一个缓冲区收发数据。然后服务器开始等待连接，此时一旦产生一个连接，服务器将打印“Socket connected”。然后服务器检查缓冲区，如果缓冲区里有数据，服务器就把这些数据发送到连接的计算机客户端。然后服务器等待接收信息，并把接收到的信息保存，然后让连接的客户端知道信息接收成功后，服务器将关闭连接。连接关闭后，服务器将开始下一次处理连接的循环。</p>
+<h3 id="-">编写客户端</h3>
+<p>解决上面提到的第二个问题还是比较容易的。我们需要一个连接到服务器的页面来处理数据并发送到服务器。</p>
+<p>我们来看下面的代码：</p>
+<pre><code>:::PHP
+&lt;?php
+// Create the socket and connect 
+$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+$connection = socket_connect($socket,’localhost’, 1337);
+while($buffer = socket_read($socket, 1024, PHP_NORMAL_READ))
+{
+    if($buffer == “NO DATA”)
+    {
+        echo(“&lt;p&gt;NO DATA&lt;/p&gt;”);
+        break;
+    }
+    else
+    {
+        // Do something with the data in the buffer 
+        echo(“&lt;p&gt;Buffer Data: “ . $buffer . “&lt;/p&gt;”);
+    }
+}
+echo(“&lt;p&gt;Writing to Socket&lt;/p&gt;”);
+// Write some test data to our socket
+if(!socket_write($socket, “SOME DATA\r\n”))
+{
+    echo(“&lt;p&gt;Write failed&lt;/p&gt;”);
+}
+// Read any response from the socket
+while($buffer = socket_read($socket, 1024, PHP_NORMAL_READ))
+{
+    echo(“&lt;p&gt;Data sent was: SOME DATA&lt;br&gt; Response was:” . $buffer . “&lt;/p&gt;”);
+}
+echo(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
+?&gt;
+</code></pre><p>这个例子的客户端连接到服务器后，客户端读取数据。如果这是客户端第一次连接服务器，服务器将发送“NO DATA”给客户端。如果客户端收到“NO DATA”说明其连接成功，客户端发送它的数据到服务器并等待服务器响应。一旦客户端接收到服务器的响应，客户端将把响应内容输出到屏幕上。</p>
+<h3 id="-">总结</h3>
+<p>如果还想深入了解PHP Socket，建议阅读更多的第三方资料或到PHP官方查询官方文档。今天就介绍到这里，如果有错误欢迎指正。</p>
+<p>参考资料：《PHP Game Programming》</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2012-04-15T06:21:50.000Z"><a href="/2012/04/html5-websocket-communication-protocol/">Apr 15 2012</a></time>
       
       
@@ -945,83 +1231,6 @@ chgrp -R www /home/wwwroot
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-09-23T16:22:40.000Z"><a href="/2011/09/difference-between-work-and-create/">Sep 23 2011</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/09/difference-between-work-and-create/">打工与注册公司创业的区别</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>自己打工与注册公司有什么区别，有人说都是为了赚钱，都是为了生活。但这两这还是有本质的不同。</p>
-<p>1.打工是靠自己的能力吃饭，注册公司是靠自己的智慧和思考吃饭；</p>
-<p>2.打工是靠别人给自己的平台来展示能力，注册公司是靠自己的决心和眼光创造一个平台；</p>
-<p>3.打工是做好自己的本分工作就好，注册公司是要思考体系运作的每一个环节；</p>
-<p>4.打工的人期望的是一周有两天休息，注册公司的人是思考的是如何能低成本的运作；</p>
-<p>5.打工的不愿意真实的面对自己的收入，注册公司必须要真实的面对自己的实力和财务状况；</p>
-<p>6.打工的时候想的是自己的经历和文凭应该值多少钱，注册公司的时候想的是自己的勤劳和策略能创造多少钱；</p>
-<p>7.打工时想用自己的专业知识吃饭，存钱养家，注册公司时候想的是如何利用社会资源来赚钱养活组织和员工；</p>
-<p>8.打工的人一般都比较天真，认为辛苦和听话就可以长保无忧，注册公司的时候才知道市场的变幻简直就是日不可测，日不可知；</p>
-<p>9.打工搞好上司和同事关系就可以生活，注册公司要搞好客户和社会方方面面的关系才能生存；</p>
-<p>10.打工要看上司和老板的脸色，注册公司看社会消费者和主管行政部门的脸色和媒体的脸色；</p>
-<p>11.打工想的是今年我能存多少钱，发多少奖金，注册公司想的是今年能开多少店，占多少市场份额；</p>
-<p>12.打工人今天天下雨和下雪，没有客人就很高兴，可以放松偷懒，注册公司想的今天天气下雨下雪，心如火焚，着急无比，如何吸引客人上门；</p>
-<p>13.打工碰到问题就是解决问题，注册公司就要想这个问题的根源是什么，怎么解决，还要怎么预防；</p>
-<p>14.打工碰到困扰自己的问题就回避，认为不能解决，注册公司碰到自己头疼的问题必须要勇敢面对，并积极的想办法解决；</p>
-<p>15.打工的时候把工作堆起来，能拖就拖，尽量少事情为好，注册公司的时候才知道问题堆在那里，就会成不定时炸弹，保不准那天公司和自己与员工就都被这问题炸死了；</p>
-<p>16.打工时候看着钟点，踩着钟点来感觉很心安，注册公司的时候每天时刻都得想怎么生存发展；</p>
-<p>17.打工的时候总是希望老板来请客，认为那是天经地义的，注册公司的时候感觉请客就是一种割肉，但是总是得大方的主动买单；</p>
-<p>18.打工的时候到晚上八点就把电话关了，唯恐有人来麻烦，注册公司的时候三部电话放在床头24小时不关机，希望有人来关照生意；</p>
-<p>19.打工的人信心都在身体里面埋藏，注册公司的人信心都在身体外面张扬；</p>
-<p>20.打工的人最不希望在大厅观众面前跟别人说自己是马仔，注册公司的人最怕在公共场合之中听别人说自己是老板，特别是没有成功时候；</p>
-<p>21.打工时候电话费总是要省了又省，最好的是公司的电话无偿使用，出门在外，给老板电话，也是响了一下马上挂了，注册公司的时候电话总是咬咬牙要拨打，即使长途电话，只要是自己的合作方和客户，总是要等对方挂线，哪怕心上很疼也得承受；</p>
-<p>22.打工碰到一些困难就打退堂鼓，想圈起行李走人或是逃避责任，而注册公司碰到困难必须要面对解决，把问题的最终解决在自己的手中；</p>
-<p>23.打工时候听到公司来了一个新同事能力比自己强，总是对他有嫉妒和提防心理，注册公司的时候总是渴望能够网罗到比自己能力高很多的俊杰和能人。</p>
-<p>24.打工就是做学生，只要学习成绩好就好，注册公司就是做老师，要教好学生，还有想办法搞好学生思想工作，做好外部职称评定工作；</p>
-<p>25.打工就是上大学，越自由越好，最好不要管理，越散漫越开心，这就是性格和酷，能随心所欲是欢喜不尽，注册公司就是办大学，最好是军训和男女不能同居，唯恐出一点点差错，毁了所有的心血和劳动；</p>
-<p>26.打工的时候，不希望有人来管理自己，觉得自己很了不起，一点点都看不起那些比自己低的人呢，注册公司的时候才知道，多么希望有个好的导师和善知识来指点和帮助自己，越来越感觉到自己其实最没有什么了不起，所有比自己差的人都要尊重起来，因为没有任何人可以短缺；</p>
-<p>27.打工的时候想的时，无聊的时候有个恋人的问候和惊喜来温暖自己，注册公司的时候在无聊时候想的是有个重要的客户突然跟自己能签订一笔采购订单合同；打工的时候想的是这月能发多少奖金，注册公司的时候想的是这月又损耗了多少的产品，能通过什么方式节省下来；</p>
-<p>28.打工的时候不知道感情到底有多么重要，不知道珍惜是什么，注册公司的时候才知道有个恋人人能在自己孤军奋战时鼓励和帮助是人世间最难的福报；</p>
-<p>29.打工时候不知道要孝敬父母和事业有什么关系，要是没有钱花，自己干脆就忘记了家人，反正自己一个人吃饱就好，注册公司是时候才知道，做人都不好，根本就没有人来信任您，不孝敬父母注册公司根本就赚不到安心的钱；</p>
-<p>30.打工的时候不希望求别人，不希望去打搅人，注册公司的时候天天都得去求别人，天天都得主动出击给朋友客户信息和短信，麻烦别人；</p>
-<p>31.打工时候总是希望能够多学习很多的资格证书，最好是博士后，再加人力资源管理师，会计师，培训师等等的培训证书有十多二十个，注册公司的时候才发现最好就是一个不知道一切的勇夫蛮汉，什么文凭和职称和证书根本就是百无一用；</p>
-<p>32.打工时候看到对方给的名片是某某跨国公司的某某总监，年薪XX万，心理就羡慕和自卑，极度的恭敬和小心，注册公司时候，只有一个人，也敢对自己人说，将来要培养这样的总监经理几十个；</p>
-<p>33.打工的时候听到有人介绍别人这是这个行业里的教授、导师、专家、大师的、成功者的时候总是恭敬有加，注册公司的时候，每每听到这些心里就有些窃笑，知道学识并没有什么了不起，讲得好，不如做的好，实践是产生智慧的唯一途径，感觉自己才是真正的专家；</p>
-<p>34.打工的时候不怎么在意媒体和记者，注册公司的时候想记者又怕记者；</p>
-<p>35.打工把产品当商品，当成谋生的东西，任其随意丢放，注册公司的时候把自己的产品当恋人，当另一半，烂了坏了，损伤了都心疼不已；</p>
-<p>36.打工的时候把恋人当恋人，双方互不干涉，当盖身的被子，给自己取暖遮寒，注册公司的时候把恋人老婆当宝贝和珍宝，唯恐她跑了自己事业不能成功，必须要双方保稳定和同心协力；</p>
-<p>37.打工的时候梦想有一天自己能够娶到老板的和女儿，这样就可以少奋斗二十年，注册公司的时想的是原来天下没有任何事情比自己的坚强和努力更重要，天上不会掉馅饼；</p>
-<p>38.打工的时候，想嫁给一个好老公，可以衣食无忧，做师奶，注册公司时候才知道，最不愿意找这样一个女人来跟自己分享自己的心血和财富；</p>
-<p>39.打工的人是很喜欢热闹，喜欢群居的，所以打工的人是喧闹而享受的，注册公司的人是希望宁静和思考，所以注册公司的人是每每在欲望里对自己的身心做修正；</p>
-<p>40.打工的人把希望寄托给伯乐，注册公司的人把希望交给自己；</p>
-<p>41.打工的人把梦想托付给机会，注册公司的人把生命交付给信念和上帝；</p>
-<p>42.打工的人若是要能比喻就好比是家狗，注册公司的人是好比是野狼。这个世界上最终是狼比狗少，因为大部分人呢都愿意做狗。这是自然界的物种存在的现象；</p>
-<p>43.打工的人占80%，注册公司的人占20%，因为打工的人都希望能够在注册公司者的大树下蒙荫；</p>
-<p>44.打工的人不明白，自己拿比注册公司者至少八倍的收入，其实是在一开始就决定了的，而注册公司的人也不明白，自己靠着那么多的心血智慧和付出赚了钱，居然产生原罪感是不应该的。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -1048,6 +1257,10 @@ chgrp -R www /home/wwwroot
   <ul class="entry">
     
       <li>
+        <a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Hadoop Cluster Setup Instruction with Fedora 20</a>
+      </li>
+    
+      <li>
         <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
       </li>
     
@@ -1061,10 +1274,6 @@ chgrp -R www /home/wwwroot
     
       <li>
         <a href="/2013/03/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
-      </li>
-    
-      <li>
-        <a href="/2013/03/basic-of-gcc/">GCC 基础</a>
       </li>
     
   </ul>
@@ -1098,6 +1307,8 @@ chgrp -R www /home/wwwroot
     <li><a href="/tags/Git/">Git</a><small>1</small></li>
   
     <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/Hadoop/">Hadoop</a><small>1</small></li>
   
     <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
   

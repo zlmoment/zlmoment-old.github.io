@@ -1,0 +1,462 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hadoop Cluster Setup Instruction with Fedora 20 | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  <meta name="description" content="It is easy to setup a Hadoop cluster using Fedora 20, basically you need several steps.
+
+Fedora 20 installation
+Basic configuration
+SSH without password
+Hadoop package and related packages installation
+Hadoop configuration
+Start the cluster
+How to add a new datanode
+
+1. Fedora 20 installation
+If your machine is x32, you need to download the installation image for x32, which is ‘i386 DVD’. The image can be got from this link.
+During the installation, let us create a admin user ‘hadoop’.">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Hadoop Cluster Setup Instruction with Fedora 20"/>
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/about">About</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-04-16T04:23:00.000Z"><a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Apr 15 2014</a></time>
+      
+      
+  
+    <h1 class="title">Hadoop Cluster Setup Instruction with Fedora 20</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>It is easy to setup a Hadoop cluster using Fedora 20, basically you need several steps.</p>
+<ol>
+<li>Fedora 20 installation</li>
+<li>Basic configuration</li>
+<li>SSH without password</li>
+<li>Hadoop package and related packages installation</li>
+<li>Hadoop configuration</li>
+<li>Start the cluster</li>
+<li>How to add a new datanode</li>
+</ol>
+<h2 id="1-fedora-20-installation">1. Fedora 20 installation</h2>
+<p>If your machine is x32, you need to download the installation image for x32, which is ‘i386 DVD’. The image can be got from <a href="http://fedoraproject.org/en_GB/get-fedora-all" target="_blank">this link</a>.</p>
+<p>During the installation, let us create a admin user <code>‘hadoop’</code>.</p>
+<a id="more"></a>
+
+<h2 id="2-basic-configuration">2. Basic configuration</h2>
+<p>Let us assume there are three machines including one namenode and two datanode with following IP addresses and hostname.</p>
+<p><style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;border:none;width:100%}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+.tg .tg-s6z2{text-align:center}
+.tg .tg-spn1{background-color:#f9f9f9;text-align:center}
+</style></p>
+<table class="tg">
+  <tr>
+    <th class="tg-s6z2">Hostname</th>
+    <th class="tg-s6z2">IP Addrees</th>
+  </tr>
+  <tr>
+    <td class="tg-spn1">master</td>
+    <td class="tg-spn1">192.168.0.2</td>
+  </tr>
+  <tr>
+    <td class="tg-s6z2">slave1</td>
+    <td class="tg-s6z2">192.168.0.3</td>
+  </tr>
+  <tr>
+    <td class="tg-spn1">slave2</td>
+    <td class="tg-spn1">192.168.0.4</td>
+  </tr>
+</table>
+
+<p>First, you need to change the hostname for every node so that you can identify them easily in terminal. </p>
+<p>Edit <code>/etc/hostname</code> to change the hostname:</p>
+<pre><code>$ sudo vi /etc/hostname
+</code></pre><p>You may also need to add this line in <code>/etc/sysconfig/network</code> :</p>
+<pre><code>HOSTNAME=master
+</code></pre><p>Edit <code>/etc/hosts</code> :</p>
+<pre><code>192.168.0.2 &lt;tab&gt; master
+192.168.0.3 &lt;tab&gt; slave1
+192.168.0.4 &lt;tab&gt; slave2
+</code></pre><p>Do the above operations on every node with corresponding data.</p>
+<h2 id="3-ssh-without-password">3. SSH without password</h2>
+<p>Namenode manages every datanode by secure shell (SSH), you need to configure SSH with public key authentication so that each node can access each other without password.</p>
+<p>First, disable the firewall and iptables on each node. </p>
+<pre><code>$ sudo systemctl stop firewalld
+$ sudo systemctl disable firewalld
+$ sudo systemctl stop iptables
+$ sudo systemctl disable iptables
+</code></pre><p>On master, generate public key:</p>
+<pre><code>$ ssh-keygen -t rsa -P ‘’
+</code></pre><p>Press Enter all the way to the end and the key pair id_rsa (private key) and id_rsa.pub (public key) will be stored in <code>~/.ssh/</code> .</p>
+<p>Add public key to authorized keys:</p>
+<pre><code>$ cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+</code></pre><p>Make sure the permission of this file is correct:</p>
+<pre><code>$ chmod 600 authorized_keys
+</code></pre><p>You may need some SSH configurations. Edit file /etc/ssh/sshd_config, check if the the ‘#’ before the following items are deleted. If not, delete the ‘#’ before these items (this step needs to be done on every node).</p>
+<pre><code>RSAAuthentication yes
+PubkeyAuthentication yes
+</code></pre><p>Restart SSH service:</p>
+<pre><code>$ sudo systemctl restart sshd
+</code></pre><p>Now, use scp command to copy authorized_keys to every node (if dir ~/.ssh doesn’t exist, create it at first):</p>
+<pre><code>$ scp ~/.ssh/authorized_keys hadoop@slave1:~/.ssh/
+</code></pre><p>Now test if you can login to other node without password:</p>
+<pre><code>$ ssh slave1
+</code></pre><p>Next you need to config every datanode to access namenode without password. It is the same as in namenode, just generate public key and add it to authorized_keys on namenode.</p>
+<h2 id="4-hadoop-package-and-related-packages-installation">4. Hadoop package and related packages installation</h2>
+<p>Using Fedora 20, you don’t have to config Java, Hadoop, etc. by yourself. You can use the following command to install and config everything.</p>
+<pre><code>$ yum install hadoop-common hadoop-common-native hadoop-hdfs hadoop-mapreduce hadoop-mapreduce-examples hadoop-yarn
+</code></pre><p>Do it on every node. This may take a while on commodity machines. Go and get a cup of coffee and wait for the process to finish. </p>
+<h2 id="5-hadoop-configuration">5. Hadoop configuration</h2>
+<p>Now you need to config Hadoop. All the files are located at /etc/hadoop.</p>
+<p>Edit <code>core-site.xml</code>:</p>
+<p>You need to change item <code>‘fs.default.name’</code> to the address of your namenode and port. Here is a sample file:</p>
+<p>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;</p>
+<pre><code>&lt;configuration&gt;
+  &lt;property&gt;
+    &lt;name&gt;fs.default.name&lt;/name&gt;
+    &lt;value&gt;hdfs://master:9000&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- HTTPFS proxy user setting --&gt;
+  &lt;property&gt;
+    &lt;name&gt;hadoop.proxyuser.tomcat.hosts&lt;/name&gt;
+    &lt;value&gt;*&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;hadoop.proxyuser.tomcat.groups&lt;/name&gt;
+    &lt;value&gt;*&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre><p>Edit <code>mapred-site.xml</code>:</p>
+<p>You need to change item <code>‘mapred.job.tracker’</code> to the address of job tracker node address and port.  Normally, job tracker and namenode are the same machine.</p>
+<p>Here is a sample file:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
+
+&lt;configuration&gt;
+  &lt;property&gt;
+    &lt;name&gt;mapred.job.tracker&lt;/name&gt;
+    &lt;value&gt;http://master:9001&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;property&gt;
+    &lt;name&gt;mapreduce.framework.name&lt;/name&gt;
+    &lt;value&gt;yarn&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;property&gt;
+    &lt;description&gt;To set the value of tmp directory for map and reduce tasks.&lt;/description&gt;
+    &lt;name&gt;mapreduce.task.tmp.dir&lt;/name&gt;
+    &lt;value&gt;/var/cache/hadoop-mapreduce/${user.name}/tasks&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre><p>Edit <code>hdfs-site.xml</code>:</p>
+<p>You may need to delete some items as the inside instruction. Here is a sample file:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;configuration.xsl&quot;?&gt;
+
+&lt;configuration&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.replication&lt;/name&gt;
+    &lt;value&gt;1&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+     &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+     &lt;value&gt;/var/cache/hadoop-hdfs/${user.name}&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+     &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;
+     &lt;value&gt;file:///var/cache/hadoop-hdfs/${user.name}/dfs/namenode&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+     &lt;name&gt;dfs.namenode.checkpoint.dir&lt;/name&gt;
+     &lt;value&gt;file:///var/cache/hadoop-hdfs/${user.name}/dfs/secondarynamenode&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+     &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;
+     &lt;value&gt;file:///var/cache/hadoop-hdfs/${user.name}/dfs/datanode&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre><p>Now you need to tell Hadoop which node is namenode and which node is datanode. Create two files if they don’t exist:</p>
+<pre><code>$ sudo touch masters; sudo touch slaves
+</code></pre><p>In the file masters, list all the namenodes you have. Do the same for the file slaves. For example, here is a sample of file slaves:</p>
+<pre><code>slave1
+slave2
+</code></pre><p>Now you need to distribute all these files to all the nodes in cluster. Use scp to do it. Later we will use some tools to distribute them automatically. </p>
+<pre><code>$ scp -r /etc/hadoop/* root@slave1:/etc/hadoop/
+</code></pre><p>All the configurations are done.</p>
+<h2 id="6-start-the-cluster">6. Start the cluster</h2>
+<p>To start the cluster, you need to initialize the HDFS directories at first. On namenode, run the following command:</p>
+<pre><code>$ sudo hdfs-create-dirs
+</code></pre><p>Then, use the following command to start all services we need:</p>
+<pre><code>$ sudo systemctl start hadoop-namenode hadoop-datanode hadoop-nodemanager hadoop-resourcemanager
+</code></pre><p>And also, you need to run the following command on every datanode:</p>
+<pre><code>$ sudo systemctl start hadoop-datanode
+</code></pre><p>(Also, you can use $ sudo start-all.sh to start the whole cluster, then you don’t need to run anything on datanode.)</p>
+<p>Then the cluster would be started successfully.</p>
+<h2 id="7-how-to-add-a-new-datanode">7. How to add a new datanode</h2>
+<p>Fedora makes it simple to add a new datanode to the cluster. Basically, there are several steps:</p>
+<ol>
+<li>Install Fedora</li>
+<li>Config hostname, hosts and SSH as described before</li>
+<li>Install Hadoop package and get the updated config files from namenode</li>
+<li>Restart cluster</li>
+</ol>
+<h2 id="references">References</h2>
+<p><a href="http://fedoraproject.org/wiki/Changes/Hadoop" target="_blank">http://fedoraproject.org/wiki/Changes/Hadoop</a></p>
+<p><a href="http://timothysc.github.io/blog/2013/09/14/hadoop-mapreduce/" target="_blank">http://timothysc.github.io/blog/2013/09/14/hadoop-mapreduce/</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Hadoop/">Hadoop</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Hadoop Cluster Setup Instruction with Fedora 20</a>
+      </li>
+    
+      <li>
+        <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+      <li>
+        <a href="/2013/03/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://vicdory.com/" title="Kailun Shi">Kailun Shi</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/Hadoop/">Hadoop</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'zlmoment';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

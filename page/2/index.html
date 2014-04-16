@@ -50,6 +50,128 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2012-12-31T19:57:00.000Z"><a href="/2012/12/python-yield/">Dec 31 2012</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2012/12/python-yield/">Python中yield备忘</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>总是记不起来yield的用法，大概是因为实践中还没有用过的缘故吧。不过发现它真的是个非常实用的关键字，在这里草草记下几笔备忘。</p>
+<p>带有 yield 的函数在 Python 中被称之为 generator（生成器）。</p>
+<p>我们已生成斐波那契数列为例，来循序渐进了解yield。</p>
+<p>生成斐波那契数列：</p>
+<pre><code>:::Python
+def fab(max): 
+    n, a, b = 0, 0, 1 
+    while n &lt; max: 
+        print b 
+        a, b = b, a + b 
+        n = n + 1 
+</code></pre><p>上面这个函数中直接用到了print函数，导致该函数复用性极差。我们想到可以返回一个List，改写如下：</p>
+<pre><code>:::Python
+def fab(max): 
+    n, a, b = 0, 0, 1 
+    L = [] 
+    while n &lt; max: 
+        L.append(b) 
+        a, b = b, a + b 
+        n = n + 1 
+    return L 
+</code></pre><p>但这个函数的内存占用会随着max的增大而增大，如果要控制内存占用，最好不要用List保存中间结果，而是通过iterable对象来迭代。举个例子：</p>
+<pre><code>:::Python
+for i in range(1000): pass
+</code></pre><p>上述代码会生成一个1000元素的List；</p>
+<pre><code>:::Python
+for i in xrange(1000): pass 
+</code></pre><p>而上述代码则会产生一个iterable对象，每次迭代中返回下一个值，内存占用很小。</p>
+<p>我们来改写一下fab函数：</p>
+<pre><code>:::Python
+class Fab(object): 
+
+    def __init__(self, max): 
+        self.max = max 
+        self.n, self.a, self.b = 0, 0, 1 
+
+    def __iter__(self): 
+        return self 
+
+    def next(self): 
+        if self.n &lt; self.max: 
+            r = self.b 
+            self.a, self.b = self.b, self.a + self.b 
+            self.n = self.n + 1 
+            return r 
+        raise StopIteration() 
+</code></pre><p>这样就可以通过循环返回下一个值了：for n in Fab(5)。</p>
+<p>但毕竟使用类重写后函数显得更加复杂，这时，yield 就派上用场了。</p>
+<pre><code>:::Python
+def fab(max): 
+    n, a, b = 0, 0, 1 
+    while n &lt; max: 
+        yield b 
+        # print b 
+        a, b = b, a + b 
+        n = n + 1 
+</code></pre><p>简单地讲，yield 的作用就是把一个函数变成一个 generator，带有 yield 的函数不再是一个普通函数，Python 解释器会将其视为一个 generator，调用 fab(5) 不会执行 fab 函数，而是返回一个 iterable 对象！在 for 循环执行时，每次循环都会执行 fab 函数内部的代码，执行到 yield b 时，fab 函数就返回一个迭代值，下次迭代时，代码从 yield b 的下一条语句继续执行，而函数的本地变量看起来和上次中断执行前是完全一样的，于是函数继续执行，直到再次遇到 yield。
+也可以手动调用 fab(5) 的 next() 方法（因为 fab(5) 是一个 generator 对象，该对象具有 next() 方法），这样我们就可以更清楚地看到 fab 的执行流程：</p>
+<pre><code>:::Python
+&gt;&gt;&gt; f = fab(5) 
+&gt;&gt;&gt; f.next() 
+1 
+&gt;&gt;&gt; f.next() 
+1 
+&gt;&gt;&gt; f.next() 
+2 
+&gt;&gt;&gt; f.next() 
+3 
+&gt;&gt;&gt; f.next() 
+5 
+&gt;&gt;&gt; f.next() 
+Traceback (most recent call last): 
+ File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt; 
+StopIteration 
+</code></pre><p>yield 的好处是显而易见的，把一个函数改写为一个 generator 就获得了迭代能力，比起用类的实例保存状态来计算下一个 next() 的值，不仅代码简洁，而且执行流程异常清晰。</p>
+<p>每次调用 fab 函数都会生成一个新的 generator 实例，各实例互不影响。</p>
+<p><strong>另一个例子</strong></p>
+<p>另一个 yield 的例子来源于文件读取。如果直接对文件对象调用 read() 方法，会导致不可预测的内存占用。比较好的方法是利用固定长度的缓冲区来不断读取文件内容。通过 yield，我们不再需要编写读文件的迭代类，就可以轻松实现文件读取：</p>
+<pre><code>:::Python
+def read_file(fpath): 
+    BLOCK_SIZE = 1024 
+    with open(fpath, &#39;rb&#39;) as f: 
+        while True: 
+            block = f.read(BLOCK_SIZE) 
+            if block: 
+                yield block 
+            else: 
+                return 
+                # 在一个 generator function 中，如果没有 return，则默认执行至函数完毕，如果在执行过程中 return，则直接抛出 StopIteration 终止迭代。
+</code></pre><p>参考资料：<a href="http://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/" target="_blank">廖雪峰-Python yield 使用浅析</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2012-11-03T21:01:47.000Z"><a href="/2012/11/disappear-day/">Nov 3 2012</a></time>
       
       
@@ -792,292 +914,6 @@ def parse_recv_data(self, msg):
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2012-04-17T05:46:21.000Z"><a href="/2012/04/socket-programming-in-php/">Apr 17 2012</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2012/04/socket-programming-in-php/">PHP中的Socket编程</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>关于PHP socket的资料网上着实不多，或者讲的都不是很全面。为了更好地用PHP来处理socket，天堂皓月博客特地来简单总结一下其用法，尽量会做到深入浅出：）</p>
-<h3 id="-">文章结构：</h3>
-<ul>
-<li>Socket基础知识</li>
-</ul>
-<ul>
-<li>编写服务器</li>
-</ul>
-<ul>
-<li>编写客户端</li>
-</ul>
-<ul>
-<li>总结</li>
-</ul>
-<p>通过这三部分你将会体验到Socket的魅力，并了解怎样去编写一个服务器，怎样通过Sockets连接到服务器，服务器怎样处理信息并将信息发送给相应的客户端。</p>
-<p>不管你信不信，只要你用过PHP，就一定用过Sockets。HTTP服务器就是一个Socket服务器，浏览器就是客户端，也就是最简单的C/S模式。</p>
-<h3 id="socket-">Socket基础知识</h3>
-<p>我们可以把Socket当做是一种数据结构，客户端和服务器间通过这种数据结构来交换数据。服务器开始监听连接，当客户端想要连接服务器时，会通过服务器监听的端口开启一个会话，服务器收到客户端的请求后，建立连接完毕，然后继续监听下一次连接。</p>
-<p>要产生一个Socket，你我们需要三个变量：一个协议（protocol）、一个socket类型（socket type）和一个公共协议类型（common protocol type）。下面将会详细介绍各个部分的具体内容。</p>
-<p><strong>协议</strong></p>
-<ul>
-<li>AF_INET：这是大多数用来产生socket的协议，使用TCP或UDP来传输，用在IPv4的地址</li>
-</ul>
-<ul>
-<li>AF_INET6：与上面类似，不过是来用在IPv6的地址</li>
-</ul>
-<ul>
-<li>AF_UNIX：本地协议，使用在Unix和Linux系统上，它很少使用，一般都是当客户端和服务器在同一台及其上的时候使用</li>
-</ul>
-<p><strong>Socket类型</strong></p>
-<ul>
-<li>SOCK_STREAM：这个协议是按照顺序的、可靠的、数据完整的基于字节流的连接。这是一个使用最多的socket类型，这个socket是使用TCP来进行传输。</li>
-</ul>
-<ul>
-<li>SOCK_DGRAM：这个协议是无连接的、固定长度的传输调用。该协议是不可靠的，使用UDP来进行它的连接。</li>
-</ul>
-<ul>
-<li>SOCK_SEQPACKET：这个协议是双线路的、可靠的连接，发送固定长度的数据包进行传输。必须把这个包完整的接受才能进行读取。</li>
-</ul>
-<ul>
-<li>SOCK_RAW：这个socket类型提供单一的网络访问，这个socket类型使用ICMP公共协议。（ping、traceroute使用该协议）</li>
-</ul>
-<ul>
-<li>SOCK_RDM：这个类型是很少使用的，在大部分的操作系统上没有实现，它是提供给数据链路层使用，不保证数据包的顺序</li>
-</ul>
-<p><strong>公共协议</strong></p>
-<ul>
-<li>ICMP：互联网控制消息协议，主要使用在网关和主机上，用来检查网络状况和报告错误信息</li>
-</ul>
-<ul>
-<li>UDP：用户数据报文协议，它是一个无连接，不可靠的传输协议</li>
-</ul>
-<ul>
-<li>TCP：传输控制协议，这是一个使用最多的可靠的公共协议，它能保证数据包能够到达接受者那儿，如果在传输过程中发生错误，那么它将重新发送出错数据包。</li>
-</ul>
-<p>在PHP中我们使用socket_create()函数来产生一个Socket。socket_create()函数运行成功返回一个包含Socket的资源类型，如果没有成功则返回false。</p>
-<p>1 resource socket_create(int protocol, int socketType, int commonProtocol);</p>
-<p>PHP提供了很多操作Socket的函数。现在我们来看一个例子，了解PHP是如何产生、接受和监听一个socket。</p>
-<pre><code>:::PHP
-&lt;?php
-$commonProtocol = getprotobyname(“tcp”);
-$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
-socket_bind($socket, ‘localhost’, 1337);
-socket_listen($socket);
-// More socket functionality to come
-?&gt;
-</code></pre><p>我们来详细解释一下上面这个程序（基于行号）：</p>
-<p>第二行：使用公共协议名字来获取一个协议类型。在这里使用的是TCP公共协议，如果你想使用UDP或者ICMP协议，就应该把getprotobyname()函数的参数改为“udp”或“icmp”。我们也可以不使用getprotobyname()函数而是直接指定SOL_TCP或SOL_UDP。</p>
-<p>第三行：产生一个Socket并且返回一个Socket资源的实例。</p>
-<p>第四行：有了一个Socket资源的实例以后，就必须把Socket绑定到一个IP地址和某一端口上。在这里绑定socket到本地计算机（127.0.0.1）的1337端口。</p>
-<p>第五行：然后就需要监听所有进来的socket连接。</p>
-<p>这时，我们就需要了解一下PHP中Socket函数的使用方法了。官方手册的介绍非常不错（<a href="http://www.php.net/manual/en/ref.sockets.php" target="_blank">猛戳这个链接</a>），下面只是简单列举几个最常用的。</p>
-<ul>
-<li>socket_accept() 接受一个Socket连接</li>
-</ul>
-<ul>
-<li>socket_bind() 把socket绑定在一个IP地址和端口上</li>
-</ul>
-<ul>
-<li>socket_close() 关闭一个socket资源</li>
-</ul>
-<ul>
-<li>socket_connect() 开始一个socket连接</li>
-</ul>
-<ul>
-<li>socket_create_listen() 在指定端口打开一个socket监听</li>
-</ul>
-<ul>
-<li>socket_create() 产生一个socket，相当于产生一个socket的数据结构</li>
-</ul>
-<ul>
-<li>socket_get_option() 获取socket选项</li>
-</ul>
-<ul>
-<li>socket_getpeername() 获取远程主机的ip地址</li>
-</ul>
-<ul>
-<li>socket_getsockname() 获取本地socket的ip地址</li>
-</ul>
-<ul>
-<li>socket_listen() 监听由指定socket的所有连接</li>
-</ul>
-<ul>
-<li>socket_read() 读取指定长度的数据</li>
-</ul>
-<ul>
-<li>socket_readv() 读取从分散/聚合数组过来的数据</li>
-</ul>
-<ul>
-<li>socket_recv() 从socket里结束数据到缓存</li>
-</ul>
-<ul>
-<li>socket_recvfrom() 接受数据从指定的socket，如果没有指定则默认当前socket</li>
-</ul>
-<ul>
-<li>socket_recvmsg() 从iovec里接受消息</li>
-</ul>
-<ul>
-<li>socket_select() 多路选择</li>
-</ul>
-<ul>
-<li>socket_send() 这个函数发送数据到已连接的socket</li>
-</ul>
-<ul>
-<li>socket_sendmsg() 发送消息到socket</li>
-</ul>
-<ul>
-<li>socket_sendto() 发送消息到指定地址的socket</li>
-</ul>
-<ul>
-<li>socket_set_block() 在socket里设置为块模式</li>
-</ul>
-<ul>
-<li>socket_set_nonblock() socket里设置为非块模式</li>
-</ul>
-<ul>
-<li>socket_set_option() 设置socket选项</li>
-</ul>
-<ul>
-<li>socket_shutdown() 这个函数允许你关闭读、写、或者指定的socket</li>
-</ul>
-<ul>
-<li>socket_write() 写数据到socket缓存</li>
-</ul>
-<p>关于PHP Socket的基础知识就介绍到这里，还有不明白的可查看官方手册。下面介绍编写一个Socket服务器。</p>
-<h3 id="-">编写服务器</h3>
-<p>现在我们把第一个例子完善，使其能够监听一个指定的Socket并处理用户的连接。</p>
-<pre><code>:::PHP
-&lt;?php
-$commonProtocol = getprotobyname(&quot;tcp&quot;);
-$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
-socket_bind($socket, &#39;localhost&#39;, 1337);
-socket_listen($socket);
-// Accept any incoming connections to the server
-$connection = socket_accept($socket);
-if($connection)
-{
-   socket_write($connection, &quot;You have connected to the socket...\n\r&quot;);
-}
-?&gt;
-</code></pre><p>注意这不是一个Web页面，如果你尝试使用Web浏览器来运行这个脚本，那么很有可能它会超过PHP运行30秒的限时。当然你可以使用下面的代码来设置一个无限的运行时间</p>
-<blockquote>
-<p>set_time_limit(0);</p>
-</blockquote>
-<p>但最好的办法还是直接使用命令提示符来运行：</p>
-<blockquote>
-<p>php server.php</p>
-</blockquote>
-<p>但截至目前，上面的服务器端有<strong>三个问题</strong>：</p>
-<ol>
-<li>它不能接受多个连接。</li>
-</ol>
-<ol>
-<li>它只完成唯一的一个命令。</li>
-</ol>
-<ol>
-<li>你不能通过Web浏览器连接这个服务器。</li>
-</ol>
-<p>在上一个代码的基础上再改进，使用下面的代码来做新服务器端：</p>
-<pre><code>:::PHP
-&lt;?php
-// Set up our socket 
-$commonProtocol = getprotobyname(&quot;tcp&quot;);
-$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
-socket_bind($socket, &#39;localhost&#39;, 1337);
-socket_listen($socket);
-// Initialize the buffer 
-$buffer = &quot;NO DATA&quot;;
-while(true)
-{
-    // Accept any connections coming in on this socket
-    $connection = socket_accept($socket);
-    printf(&quot;Socket connected\r\n&quot;);
-    // Check to see if there is anything in the buffer
-    if($buffer != &quot;&quot;)
-    {
-        printf(&quot;Something is in the buffer...sending data...\r\n&quot;);
-        socket_write($connection, $buffer . &quot;\r\n&quot;);
-        printf(&quot;Wrote to socket\r\n&quot;);
-    }
-    else
-    {
-        printf(&quot;No Data in the buffer\r\n&quot;);
-    }
-    // Get the input
-    while($data = socket_read($connection, 1024, PHP_NORMAL_READ))
-    {
-        $buffer = $data;
-        socket_write($connection, &quot;Information Received\r\n&quot;);
-        printf(&quot;Buffer: &quot; . $buffer . &quot;\r\n&quot;);
-    }
-    socket_close($connection);
-    printf(&quot;Closed the socket\r\n\r\n&quot;);
-}
-?&gt;
-</code></pre><p>这段程序初始化一个socket并且打开一个缓冲区收发数据。然后服务器开始等待连接，此时一旦产生一个连接，服务器将打印“Socket connected”。然后服务器检查缓冲区，如果缓冲区里有数据，服务器就把这些数据发送到连接的计算机客户端。然后服务器等待接收信息，并把接收到的信息保存，然后让连接的客户端知道信息接收成功后，服务器将关闭连接。连接关闭后，服务器将开始下一次处理连接的循环。</p>
-<h3 id="-">编写客户端</h3>
-<p>解决上面提到的第二个问题还是比较容易的。我们需要一个连接到服务器的页面来处理数据并发送到服务器。</p>
-<p>我们来看下面的代码：</p>
-<pre><code>:::PHP
-&lt;?php
-// Create the socket and connect 
-$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-$connection = socket_connect($socket,’localhost’, 1337);
-while($buffer = socket_read($socket, 1024, PHP_NORMAL_READ))
-{
-    if($buffer == “NO DATA”)
-    {
-        echo(“&lt;p&gt;NO DATA&lt;/p&gt;”);
-        break;
-    }
-    else
-    {
-        // Do something with the data in the buffer 
-        echo(“&lt;p&gt;Buffer Data: “ . $buffer . “&lt;/p&gt;”);
-    }
-}
-echo(“&lt;p&gt;Writing to Socket&lt;/p&gt;”);
-// Write some test data to our socket
-if(!socket_write($socket, “SOME DATA\r\n”))
-{
-    echo(“&lt;p&gt;Write failed&lt;/p&gt;”);
-}
-// Read any response from the socket
-while($buffer = socket_read($socket, 1024, PHP_NORMAL_READ))
-{
-    echo(“&lt;p&gt;Data sent was: SOME DATA&lt;br&gt; Response was:” . $buffer . “&lt;/p&gt;”);
-}
-echo(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
-?&gt;
-</code></pre><p>这个例子的客户端连接到服务器后，客户端读取数据。如果这是客户端第一次连接服务器，服务器将发送“NO DATA”给客户端。如果客户端收到“NO DATA”说明其连接成功，客户端发送它的数据到服务器并等待服务器响应。一旦客户端接收到服务器的响应，客户端将把响应内容输出到屏幕上。</p>
-<h3 id="-">总结</h3>
-<p>如果还想深入了解PHP Socket，建议阅读更多的第三方资料或到PHP官方查询官方文档。今天就介绍到这里，如果有错误欢迎指正。</p>
-<p>参考资料：《PHP Game Programming》</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -1104,6 +940,10 @@ echo(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
   <ul class="entry">
     
       <li>
+        <a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Hadoop Cluster Setup Instruction with Fedora 20</a>
+      </li>
+    
+      <li>
         <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
       </li>
     
@@ -1117,10 +957,6 @@ echo(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
     
       <li>
         <a href="/2013/03/a-letter-to-myself/">写给四年前刚开始编程的自己</a>
-      </li>
-    
-      <li>
-        <a href="/2013/03/basic-of-gcc/">GCC 基础</a>
       </li>
     
   </ul>
@@ -1154,6 +990,8 @@ echo(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
     <li><a href="/tags/Git/">Git</a><small>1</small></li>
   
     <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/Hadoop/">Hadoop</a><small>1</small></li>
   
     <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
   
