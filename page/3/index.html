@@ -50,6 +50,174 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2012-04-30T00:03:08.000Z"><a href="/2012/04/new-hybi-10-protocol-of-websocket/">Apr 29 2012</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2012/04/new-hybi-10-protocol-of-websocket/">WebSocket新版Hybi-10协议介绍</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>不知道问什么，网上的几乎所有关于WebSocket的讲解都是旧版协议，开源的PHP-WebSocket也早不更新了。一开始还以为是服务器程序的原因，后来发现是协议变更了。而且好不容易将握手协议更换为新版后，发现传送的数据都是乱码（见<a href="http://weibo.com/1784705505/ygyi4A0Pj" target="_blank">这里</a>），原来数据报文的格式也进行了非常大的变更！</p>
+<p>之前我们曾介绍过基于WebSocket协议的服务器实现，但那篇文章中提到的WebSocket协议标准还是草案7.5、7.6的标准，如今只有Safari支持此版本的协议，Chrome和Firefox最新版都已升级至Hybi-10（<a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10" target="_blank">协议地址</a>）。因此，我们再来介绍一下WebSocket新版协议Hybi-10。这次协议变更非常大，主要集中在握手协议和数据传输的格式上。下面我们来详细介绍一下。</p>
+<h3 id="-">握手协议</h3>
+<p>我们先来看一下大致的区别：</p>
+<ol>
+<li>最老的websocket草案标准中是没有安全key，草案7.5、7.6中有两个安全key，而现在的草案10中只有一个安全key，即将7.5、7.6中http头中的&quot;Sec-WebSocket-Key1&quot;与&quot;Sec-WebSocket-Key2&quot;合并为了一个&quot;Sec-WebSocket-Key&quot;</li>
+</ol>
+<ol>
+<li>把http头中Upgrade的值由&quot;WebSocket&quot;修改为了&quot;websocket&quot;；http头中的&quot;-Origin&quot;修改为了&quot;Sec-WebSocket-Origin&quot;;</li>
+</ol>
+<ol>
+<li>增加了http头&quot;Sec-WebSocket-Accept&quot;，用来返回原来草案7.5、7.6服务器返回给客户端的握手验证，原来是以内容的形式返回，现在是放到了http头中；另外服务器返回客户端的验证方式也有变化。</li>
+</ol>
+<p>服务器生成验证的方式变化较大，我们来做一介绍。</p>
+<p>旧版：</p>
+<pre><code>GET / HTTP/1.1
+Upgrade: WebSocket
+Connection: Upgrade
+Host: 127.0.0.1:1337
+Origin: http://127.0.0.1:8000
+Cookie: sessionid=xxxx; calView=day; dayCurrentDate=1314288000000
+Sec-WebSocket-Key1: cV`p1* 42#7  ^9}_ 647  08{
+Sec-WebSocket-Key2: O8 415 8x37R A8   4
+;&quot;######
+</code></pre><p>旧版生成Token的方法如下：</p>
+<p>取出Sec-WebSocket-Key1中的所有数字字符形成一个数值，这里是1427964708，然后除以Key1中的空格数目，得到一个数值，保留该数值整数位，得到数值N1；对Sec-WebSocket-Key2采取同样的算法，得到第二个整数N2；把N1和N2按照Big-Endian字符序列连接起来，然后再与另外一个Key3连接，得到一个原始序列ser_key。Key3是指在握手请求最后，有一个8字节的奇怪的字符串“;”######”，这个就是Key3。然后对ser_key进行一次md5运算得出一个16字节长的digest，这就是老版本协议需要的token，然后将这个token附在握手消息的最后发送回Client，即可完成握手。</p>
+<p>新版：</p>
+<pre><code>GET / HTTP/1.1
+Upgrade: websocket
+Connection: Upgrade
+Host: 127.0.0.1:1337
+Sec-WebSocket-Origin: http://127.0.0.1:8000
+Sec-WebSocket-Key: erWJbDVAlYnHvHNulgrW8Q==
+Sec-WebSocket-Version: 8
+Cookie: csrftoken=xxxxxx; sessionid=xxxxx
+</code></pre><p>新版生成Token的方法如下：</p>
+<p>首先服务器将key（长度24）截取出来，如4tAjitqO9So2Wu8lkrsq3w==，用它和自定义的一个字符串（长度36）258EAFA5-E914-47DA-95CA-C5AB0DC85B11连接起来，然后把这一字符串进行SHA-1算法加密，得到长度为20字节的二进制数据，再将这些数据经过Base64编码，最终得到服务端的密钥，也就是ser_key。服务器将ser_key附在返回值Sec-WebSocket-Accept后，至此握手成功。</p>
+<h3 id="-">数据报文格式</h3>
+<p>旧版协议比较简单，仅仅是在原始数据前加了个’\x00′，在最后面加了个’\xFF’，即假如Client发送一个字符串’test’，实际上WebSocket Server收到的数据是：’x00test\xFF’，所以只需要剥离掉首尾那两个字符就可以了。</p>
+<p>新版的协议对这部分规定比较复杂，以下是其格式标准：（下图在Firefox可能会出现错乱，请换用Chrome）</p>
+<pre><code>      0                   1                   2                   3
+      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+     +-+-+-+-+-------+-+-------------+-------------------------------+
+     |F|R|R|R| opcode|M| Payload len |    Extended payload length    |
+     |I|S|S|S|  (4)  |A|     (7)     |             (16/63)           |
+     |N|V|V|V|       |S|             |   (if payload len==126/127)   |
+     | |1|2|3|       |K|             |                               |
+     +-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +
+     |     Extended payload length continued, if payload len == 127  |
+     + - - - - - - - - - - - - - - - +-------------------------------+
+     |                               |Masking-key, if MASK set to 1  |
+     +-------------------------------+-------------------------------+
+     | Masking-key (continued)       |          Payload Data         |
+     +-------------------------------- - - - - - - - - - - - - - - - +
+     :                     Payload Data continued ...                :
+     + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+     |                     Payload Data continued ...                |
+     +---------------------------------------------------------------+
+</code></pre><p><strong>FIN：</strong>1位，用来表明这是一个消息的最后的消息片断，当然第一个消息片断也可能是最后的一个消息片断；</p>
+<p><strong>RSV1, RSV2, RSV3:</strong> 分别都是1位，如果双方之间没有约定自定义协议，那么这几位的值都必须为0,否则必须断掉WebSocket连接；</p>
+<p><strong>Opcode:</strong>4位操作码，定义有效负载数据，如果收到了一个未知的操作码，连接也必须断掉，以下是定义的操作码：</p>
+<ul>
+<li>%x0 表示连续消息片断</li>
+</ul>
+<ul>
+<li>%x1 表示文本消息片断</li>
+</ul>
+<ul>
+<li>%x2 表未二进制消息片断</li>
+</ul>
+<ul>
+<li>%x3-7 为将来的非控制消息片断保留的操作码</li>
+</ul>
+<ul>
+<li>%x8 表示连接关闭</li>
+</ul>
+<ul>
+<li>%x9 表示心跳检查的ping</li>
+</ul>
+<ul>
+<li>%xA 表示心跳检查的pong</li>
+</ul>
+<ul>
+<li>%xB-F 为将来的控制消息片断的保留操作码</li>
+</ul>
+<p><strong>Mask:</strong>1位，定义传输的数据是否有加掩码,如果设置为1,掩码键必须放在masking-key区域，客户端发送给服务端的所有消息，此位的值都是1；</p>
+<p><strong>Payload length: </strong>传输数据的长度，以字节的形式表示：7位、7+16位、或者7+64位。如果这个值以字节表示是0-125这个范围，那这个值就表示传输数据的长度；如果这个值是126，则随后的两个字节表示的是一个16进制无符号数，用来表示传输数据的长度；如果这个值是127,则随后的是8个字节表示的一个64位无符合数，这个数用来表示传输数据的长度。多字节长度的数量是以网络字节的顺序表示。负载数据的长度为扩展数据及应用数据之和，扩展数据的长度可能为0,因而此时负载数据的长度就为应用数据的长度。</p>
+<p><strong>Masking-key:</strong>0或4个字节，客户端发送给服务端的数据，都是通过内嵌的一个32位值作为掩码的；掩码键只有在掩码位设置为1的时候存在。
+<strong>Payload data: </strong> (x+y)位，负载数据为扩展数据及应用数据长度之和。
+<strong>Extension data:</strong>x位，如果客户端与服务端之间没有特殊约定，那么扩展数据的长度始终为0，任何的扩展都必须指定扩展数据的长度，或者长度的计算方式，以及在握手时如何确定正确的握手方式。如果存在扩展数据，则扩展数据就会包括在负载数据的长度之内。
+<strong>Application data:</strong>y位，任意的应用数据，放在扩展数据之后，应用数据的长度=负载数据的长度-扩展数据的长度。</p>
+<p>以下是Python实现的解码和编码，兼容新旧版协议，仅供参考：</p>
+<pre><code>:::Python
+def send_data(self, raw_str):
+    if self.sockets[self][&#39;new_version&#39;]:
+        back_str = []
+        back_str.append(&#39;\x81&#39;)
+        data_length = len(raw_str)
+
+        if data_length &lt;= 125:
+            back_str.append(chr(data_length))
+        else:
+            back_str.append(chr(126))
+            back_str.append(chr(data_length &gt;&gt; 8))
+            back_str.append(chr(data_length &amp; 0xFF))
+
+        back_str = &quot;&quot;.join(back_str) + raw_str
+        self.transport.write(back_str)
+    else:
+        back_str = &#39;\x00%s\xFF&#39; % (raw_str)
+        self.transport.write(back_str)
+
+def parse_recv_data(self, msg):
+    raw_str = &#39;&#39;
+
+    if self.sockets[self][&#39;new_version&#39;]:
+        code_length = ord(msg[1]) &amp; 127
+
+        if code_length == 126:
+            masks = msg[4:8]
+            data = msg[8:]
+        elif code_length == 127:
+            masks = msg[10:14]
+            data = msg[14:]
+        else:
+            masks = msg[2:6]
+            data = msg[6:]
+
+        i = 0
+        for d in data:
+            raw_str += chr(ord(d) ^ ord(masks[i%4]))
+            i += 1
+    else:
+        raw_str = msg.split(&quot;\xFF&quot;)[0][1:]
+
+    return raw_str
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2012-04-17T05:46:21.000Z"><a href="/2012/04/socket-programming-in-php/">Apr 17 2012</a></time>
       
       
@@ -1166,71 +1334,6 @@ chgrp -R www /home/wwwroot
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-10-23T22:57:50.000Z"><a href="/2011/10/stay-in-my-mind-2/">Oct 23 2011</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/10/stay-in-my-mind-2/">驻足在马路边的秋殇（二）</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><img src="/images/2011/10/a8206193_s-300x199.jpg" alt=""></p>
-<hr>
-<p>09年10月末，秋殇（一）发表在我的QQ空间里。后来我把它导入了这个博客（地址：<a href="http://www.hackecho.com/" target="_blank">《驻足在马路边的秋殇》</a>），留存纪念。如今，两年过去了，我已很少再动文字。偶尔会去红袖一把，期望能添些墨香，或者仅仅是不想失去这种感觉。如今的时间不多，或者，心累了。</p>
-<p>秋，到了。</p>
-<p>少年不识愁滋味，爱上层楼，爱上层楼，为赋新词强说愁。而今识尽愁滋味，欲说还休，欲说还休，却道天凉好个秋。</p>
-<p>不及幼安忧国忧民，却也能体会此情此景。秋殇总能让人若有所感，泛起一些思绪，安静下来，仔细地体会。</p>
-<hr>
-<p><strong>遗忘</strong></p>
-<p>一位以前很要好的哥们儿昨天打电话给我，寒暄过后，竟然问我：“你知道我是谁吧？”我说废话，你的声音变成灰也认识。朋友笑到：“好多人跟我聊半天了才问我你是谁，竟然不记得我了！这才几年啊，真是的！”</p>
-<p>是啊，这是第三年，可又能怪谁呢。QQ的好友列表里有这样三个分组，分别是小学、初中、高中同学，后来小学组的人只剩下了4个人，初中组的也在不断减少，高中组的还好，但陌生的名字却越来越多。后来进行好友整理，索性将三个组合为了一个组，叫做以前的朋友。删除了一些“陌生人”，看起来整洁多了。再后来，使用好友管理的“单向好友”功能，竟然发现有四十多个单向好友，意思就是有四十个人，他们的好友列表里有我，而我却没有他们。</p>
-<p>遗忘总在不经意间。</p>
-<p>什么是落寞，就是你隐身了两年，然后当你鼓起勇气上线时，却不会再有人联系你。有人说“总有一群朋友如死人一般躺在你的好友列表里，偶尔诈诈尸，时不时还会改改他们的墓志铭。”这说的就是你我吧。</p>
-<p>还有朋友责怪我，你回来一趟也不告诉我们一声，一起出来吃个饭，又不是不认识。我说一定会的，如果有时间的话。</p>
-<p>我想和那些我失去的、淡忘的朋友说声对不起。</p>
-<hr>
-<p><strong>回忆</strong></p>
-<p>秋不是回忆的最好季节，因为每个季节都是回忆。</p>
-<p>小时候听着迈克尔杰克逊长大，后来MJ突然离世，那个时代也随之结束。我不属于那个时代，却着实让我感受到了时间的推进。为了忘却的纪念，很长一段时间再也没有听过MJ的歌。直到突然有一天，耳边想起了那熟悉的《dangerous》，我凝固了。音乐就像时光机器，能够记录一个时代的情感。伴随着音乐，我体会到了过去的感觉。对，是感觉，完全没有场景的浮现，没有一丝相似的岁岁年年，只有那熟悉而又陌生的感觉。</p>
-<p>去不到的地方，叫远方。</p>
-<p>回不到的过去，叫记忆。</p>
-<hr>
-<p><strong>殇</strong></p>
-<p>幸福花开在彼岸，我在此岸遥遥观望，当忧伤化为灰烬，我就会到达那幸福的起点。</p>
-<p>国庆去泰山，我特意在一年前来时一个相同的地方，用相同的姿势拍了张照片。回来后我把它们合在一张照片中，朋友们都评价变了好多。</p>
-<p>是啊，变了好多，我自己都感受到了。</p>
-<p>问谷雨，是不是一个人不敢看镜子里的自己，就代表这个人对自己没有自信呢？镜子里的我让我不敢相信，这个形容枯槁的人是我吗？</p>
-<p>问李岩，是不是现在的我与大一时的我相比，没有当时积极活跃了呢？“嗯，是的，你低调了。”</p>
-<p>问自己，相由心生，外在是由内在构建的，你低沉了？</p>
-<p>又想起了多年前的“重生法则”，要不要再一次凤凰涅槃。</p>
-<hr>
-<p>这个秋天，有人热情饱满收获果实，可是有的人却说不够；有人感叹着在梦中徜徉心海，有人却因为这个季节而频繁失眠；有人说秋高气爽适合登高，有人却觉得很累……</p>
-<p>“而今识尽愁滋味，欲说还休，欲说还休，却道天凉好个秋。”</p>
-<p>是啊，天凉好个秋！</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -1257,6 +1360,10 @@ chgrp -R www /home/wwwroot
   <ul class="entry">
     
       <li>
+        <a href="/2014/04/notes-about-maven/">Notes about Maven</a>
+      </li>
+    
+      <li>
         <a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Hadoop Cluster Setup Instruction with Fedora 20</a>
       </li>
     
@@ -1278,10 +1385,6 @@ chgrp -R www /home/wwwroot
     
       <li>
         <a href="/2013/03/basic-of-gcc/">GCC 基础</a>
-      </li>
-    
-      <li>
-        <a href="/2013/03/boost-thread/">Boost Thread</a>
       </li>
     
   </ul>
@@ -1330,6 +1433,8 @@ chgrp -R www /home/wwwroot
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
     <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
     <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
   

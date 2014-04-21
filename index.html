@@ -50,6 +50,52 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2014-04-21T18:06:35.000Z"><a href="/2014/04/notes-about-maven/">Apr 21 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/04/notes-about-maven/">Notes about Maven</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Here is a brief introduction to Maven, and some basic commands.</p>
+<h2 id="creating-project">Creating Project</h2>
+<p>Command:</p>
+<pre><code>mvn archetype:generate
+</code></pre><p>In the interactive mode, here are some examples to show what they mean:</p>
+<pre><code>groupId: com.hackecho.hadoop
+artifactId: WordCount
+version: 1.0
+package: com.hackecho.hadoop.example
+</code></pre><p>You&#39;ll get following project structure:</p>
+
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2014/04/notes-about-maven/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2014-04-16T04:23:00.000Z"><a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Apr 15 2014</a></time>
       
       
@@ -1068,225 +1114,6 @@ else
 
 
 
-  <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-02-03T00:35:00.000Z"><a href="/2013/02/posix-threads-programming/">Feb 2 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/02/posix-threads-programming/">POSIX Threads Programming</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>I am writing this article for a memo of CS8860, Parallel and distributed system.</p>
-<h3 id="overview">Overview</h3>
-<p>Technically, a thread is defined as an independent stream of instructions that can be scheduled to run as such by the operating system.</p>
-<p>In the UNIX environment a thread:</p>
-<ul>
-<li><p>Exists within a process and uses the process resources</p>
-</li>
-<li><p>Has its own independent flow of control as long as its parent process exists and the OS supports it</p>
-</li>
-<li><p>Duplicates only the essential resources it needs to be independently schedulable</p>
-</li>
-<li><p>May share the process resources with other threads that act equally independently (and dependently)</p>
-</li>
-<li><p>Dies if the parent process dies - or something similar</p>
-</li>
-<li><p>Is &quot;lightweight&quot; because most of the overhead has already been accomplished through the creation of its process.</p>
-</li>
-</ul>
-<p>All threads within a process share the same address space.</p>
-<h3 id="several-common-models">Several common models</h3>
-<p>Several common models for threaded programs exist:</p>
-<ul>
-<li><p><strong>Manager/worker:</strong> a single thread, the manager assigns work to other threads, the workers. Typically, the manager handles all input and parcels out work to the other tasks. At least two forms of the manager/worker model are common: static worker pool and dynamic worker pool.</p>
-</li>
-<li><p><strong>Pipeline:</strong> a task is broken into a series of suboperations, each of which is handled in series, but concurrently, by a different thread. An automobile assembly line best describes this model.</p>
-</li>
-<li><p><strong>Peer:</strong> similar to the manager/worker model, but after the main thread creates other threads, it participates in the work.</p>
-</li>
-</ul>
-<h3 id="shared-memory-model-">Shared Memory Model:</h3>
-<ul>
-<li><p>All threads have access to the same global, shared memory</p>
-</li>
-<li><p>Threads also have their own private data</p>
-</li>
-<li><p>Programmers are responsible for synchronizing access (protecting) globally shared data.</p>
-</li>
-</ul>
-<h3 id="the-pthreads-api">The Pthreads API</h3>
-<p>The Pthreads API contains around 100 subroutines. This article will focus on a subset of these.</p>
-<h3 id="compiling-threaded-programs">Compiling Threaded Programs</h3>
-<pre><code>INTEL Linux:          icc -pthread
-PGI Linux:            pgcc -lpthread
-GNU Linux:            gcc -pthread
-</code></pre><h3 id="threading-management">Threading Management</h3>
-<p><strong> Creating and Terminating Threads </strong></p>
-<p>Initially, your <code>main()</code> program comprises a single, default thread. All other threads must be explicitly created by the programmer.</p>
-<p><code>pthread_create</code> creates a new thread and makes it executable. This routine can be called any number of times from anywhere within your code.</p>
-<p><code>pthread_create</code> arguments:</p>
-<ul>
-<li><p><code>thread:</code> An opaque, unique identifier for the new thread returned by the subroutine.</p>
-</li>
-<li><p><code>attr:</code> An opaque attribute object that may be used to set thread attributes. You can specify a thread attributes object, or NULL for the default values.</p>
-</li>
-<li><p><code>start_routine:</code> the C routine that the thread will execute once it is created.</p>
-</li>
-<li><p><code>arg:</code> A single argument that may be passed to start_routine. It must be passed by reference as a pointer cast of type void. NULL may be used if no argument is to be passed.</p>
-</li>
-</ul>
-<p>Once created, threads are peers, and may create other threads. There is no implied hierarchy or dependency between threads.</p>
-<p>There are several ways in which a thread may be terminated:</p>
-<ul>
-<li><p>The thread returns normally from its starting routine. It&#39;s work is done.</p>
-</li>
-<li><p>The thread makes a call to the <code>pthread_exit</code> subroutine - whether its work is done or not.</p>
-</li>
-<li><p>The thread is canceled by another thread via the <code>pthread_cancel</code> routine.</p>
-</li>
-<li><p>The entire process is terminated due to making a call to either the <code>exec()</code> or <code>exit()</code></p>
-</li>
-<li><p>If <code>main()</code> finishes first, without calling <code>pthread_exit</code> explicitly itself</p>
-</li>
-</ul>
-<p>Pay attention, the pthread_exit() routine does not close files; any files opened inside the thread will remain open after the thread is terminated.</p>
-<p>Example:</p>
-<pre><code>#include &lt;pthread.h&gt; 
-#include &lt;stdio.h&gt; 
-#define NUM_THREADS  5 
-
-void *PrintHello(void *threadid) 
-{ 
-   int tid; 
-   tid = (int)threadid; 
-   printf(&quot;Hello World! It&#39;s me, thread #%d!\n&quot;, tid); 
-   pthread_exit(NULL); 
-} 
-
-int main (int argc, char *argv[]) 
-{ 
-   pthread_t threads[NUM_THREADS]; 
-   int rc, t; 
-   for(t=0; t&lt;NUM_THREADS; t++){ 
-      printf(&quot;In main: creating thread %d\n&quot;, t); 
-      rc = pthread_create(&amp;threads[t], NULL, PrintHello, (void *)t); 
-      if (rc){ 
-         printf(&quot;ERROR; return code from pthread_create() is %d\n&quot;, rc); 
-         exit(-1); 
-      } 
-   } 
-   pthread_exit(NULL); 
-}
-</code></pre><p><strong> Passing Arguments to Threads </strong></p>
-<p>All arguments must be passed by reference and cast to (void *).</p>
-<p><strong> Joining and Detaching Threads </strong></p>
-<pre><code>:::C
-int pthread_join(pthread_t target_thread, void **status);
-</code></pre><p>&quot;Joining&quot; is one way to accomplish synchronization between threads. This means that some other thread is required to call pthread_join to collect a terminated thread, in a fashion similar to the requirement for a parent process to collect status for terminated child processes.For example:</p>
-<p><a href="/images/2013/02/forkjoin.gif"><img src="/images/2013/02/forkjoin.gif" alt=""></a></p>
-<p>The <code>pthread_join()</code> subroutine blocks the calling thread until the specified threadid thread terminates.</p>
-<p>To explicitly create a thread as joinable or detached, the attr argument in the <code>pthread_create()</code> routine is used. The typical 4 step process is:</p>
-<ul>
-<li><p>Declare a pthread attribute variable of the <code>pthread_attr_t</code> data type</p>
-</li>
-<li><p>Initialize the attribute variable with <code>pthread_attr_init()</code></p>
-</li>
-<li><p>Set the attribute detached status with <code>pthread_attr_setdetachstate()</code></p>
-</li>
-<li><p>When done, free library resources used by the attribute with p<code>thread_attr_destroy()</code></p>
-</li>
-</ul>
-<p>Example:</p>
-<pre><code>:::C
-/*****************************************************************************
- * FILE: join.c
- * DESCRIPTION:
- *   This example demonstrates how to &quot;wait&quot; for thread completions by using
- *   the Pthread join routine.  Threads are explicitly created in a joinable
- *   state for portability reasons. Use of the pthread_exit status argument is
- *   also shown. Compare to detached.c
- * AUTHOR: 8/98 Blaise Barney
- * LAST REVISED:  01/30/09
- ******************************************************************************/
-#include &lt;pthread.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#define NUM_THREADS    4
-
-void *BusyWork(void *t)
-{
-    int i;
-    long tid;
-    double result=0.0;
-    tid = (long)t;
-    printf(&quot;Thread %ld starting...\n&quot;,tid);
-    for (i=0; i&lt;1000000; i++)
-    {
-        result = result + sin(i) * tan(i);
-    }
-    printf(&quot;Thread %ld done. Result = %e\n&quot;,tid, result);
-    pthread_exit((void*) t);
-}
-
-int main (int argc, char *argv[])
-{
-    pthread_t thread[NUM_THREADS];
-    pthread_attr_t attr;
-    int rc;
-    long t;
-    void *status;
-
-    /* Initialize and set thread detached attribute */
-    pthread_attr_init(&amp;attr);
-    pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_JOINABLE);
-
-    for(t=0; t&lt;NUM_THREADS; t++) {
-        printf(&quot;Main: creating thread %ld\n&quot;, t);
-        rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (void *)t);
-        if (rc) {
-            printf(&quot;ERROR; return code from pthread_create() is %d\n&quot;, rc);
-            exit(-1);
-        }
-    }
-
-    /* Free attribute and wait for the other threads */
-    pthread_attr_destroy(&amp;attr);
-    for(t=0; t&lt;NUM_THREADS; t++) {
-        rc = pthread_join(thread[t], &amp;status);
-        if (rc) {
-            printf(&quot;ERROR; return code from pthread_join() is %d\n&quot;, rc);
-            exit(-1);
-        }
-        printf(&quot;Main: completed join with thread %ld having a status of %ld\n&quot;,t,(long)status);
-    }
-
-    printf(&quot;Main: program completed. Exiting.\n&quot;);
-    pthread_exit(NULL);
-}
-</code></pre>
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
 
 <nav id="pagination">
   
@@ -1311,6 +1138,10 @@ int main (int argc, char *argv[])
   <ul class="entry">
     
       <li>
+        <a href="/2014/04/notes-about-maven/">Notes about Maven</a>
+      </li>
+    
+      <li>
         <a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Hadoop Cluster Setup Instruction with Fedora 20</a>
       </li>
     
@@ -1332,10 +1163,6 @@ int main (int argc, char *argv[])
     
       <li>
         <a href="/2013/03/basic-of-gcc/">GCC 基础</a>
-      </li>
-    
-      <li>
-        <a href="/2013/03/boost-thread/">Boost Thread</a>
       </li>
     
   </ul>
@@ -1384,6 +1211,8 @@ int main (int argc, char *argv[])
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
     <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
     <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
   
