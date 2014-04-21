@@ -47,494 +47,57 @@
 <h2 class="archive-title">2011/7</h2>
 
 
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-07-24T06:37:17.000Z"><a href="/2011/07/asynctask-in-android/">Jul 24 2011</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/07/asynctask-in-android/">Android中使用AsyncTask实现简单的异步处理</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>当一个程序第一次启动时，Android会同时启动一个对应的主线程(Main Thread)，主线程主要负责处理与UI相关的事件，如：用户的按键事件，用户接触屏幕的事件以及屏幕绘图事件，并把相关的事件分发到对应的组件进行处理。所以主线程通常又被叫做UI线程。</p>
-<p>比如说从网上获取一个网页，在一个TextView中将其源代码显示出来，这种涉及到网络操作的程序一般都是需要开一个线程完成网络访问，但是在获得页面源码后，是不能直接在网络操作线程中调用TextView.setText()的，因为其他线程中是不能直接访问主UI线程成员。</p>
-<p>Android提供了几种在其他线程中访问UI线程的方法：</p>
-<pre><code>Activity.runOnUiThread( Runnable )
-View.post( Runnable )
-View.postDelayed( Runnable, long )
-Hanlder
-</code></pre><p>这些类或方法同样会使你的代码很复杂很难理解。然而当你需要实现一些很复杂的操作并需要频繁地更新UI时这会变得更糟糕。</p>
-<p>为了解决这个问题，Android 1.5提供了一个工具类：AsyncTask，它使创建需要与用户界面交互的长时间运行的任务变得更简单。不需要借助线程和Handler即可实现。</p>
-<p>AsyncTask是抽象类.AsyncTask定义了三种泛型类型 Params，Progress和Result。</p>
-<ul>
-<li><p>Params 启动任务执行的输入参数，比如HTTP请求的URL。</p>
-</li>
-<li><p>Progress 后台任务执行的百分比。</p>
-</li>
-<li><p>Result 后台执行任务最终返回的结果，比如String。</p>
-</li>
-</ul>
-<p>AsyncTask的执行分为四个步骤，每一步都对应一个回调方法，这些方法不应该由应用程序调用，开发者需要做的就是实现<strong>这些方法</strong>：</p>
-<p><em>onPreExecute()</em>, 该方法将在执行实际的后台操作前被UI thread调用。可以在该方法中做一些准备工作，如在界面上显示一个进度条。</p>
-<p><em>doInBackground(Params...)</em>, 将在onPreExecute 方法执行后马上执行，该方法运行在后台线程中。这里将主要负责执行那些很耗时的后台计算工作。可以调用 publishProgress方法来更新实时的任务进度。该方法是抽象方法，子类必须实现。</p>
-<p><em>onProgressUpdate(Progress...)</em>,在publishProgress方法被调用后，UI thread将调用这个方法从而在界面上展示任务的进展情况，例如通过一个进度条进行展示。</p>
-<p><em>onPostExecute(Result)</em>, 在doInBackground 执行完成后，onPostExecute 方法将被UI thread调用，后台的计算结果将通过该方法传递到UI thread.</p>
-<p><strong>为了正确的使用AsyncTask类，以下是几条必须遵守的准则：</strong></p>
-<p>1) Task的实例必须在UI thread中创建</p>
-<p>2) execute方法必须在UI thread中调用</p>
-<p>3) 不要手动的调用onPreExecute(), onPostExecute(Result)，doInBackground(Params...), onProgressUpdate(Progress...)这几个方法</p>
-<p>4) 该task只能被执行一次，否则多次调用时将会出现异常</p>
-<p><strong>更新（2011-7-24）：</strong></p>
-<p>如果必须要停止一个线程，我们可以采用这个线程中设置一个标志位，然后在线程run方法或AsyncTask的doInBackground方法中的关键步骤判断这个标志位以决定是否继续执行。然后在需要终止此线程的地方改变这个标志位以达到停止线程的目的。</p>
-<p>从外部调用AsyncTask的cancel方法并不能停止一个已经启动的AsyncTask。这个cancel方法的作用与线程的interrupt方法相似，调用了一个线程的interrupt方法之后线程仍然运行，但是如果该线程的run方法里面调用过sleep的或者wait方法后，处于sleep或wait状态，则sleep和wait立即结束并且抛出InterruptedException异常。AsyncTask的cancel方法也一样，如果在这个Task的doInBackground方法中调用了sleep或wait方法，当在UI线程中调用了这个Task实例的cancel方法之后，sleep或wait立即结束并且抛出InterruptedException异常，但是如果捕获该异常的代码后面还有其他代码，则这些代码还会继续执行。</p>
-<p>一个简单的例子：从网上获取一个网页，在一个TextView中将其源代码显示出来：</p>
-<pre><code>package test.list;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;  
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;  
-
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;  
-
-public class NetworkActivity extends Activity{
-    private TextView message;
-    private Button open;
-    private EditText url;  
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-       super.onCreate(savedInstanceState);
-       setContentView(R.layout.network);
-       message= (TextView) findViewById(R.id.message);
-       url= (EditText) findViewById(R.id.url);
-       open= (Button) findViewById(R.id.open);
-       open.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View arg0) {
-              connect();
-           }
-       });
-    }  
-
-    private void connect() {
-    PageTask task = new PageTask(this);
-        task.execute(url.getText().toString());
-    }  
-
-    class PageTask extends AsyncTask&lt;String, Integer, String&gt; {
-        // 可变长的输入参数，与AsyncTask.exucute()对应
-    ProgressDialog pdialog;
-        public PageTask(Context context){
-        pdialog = new ProgressDialog(context, 0);
-        pdialog.setButton(&quot;cancel&quot;, new DialogInterface.OnClickListener() {
-    public void onClick(DialogInterface dialog, int i) {
-           dialog.cancel();
-    }
-        });
-        pdialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-    public void onCancel(DialogInterface dialog) {
-           finish();
-    }
-        });
-        pdialog.setCancelable(true);
-        pdialog.setMax(100);
-        pdialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pdialog.show();
-        }  
-
-        @Override
-        protected String doInBackground(String... params) {
-            try{
-               HttpClient client = new DefaultHttpClient();
-               // params[0]代表连接的url
-               HttpGet get = new HttpGet(params[0]);
-               HttpResponse response = client.execute(get);
-               HttpEntity entity = response.getEntity();
-               long length = entity.getContentLength();
-               InputStream is = entity.getContent();
-               String s = null;
-               if(is != null) {
-                   ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                   byte[] buf = new byte[128];
-                   int ch = -1;
-                   int count = 0;
-                   while((ch = is.read(buf)) != -1) {
-                      baos.write(buf, 0, ch);
-                      count += ch;
-                      if(length &gt; 0) {
-                          // 如果知道响应的长度，调用publishProgress（）更新进度
-                          publishProgress((int) ((count / (float) length) * 100));
-                      }
-                      // 让线程休眠100ms
-                      Thread.sleep(100);
-                   }
-                   s = new String(baos.toByteArray());              }
-               // 返回结果
-               return s;
-            } catch(Exception e) {
-               e.printStackTrace();
-            }
-            return null;
-        }  
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }  
-
-        @Override
-        protected void onPostExecute(String result) {
-            // 返回HTML页面的内容
-            message.setText(result);
-            pdialog.dismiss();
-        }  
-
-        @Override
-        protected void onPreExecute() {
-            // 任务启动，可以在这里显示一个对话框，这里简单处理
-            message.setText(R.string.task_started);
-        }  
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            // 更新进度
-              System.out.println(&quot;&quot;+values[0]);
-              message.setText(&quot;&quot;+values[0]);
-              pdialog.setProgress(values[0]);
-        }
-     }
-}
-</code></pre>
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+  <div class="archive">
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2011-07-24T06:37:17.000Z"><a href="/2011/07/asynctask-in-android/">Jul 24 2011</a></time>
+            
+              <h1 class="title"><a href="/2011/07/asynctask-in-android/">Android中使用AsyncTask实现简单的异步处理</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2011-07-19T15:05:36.000Z"><a href="/2011/07/worry-about-life/">Jul 19 2011</a></time>
+            
+              <h1 class="title"><a href="/2011/07/worry-about-life/">看似积极，其实焦虑</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2011-07-16T04:00:08.000Z"><a href="/2011/07/4-status-button-with-cbitmapbutton/">Jul 15 2011</a></time>
+            
+              <h1 class="title"><a href="/2011/07/4-status-button-with-cbitmapbutton/">用CBitmapButton实现按钮四态的方法</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2011-07-08T06:21:37.000Z"><a href="/2011/07/something-about-google-plus/">Jul 8 2011</a></time>
+            
+              <h1 class="title"><a href="/2011/07/something-about-google-plus/">关于Google+的种种</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
   </div>
-</article>
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-07-19T15:05:36.000Z"><a href="/2011/07/worry-about-life/">Jul 19 2011</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/07/worry-about-life/">看似积极，其实焦虑</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>这是在《大学生》上看到的一篇文章，转到这里分享。</p>
-<p>我有一个好友D，她不吃早餐，偶尔翘课，时常熬夜，对所学专业意义持怀疑态度。和众多单身学生一样，她把大部分时间耗在宿舍或自习室里。在大学校园里随机挑10个人，8个都和她相似。</p>
-<p>某一天，我向她借移动硬盘，发现500G的空间几乎全被装满。所有的内容分门别类，安置在十几个文件夹里。除电影以外，其余的内容几乎都与学习相关：公开课、TED演讲、纪录片、英语听力、电子书……我自己虽也有些存货，但仍不免感到眼界一开。问她，这些东西看过多少。她答道，不到1/3，面带愧色。花了不少时间下载，都是有用的东西，以后可能用得到。她又补了一句。事实上，那剩下的2/3也许永远没有重见天日的那一天，我们彼此心知肚明。</p>
-<p>几天后，听说她又买了一个新的移动硬盘，哪些在“下载”名单上排队的资源终于找到了去除。于是，新一轮填满500G的征途又野心勃勃、兴致盎然地启程了。</p>
-<p>这情景对现代人应该不陌生。谁的电脑或硬盘里没存着几个、十几个可能会在某天有用但从来不在此刻打开的文件夹？每当在网上遭遇可以填补自己知识网络上空白点的资源，我们会下意识像打鸡血一样亢奋，手指会毫不犹豫地点右键“另存为”。然而一旦确定它已躺在硬盘的某个位置，彼此之间的蜜月期也会随之以光速结束。下一秒，我们的笑容已献给另一个“它”。</p>
-<p>有朋友发微博说：“想看那部反省文明的《Life after people》，google之，居然有在线视频，还是双语字幕的，大喜。点开一看，85分钟，莫名的焦虑涌上心头，咂么咂么眨巴眨巴哼哧哼哧，收进收藏夹关了网页。尽管知道可能（简直就是肯定）再也不会打开这个名为‘等’的网页夹，却仍心满意足地认为自己又勤奋又求知。”</p>
-<p>在微博上反省自己的知识焦虑，反省自己“看似积极的人生”，却不知微博就是焦虑和看似积极的一大凶手呢。</p>
-<p>人人、开心、微博、豆瓣……这些带有不同社交性质的网站构成了人们虚拟生活的大部分，并开始控制着人们越来越多获得信息的渠道。在社交网站上，我们的时间以两次刷屏之间的喘息区分，凭状态、照片、视频丈量形状。它一点一点侵蚀着我们对阅读保持的耐性，对事实判断的逻辑思考。我们甘愿被最新鲜的新闻，最流行的段子，最隐晦的笑话填充；我们习惯于迅速得出结论，习惯于寻找宣泄的渠道，习惯于和大多数共舞……我们错把信息等同于知识，又错把知识等同于智慧。我们努力保持和时代同行，其实早已把自我像影子一样留在身后。</p>
-<p>某年暑假我的舍友在新东方上BEC（商务英语考试），班里的同学几乎都是大学生。她旁边坐的女生是天津某大学的大一学生，借住在亲戚家，专程来北京学英语。大一就学BEC，听上去很牛很积极，但实际情况是她天天上课都十分疲惫，精力不济。问道，答曰下午下课之后不是去故宫颐和园，就是去后海南锣鼓巷。十多天下来，倒有一半时间是睡过去的。</p>
-<p>舍友课后与BEC听力老师闲聊，得知这样的情况不属于个别现象。听力老师一针见血，分析现在的大学生有种学习的错觉，大概认为自己报了一个班，就等同于掌握了那门知识。把完成学习的仪式放在首位，听课认真与否反倒不重要了。（有时候我们选课也有这种心态。——Troy注）新东方在每年BEC考试后会给每位学员打电话询问考试结果，很多人一听是新东方打来的，立刻挂掉。这样的不消说，一般根本连考试都没有参加。根据考勤记录和考后电话，新东方总结出的经验是，凡是上足课的学生绝大部分都能通过，问题就在于很多学生都无法坚持下来。</p>
-<p>积极追求的姿态背后必然少不了欲望的撑腰，对学业、对事业、对生活、对未来，渴望一切变得更好是人之常情。然而就像执行力是衡量一支球队的重要指标一样，教练布置的战术再好，执行不到位也是枉然。欲望一旦超出能力可控制的范围，人们不仅会对大量一知半解的知识产生抗拒，焦虑情绪也会顺势而上，径直将他们拖入无底的黑洞。</p>
-<p>这样的学习焦虑症患者屡见不鲜，也许你自己就是，反正我是。我时常一边用电脑下载者各种资源，一边对老师开出的书单狼吞虎咽，人机的同时崩溃往往是缓解焦虑的良药——I came，I saw，I learned。</p>
-<p>这样的状况愈演愈烈，知道某天在思想史的读书课上，那位头发斑白的老师向我们分享他的读书经验。他说，年轻的时候我每读一部书都必须做读书笔记，后来补了，因为书读多了，但是笔记都看不完。不如停下来，就挑几本书，扎扎实实慢慢读，思想的变化反而更明显。</p>
-<p>这话一直在我脑子里绕，回到宿舍，翻出那些被压在书柜底层的书。它们的内容早已被我淡忘，只知道写得真好，第一眼就知道。推开那些“待读”、“待下载”、“待完成”，今天的我只想漫无目的地在旧书堆里徘徊。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-07-16T04:00:08.000Z"><a href="/2011/07/4-status-button-with-cbitmapbutton/">Jul 15 2011</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/07/4-status-button-with-cbitmapbutton/">用CBitmapButton实现按钮四态的方法</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>今天上午由于特殊原因重装了系统，下午四点左右开始了交大一软通的界面绘制。这次一软通界面全面更新，各种控件该自绘的自绘，该贴图的贴图，力争给用户最好的视觉和操作体验。</p>
-<p>第二个选项卡效果是鼠标悬浮时的效果，其实这不是TabControl，而是普普通通的Button，但用到了按钮的四态。</p>
-<p>下面简单总结一下四态按钮的实现，以备日后之需。</p>
-<p>为了实现一些按钮的特效，网上遍布着从CButton派生的各种各样的按钮类，其中最为著名的就是CButtonST类。但考虑到各方面原因，最好的选择还是自己努力实现想要的效果，一方面可以消除代码冗余，另一方面自己也学习到了知识。</p>
-<p>今天的主角是CBitmapButton类，可以参考MSDN自带的例子“CTRLTEST”学习CBitmapButton的用法。这里简单总结一些要点：</p>
-<p>按钮选中Owner Draw属性，不需要选择Bitmap属性；</p>
-<p>按钮成员变量的类型定义为CBitmapButton，不可用ClassWizard生成CButton类进行修改，否则会出错；</p>
-<p>将位图与按钮进行关联，一般有两种方法：</p>
-<p>（一）使用CBitmapButton::LoadBitmaps装载各种状态的图片,使用SubclassDlgItem关联到想要的按钮，使用CBitmapButton::SizeToContent函数使按钮适合图片大小。注意Loadbitmaps一定要在关联到按钮之前进行！</p>
-<p>（二）使用CBitmapButton::AutoLoad函数关联到想要的按钮。</p>
-<p>在第三点中推荐使用第二种方法，但有一些注意事项：</p>
-<p>A、之前不能使用CBitmapButton::LoadBitmaps装载各种状态的图片，否则会出错。</p>
-<p>B、AutoLoad函数完成的关联和改变按钮大小的CBitmapButton::SizeToContent函数的功能。</p>
-<p>C、CBitmapButton::AutoLoad使用的位图是默认资源ID的，即它会自动装载相关资源位图。位图的资源ID格式为：&quot;按钮Caption+U&quot;、&quot;按钮Caption+D&quot;、&quot;按钮Caption+F&quot;、&quot;按钮Caption+X&quot;，分别代表Up、Down、Focus、Disable状态。如资源编辑时，希望关联的按钮的Caption为Test，那么其默认装载的位图资源的ID为：&quot;TestU&quot;/&quot;TestD&quot;/&quot;TestF&quot;/&quot;TestX&quot;，注意分号&quot;&quot;也是其ID的一部分。
-最后，将按钮的MouseMove消息在PreTranslateMessage中处理即可，代码如下：</p>
-<pre><code>BOOL Cyrt30Dlg::PreTranslateMessage(MSG* pMsg)
-{
-    if(WM_MOUSEMOVE == pMsg-&gt;message)
-    {
-        POINT p;
-        GetCursorPos(&amp;p);
-        CString s;
-        CWnd *hwnd=GetDlgItem(IDC_TabNav);
-        s.Format(&quot;%d&quot;,hwnd=WindowFromPoint(p));
-
-        CWnd *hwndTabNav=GetDlgItem(IDC_TabNav);
-                if (hwndTabNav == hwnd)
-        {
-            if (GetFocus()!=hwndTabNav)
-                hwndTabNav-&gt;SetFocus();
-        }
-        else
-        {
-            if (GetFocus() == hwndTabNav )
-                GetDlgItem(IDC_NULL)-&gt;SetFocus();
-
-        }
-    }
-    return CDialogEx::PreTranslateMessage(pMsg);
-}
-</code></pre><p>这样，就可以完美实现四态按钮了。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-07-08T06:21:37.000Z"><a href="/2011/07/something-about-google-plus/">Jul 8 2011</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/07/something-about-google-plus/">关于Google+的种种</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><img src="/images/2011/07/Google-Plus1-e1310058522662.png" alt="Google+"></p>
-<p>应好友<a href="http://yihuxingkong.kuandao.com/" target="_blank">@一湖星空</a>的邀请，第一时间体验了Google最新推出的社交项目Google+，看看这位在社交领域屡次失败的巨头是怎样发动最后一轮进攻的。</p>
-<h3 id="google-">Google+是什么</h3>
-<p>Google+是Google高管维克·冈多特拉(Vic Gundotra)和布拉德利·霍洛维茨(Bradley Horowitz)负责的一项社交服务项目，其用户界面出自苹果前Mac软件团队设计师安迪·赫兹菲尔德(Andy Hertzfeld)之手。Gundotra和Horowitz认为Google+不只是一个产品，也不是一种战略方案，而是一个扩展后的Google。Google+目的是让Google在线资产在日常生活中更普及，而不只是网上冲浪时偶然点击、搜索一个网站。Google+于2011年6月28日亮相，仍处于测试阶段。</p>
-<p>在过去的一年里，Google+的开发一直秘密进行着，期间传闻不断，也有过官方辟谣，但最终它还是出现了。</p>
-<h3 id="google-">Google+项目负责人谈产品</h3>
-<p>“我们认为在线共享很糟糕，甚至是奇怪。”Gundotra说。“我们相信和其他人保持联系是人类的一项基本需求。在现实生活中，我们一直这么干，但是在线工具却很不自然。它们强迫我们完全公开化。而现实生活中的分享却很微妙而丰富，要把这件事做成软件很难。” 说完这话，Gundotra开始向MG Siegler展示Google+的demo。整体上，MG Siegler觉得这款产品设计的太好，看起来甚至不像是Google的产品。非常显然，Google在Google+的用户界面和用户体验方面下了很大功夫。</p>
-<p>具体的诱人功能目前有：</p>
-<ul>
-<li>Circles「圈子」</li>
-</ul>
-<ul>
-<li>Sparks「火花」</li>
-</ul>
-<ul>
-<li>Instant Upload 「瞬时上传」</li>
-</ul>
-<ul>
-<li>Huddle「群信」</li>
-</ul>
-<ul>
-<li>Hangouts「闲逛」</li>
-</ul>
-<p>这些功能就不再一一具体介绍了，大家可以去亲自体验一下或网上搜索一下，本文后面也附有相关的介绍视频。</p>
-<h3 id="-google-50-">关于Google+你必须知道的50件事【推荐】</h3>
-<ol>
-<li><p>Google+的目的是让你离开Twitter或Facebook，或者同时离开两者，并且这事很快就会发生。</p>
-</li>
-<li><p>看上去像FriendFeed？担心很快会死掉？要知道Newt Gingrich已经加入G+。</p>
-</li>
-<li><p>有了Google+账户，Picasa用户可获得无限免费图片空间。(Flickr和Facebook图片是否感到威胁？)</p>
-</li>
-<li><p>有了Circles「圈子」，你可以一目了然地控制隐私。</p>
-</li>
-<li><p>「关于」部分很强大，支持链接、图片、二维码。营销者欢呼吧。</p>
-</li>
-<li><p>如果Google+开始影响Page Rank「网页排名」的话，那么对SEO/SEM也有用。</p>
-</li>
-<li><p>如果Google Music和YouTube那样也和这个平台整合的话，Google+立刻会成为一个强大的娱乐媒体平台。</p>
-</li>
-<li><p>Android版Google+「下载地址」早期已经取得一定成功，如果这个平台成功的话，这将改变人们对移动操作系统和支出的选择。</p>
-</li>
-<li><p>如果你在Google+上问问题然后和「圈子」共享的话，它可以取代Quora。</p>
-</li>
-<li><p>视频聊天功能对协作和轮班来说是一把利器。</p>
-</li>
-<li><p>单独的Google+ 应用加上Google Docs可以组成一个非常强大的企业协作环境，可以轻而易举击败大部分白标签企业级社交产品。</p>
-</li>
-<li><p>由于G+可以看到我们的评论，Google可以更好地开发出社交图景，然后整合AdSense，乃至Google Affiliate。</p>
-</li>
-<li><p>如果Google+提供一个WordPress评论整合功能，我立马会试试。</p>
-</li>
-<li><p>如果G+成功的话，几个月前就推出的+1按钮或许不再那么蹩脚。</p>
-</li>
-<li><p>人们总是说Facebook有6亿用户，所以谁也跑不掉。还有人记得美国在线吗？人们会迁移，这种事情不是不会发生。</p>
-</li>
-<li><p>目前试水Google+的大人物越来越多，这是史无前例的，比如Michael Dell和Mark Zuckerberg。</p>
-</li>
-<li><p>G+让Gmail的使用频率更高。2天收到了15封非垃圾邮件，要知道我几乎已经两年没收到过非垃圾邮件了。</p>
-</li>
-<li><p>如果Google把日历整合到G+中，那么G+就会具备社交日立的功能，更像Tungle。</p>
-</li>
-<li><p>几乎快要死掉的Google Buzz会起死回生，尤其是你经常使用Google Reader分享的话。</p>
-</li>
-<li><p>G+的图片显示界面很赞，让G+成为一个很赞的媒体平台。这为企业带来了机会。</p>
-</li>
-<li><p>Google大力推广ChromeOS，再加上Android的飞速发展，G+已经成为一个非常强大的沟通、媒体、分享平台，生来支持多种平台，并且支持各个平台上的浏览器。</p>
-</li>
-<li><p>Hangouts「闲逛」支持Google翻译，为多语言即时通讯提供了便利。</p>
-</li>
-<li><p>Google+非常适合用作社交化客服，只要它能提供类似search.twitter.com一样的搜索功能。</p>
-</li>
-<li><p>G+很容易就可以整合Google Voice，增加手机短信功能，并且Gtalk已经支持一对一视频和语聊了。</p>
-</li>
-<li><p>整合Blogger不会改进G+。WordPress已经赢得了博客之战。</p>
-</li>
-<li><p>G+也不会取代博客，但不会像博客那样在Twitter、Facebook’崛起之后就一蹶不振，G+吸引力更大。</p>
-</li>
-<li><p>别被上条迷惑了。你的博客才是你的家。在别人地盘上写博客就像是住旅馆，这里你说了不算。</p>
-</li>
-<li><p>Twitter的确像是一个新闻发布室，但G+讲述和发布故事的方法更多。G+里面的一个新闻「圈子」看上去就像是Flipboard一样。</p>
-</li>
-<li><p>G+在Android平板电脑上看上去美极了。</p>
-</li>
-<li><p>广告整合似乎很简单、明显。商务整合也不难。</p>
-</li>
-<li><p>如果你激活了手机的位置功能，G+会根据谁在「附近」创建一个圈子，一个给予位置的弹性社交网络就这样诞生了。</p>
-</li>
-<li><p>如果G+在二维码和基于位置的媒体方面有所作为的话，那么你将获得一个强大的媒体/营销机会。</p>
-</li>
-<li><p>G+允许你进行有趣的多格式发布：把音频、视频、照片、文本、链接和位置信息整合到一个包裹或项目里，然后你就可以获得一个强大的数字发布平台。</p>
-</li>
-<li><p>第一场Hangout现场音乐会何时亮相呢？只需一个录音按钮你就可以变得酷味十足，只需给Google Checkout增加一个「自己定价」的功能，你就可以进行即时小额内容销售。</p>
-</li>
-<li><p>如果Google Places整合G+，并且你使用移动/附近功能的话，有趣的“迁移”图景突然间会变成营销者的一个新数据点。</p>
-</li>
-<li><p>Google+非盈利的一面很有意思，尤其是Google Pages针对Google+进行了改版。</p>
-</li>
-<li><p>如果我在G+里面分享一个Google演示稿文件的话，那么我可以在一个有价值的系统内部分享商业信息。</p>
-</li>
-<li><p>Google+需要一个「置顶」功能，这样就可以在首页或档案页显示当天的消息。</p>
-</li>
-<li><p>当Google+支持站外分享和书签功能，并且增加内置统计功能的短网址服务之后，G+将更加强大。</p>
-</li>
-<li><p>G+没有内置私信功能，但每个人的档案页都有一个发送邮件功能。</p>
-</li>
-<li><p>Spark「火花」版块还没那么引人入胜，但有了用户生成的内容，并且每个人采用不同的维护管理方法的话，很快我们就会大快朵颐。</p>
-</li>
-<li><p>如果我是Google我会收购Alltop，用它取代Spark。</p>
-</li>
-<li><p>如果用户把自己加入一个公开或只有会员才能加入的圈子，Google+带来的将是一款终极会议工具。</p>
-</li>
-<li><p>很多人在G+里使用#号标签，但Google还不支持。但还是让我们自己创造一些暗语吧，这么做更有趣。</p>
-</li>
-<li><p>福特已经在研究G+了。地理信息、位置、用户好友信息，这些东西加在一起组成一个丰富的营销档案，是非常有用的营销工具。</p>
-</li>
-<li><p>Google+将变成联署网络营销「affiliate marketing」的最佳环境。如果你推荐的某个关键词导致了他人的购买行为，你就会得到报酬。</p>
-</li>
-<li><p>有人担心营销者会进入G+捣乱。这种担心不无道理。这是一片新的试验场，营销者不会放弃。但我很乐观。</p>
-</li>
-<li><p>地点、Google页面和G+的整合对小公司来说也是件好事。一场社交化客服运动正在上演。</p>
-</li>
-<li><p>当我把一些搜索RSS feed导入G+之后，G+就像是一个兼具媒体制作/管理功能监听站。</p>
-</li>
-<li><p>根据算法不同，热门话题的概念在G+上更有价值。</p>
-</li>
-</ol>
-<p>你认为Google+还有那些应用和前景呢？欢迎补充。</p>
-<h3 id="google-">Google+工程师的闷骚</h3>
-<p>不解释，看图：</p>
-<p><img src="/images/2011/07/google+1.jpg" alt="Google+工程师的闷骚"></p>
-<h3 id="-">相关资源</h3>
-<p>文章<a href="http://tech.qq.com/a/20110704/000303.htm" target="_blank">《Google+内幕：搜索巨人的社交网络努力》</a></p>
-<p>文章（来自36氪）<a href="http://www.36kr.com/google-plus-team-leaders-talk-about-product-details/" target="_blank">《Google+项目负责人分享产品细节》</a></p>
-<p>文章（来自DONGXI）<a href="http://dongxi.net/b08bp" target="_blank">《关于Google+你不得不知道的50件事》</a></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-  
-
-  <nav id="pagination">
-  
-  
-  <div class="clearfix"></div>
-</nav>
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">

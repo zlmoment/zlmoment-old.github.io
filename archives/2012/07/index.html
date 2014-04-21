@@ -47,129 +47,21 @@
 <h2 class="archive-title">2012/7</h2>
 
 
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2012-07-01T15:15:00.000Z"><a href="/2012/07/fhs-introduction/">Jul 1 2012</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2012/07/fhs-introduction/">Linux文件系统备忘录</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>与Windows将硬盘看做“C盘”、“D盘”几个独立的分区不同，Linux将整个文件系统看做一棵树，这棵树的树根叫做根文件系统，用/表示。各个分区通过“挂载”（Mount）以文件夹的形式访问。</p>
-<p>在/中的文件夹很多，本文介绍常见文件夹的意义。Linux的目录结构确实比较复杂，但设置合理、层次鲜明。本文以<a href="http://www.pathname.com/fhs/" target="_blank">FHS 2.3</a>为例进行介绍。</p>
-<h2 id="-">根文件系统</h2>
-<p><strong>/bin</strong></p>
-<p>这一目录中存放了供所有用户使用的完成基本维护任务的命令。其中bin是binary的缩写，表示二进制文件，通常为可执行文件。一些常用的系统命令，如cp、ls等保存在该目录中。</p>
-<p><strong>/boot</strong></p>
-<p>这里存放的是启动Linux时使用的一些核心文件。如操作系统内核、引导程序Grub等。</p>
-<p><strong>/dev</strong></p>
-<p>在此目录中包含所有的系统设备文件。从此目录可以访问各种系统设备。如CD-ROM，磁盘驱动器，调制解调器和内存等。在该目录中还包含有各种实用功能，如用于创建设备文件的MAKEDEV。</p>
-<p><strong>/etc</strong></p>
-<p>该目录中包含系统和应用软件的配置文件。</p>
-<p><strong>/etc/passwd</strong></p>
-<p>该目录中包含了系统中的用户描述信息，每行记录一个用户的信息。</p>
-<p><strong>/home</strong></p>
-<p>存储普通用户的个人文件。每个用户的主目录均在/home下以自己的用户名命名。</p>
-<p><strong>/lib</strong></p>
-<p>这个目录里存放着系统最基本的共享链接库和内核模块。共享链接库在功能上类似于Windows里的.dll文件。</p>
-<p><strong>/lib64</strong></p>
-<p>64位系统有这个文件夹，64位程序的库。</p>
-<p><strong>/lost+found</strong></p>
-<p>这并不是Linux目录结构的组成部分，而是ext3文件系统用于保存丢失文件的地方。不恰当的关机操作和磁盘错误均会导致文件丢失，这意味着这些被标注为“在使用”，但却并未列于磁盘上的数据结构上。正常情况下，引导进程会运行fsck程序，该程序能发现这些文件。除了“/”分区上的这个目录外，在每个分区上均有一个lost+found目录。</p>
-<p><strong>/media</strong></p>
-<p>可移动设备的挂载点，当前的操作系统通常会把U盘等设备自动挂载到该文件夹下。</p>
-<p><strong>/mnt</strong></p>
-<p>临时用于挂载文件系统的地方。一般情况下这个目录是空的，而在我们将要挂载分区时在这个目录下建立目录，再将我们将要访问的设备挂载在这个目录上，这样我们就可访问文件了。（注意在GNOME中，只有挂载到/media的文件夹才会显示在“计算机”中，挂载到/mnt不会做为特殊设备显示，详见自动挂载分区）</p>
-<p><strong>/opt</strong></p>
-<p>多数第三方软件默认安装到此位置，如Adobe Reader、google-earth等。并不是每个系统都会创建这个目录。</p>
-<p><strong>/proc</strong></p>
-<p>它是存在于内存中的虚拟文件系统。里面保存了内核和进程的状态信息。多为文本文件，可以直接查看。如/proc/cpuinfo保存了有关CPU的信息。</p>
-<p><strong>/root</strong></p>
-<p>这是根用户的主目录。与保留给个人用户的/home下的目录很相似，该目录中还包含仅与根用户有关的条目。</p>
-<p><strong>/sbin</strong></p>
-<p>供超级用户使用的可执行文件，里面多是系统管理命令，如fsck, reboot, shutdown, ifconfig等。</p>
-<p><strong>/tmp</strong></p>
-<p>该目录用以保存临时文件。该目录具有Sticky特殊权限，所有用户都可以在这个目录中创建、编辑文件。但只有文件拥有者才能删除文件。为了加快临时文件的访问速度，有的实现把/tmp放在内存中。</p>
-<p><strong>/usr</strong></p>
-<p>静态的用户级应用程序等，见下。</p>
-<p><strong>/var</strong></p>
-<p>动态的程序数据等，见下文。</p>
-<h2 id="-usr-">/usr目录结构</h2>
-<p>/usr通常是一个庞大的文件夹，其下的目录结构与根目录相似，但根目录中的文件多是系统级的文件，而/usr中是用户级的文件，一般与具体的系统无关。</p>
-<pre><code>usr最早是user的缩写，/usr的作用与现在的/home相同。而目前其通常被认为是 User System Resources 的缩写，其中通常是用户级的软件等，与存放系统级文件的根目录形成对比。
-</code></pre><p>应注意，程序的配置文件、动态的数据文件等都不会存放到/usr，所以除了安装、卸载软件外，一般无需修改/usr中的内容。说在系统正常运行时，/usr甚至可以被只读挂载。由于这一特性，/usr常被划分在单独的分区，甚至有时多台计算机可以共享一个/usr。</p>
-<p><strong>/usr/bin</strong></p>
-<p>多数日常应用程序存放的位置。如果/usr被放在单独的分区中，Linux的单用户模式不能访问/usr/bin，所以对系统至关重要的程序不应放在此文件夹中。</p>
-<p><strong>/usr/include</strong></p>
-<p>存放C/C++头文件的目录</p>
-<p><strong>/usr/lib</strong></p>
-<p>系统的库文件</p>
-<p><strong>/usr/local</strong></p>
-<p>新装的系统中这个文件夹是空的，可以用于存放个人安装的软件。安装了本地软件的/usr/local里的目录结构与/usr相似</p>
-<p><strong>/usr/sbin</strong></p>
-<p>在单用户模式中不用的系统管理程序，如apache2等。</p>
-<p><strong>/usr/share</strong></p>
-<p>与架构无关的数据。多数软件安装在此。</p>
-<p><strong>/usr/X11R6</strong></p>
-<p>该目录用于保存运行X-Window所需的所有文件。该目录中还包含用于运行GUI要的配置文件和二进制文件。</p>
-<p><strong>/usr/src</strong></p>
-<p>源代码</p>
-<h2 id="-var-">/var目录结构</h2>
-<p>/var中包括了一些数据文件，如系统日志等。/var的存放使得/usr被只读挂载成为可能。</p>
-<p><strong>/var/cache</strong></p>
-<p>应用程序的缓存文件</p>
-<p><strong>/var/lib</strong></p>
-<p>应用程序的信息、数据。如数据库的数据等都存放在此文件夹。</p>
-<p><strong>/var/local</strong></p>
-<p>/usr/local中程序的信息、数据</p>
-<p><strong>/var/lock</strong></p>
-<p>锁文件</p>
-<p><strong>/var/log</strong></p>
-<p>日志文件</p>
-<p><strong>/var/opt</strong></p>
-<p>/opt中程序的信息、数据</p>
-<p><strong>/var/run</strong></p>
-<p>正在执行着的程序的信息，如PID文件应存放于此</p>
-<p><strong>/var/spool</strong></p>
-<p>存放程序的假脱机数据（即spool data）</p>
-<p><strong>/var/tmp</strong></p>
-<p>临时文件</p>
-<h2 id="-">参考资料</h2>
-<ul>
-<li><a href="http://www.pathname.com/fhs/" target="_blank">FHS网站</a></li>
-<li><a href="TLDP: Linux Filesystem Hierarchy">TLDP: Linux Filesystem Hierarchy</a></li>
-</ul>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+  <div class="archive">
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2012-07-01T15:15:00.000Z"><a href="/2012/07/fhs-introduction/">Jul 1 2012</a></time>
+            
+              <h1 class="title"><a href="/2012/07/fhs-introduction/">Linux文件系统备忘录</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
   </div>
-</article>
-
-
-
-  
-
-  <nav id="pagination">
-  
-  
-  <div class="clearfix"></div>
-</nav>
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">

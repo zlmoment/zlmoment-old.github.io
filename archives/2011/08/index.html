@@ -47,139 +47,33 @@
 <h2 class="archive-title">2011/8</h2>
 
 
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-08-11T04:51:10.000Z"><a href="/2011/08/convertion-of-xml-and-json/">Aug 10 2011</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/08/convertion-of-xml-and-json/">XML与JSON的格式转换方法</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>在前文一篇文章《<a href="http://www.hackecho.com/" target="_blank">PHP中JSON的处理</a>》中，写到了JSON数据的生成和解析，后来一想，如果服务器既能返回JSON又能返回XML不是更好吗，至少多了一种选择。因为JSON和XML都是一种数据表示方法，相互转换起来应该不难。于是简单的到网上搜了一下，搜到了一些结果，但貌似所有的结构都源自一篇文章，内容都一样，可惜的是，那片文章中有严重的错误（竟然没有一个人提出来...），后来经过简单的修正和调试，终于得到了完美的转换代码（也有不完美，暂时还无法转换索引数组，但关联数组没有问题），现分享如下：）</p>
-<p>废话不多说，直接上代码：</p>
-<pre><code>public function json_to_xml($source,$charset=&#39;utf8&#39;) {
-    $array = json_decode($source,true);
-    $xml  =&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &#39;;
-    $xml .=&#39;&lt;data&gt;&#39;;
-    $xml .= $this-&gt;change($array);
-    $xml .=&#39;&lt;/data&gt;&#39;;
-    return $xml;
-}
-
-public function change($source) {
-    $string=&quot;&quot;;
-    foreach($source as $k=&gt;$v){
-        $string .=&quot;&lt;&quot;.$k.&quot;&gt;&quot;;
-        if(is_array($v) || is_object($v)){       //判断是否是数组，或者，对像
-            $string .= $this-&gt;change($v);        //是数组或者对像就的递归调用
-        }else{
-            $string .=$v;                        //取得标签数据
-        }
-    $string .=&quot;&lt;/&quot;.$k.&quot;&gt;&quot;;
-    }
-    return $string;
-}
-</code></pre><p>记住加上 header(&#39;Content-Type: text/xml&#39;);</p>
-<p>如有疑问欢迎留言讨论。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+  <div class="archive">
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2011-08-11T04:51:10.000Z"><a href="/2011/08/convertion-of-xml-and-json/">Aug 10 2011</a></time>
+            
+              <h1 class="title"><a href="/2011/08/convertion-of-xml-and-json/">XML与JSON的格式转换方法</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
+      <article class="post">
+        <div class="post-content">
+          <header>
+            <div class="icon"></div>
+            <time datetime="2011-08-06T16:30:03.000Z"><a href="/2011/08/android-shared-preferences/">Aug 6 2011</a></time>
+            
+              <h1 class="title"><a href="/2011/08/android-shared-preferences/">Android数据存储之Shared Preferences</a></h1>
+            
+          </header>
+        </div>
+      </article>
+    
   </div>
-</article>
-
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2011-08-06T16:30:03.000Z"><a href="/2011/08/android-shared-preferences/">Aug 6 2011</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2011/08/android-shared-preferences/">Android数据存储之Shared Preferences</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>任何一个应用程序都要依赖数据存储，而且这种存储必须不丢失数据，并且有效、简便使用和更新这些数据。在 Android 操作系统中一共提供了4种数据存储方式，但是由于存储的这些数据都是私有的，所以如果需要共享其他应用程序的数据，就需要使用 Content Provider（数据共享）。4种数据存储方式分别为如下：</p>
-<p>1、Shared Preferences</p>
-<p>用来存储 “键-值”格式的数据。</p>
-<p>2、Files</p>
-<p>通过FileInputStream和FileOutputStream对文件进行操作。</p>
-<p>3、SQLite</p>
-<p>标准数据库，支持SQL语句。</p>
-<p>4、NetWork</p>
-<p>通过网络存储和获取数据。</p>
-<p><strong>下面我们来着重介绍一下Shared Preferences的使用方法。</strong></p>
-<p>Shared Preferences 类似于winform中做一些小型配置的ini文件，用来保存一些用户设置的参数。例如，可以通过它保存上一次用户所做的修改或者自定义参数设定，当再次启动程序后依然保持原有设置。</p>
-<p>在 Android系统提供的API中， 获取 Preferences对象有四种类型，分别如下：</p>
-<p>1、文件创建模式：Activity.MODE_APPEND</p>
-<p>如果该文件已经存在，然后将数据写入，而不是抹掉它现有文件的末尾。</p>
-<p>2、文件创建模式：MODE_PRIVATE</p>
-<p>默认模式，在那里创建的文件只能由应用程序调用,即为私有的</p>
-<p>3、文件创建模式：Activity.MODE_WORLD_READABLE</p>
-<p>允许所有其他应用程序有读取和创建文件的权限。</p>
-<p>4、文件创建模式：Activity.MODE_WORLD_WRITEABLE</p>
-<p>允许所有其他应用程序具有写入、访问和创建的文件权限。</p>
-<p>在每安装一个Android 应用程序时，data/data目录下都会产生一个对应的包文件夹，如果应用程序中使用了 Preferences 则会在该应用程序文件夹下产生一个shared_prefs文件夹保存我们的数据。</p>
-<p><strong>示例：</strong></p>
-<p>读取配置的方法：</p>
-<pre><code>//读取当前的配置信息
-private SharedPreferences config;
-config = getSharedPreferences(&quot;CONFIG&quot;,ConfigActivity.MODE_WORLD_WRITEABLE);
-minRecordTime = config.getInt(&quot;minRecordTime&quot;, 1000);
-minRecordDistance = config.getInt(&quot;minRecordDistance&quot;, 1);
-isGetMyLocAtStartAuto = config.getBoolean(&quot;isGetMyLocAtStartAuto&quot;, true);
-</code></pre><p>编辑配置的方法:</p>
-<pre><code>//写入sharepreference
-SharedPreferences config = getSharedPreferences(&quot;CONFIG&quot;,ConfigActivity.MODE_WORLD_WRITEABLE);
-SharedPreferences.Editor editor = config.edit();
-editor.putInt(&quot;minRecordTime&quot;, minRecordTime);
-editor.commit();
-</code></pre><p>示例比较简略，但很典型，摘自我自己的应用BJTUer（暂定名）。</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-  
-
-  <nav id="pagination">
-  
-  
-  <div class="clearfix"></div>
-</nav>
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
