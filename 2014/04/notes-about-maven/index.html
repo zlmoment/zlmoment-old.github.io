@@ -32,6 +32,36 @@ You&#39;ll get following project structure:">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </head>
 
 
@@ -105,47 +135,7 @@ package: com.hackecho.hadoop.example
 <p>Project Object Model. Similar to <code>build.xml</code> in ant. </p>
 <p>POM reference: <a href="http://maven.apache.org/pom.html" target="_blank">Link</a></p>
 <p>An example POM with Hadoop 2.2.0 included:</p>
-<figure class="highlight xml"><figcaption><span>pom.xml </span></figcaption><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-</pre></td><td class="code"><pre><span class="pi">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<figure class="highlight xml"><figcaption><span>pom.xml </span></figcaption><pre><span class="pi">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 
 <span class="tag">&lt;<span class="title">project</span> <span class="attribute">xmlns</span>=<span class="value">"http://maven.apache.org/POM/4.0.0"</span> <span class="attribute">xmlns:xsi</span>=<span class="value">"http://www.w3.org/2001/XMLSchema-instance"</span>
   <span class="attribute">xsi:schemaLocation</span>=<span class="value">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"</span>&gt;</span>
@@ -185,7 +175,7 @@ package: com.hackecho.hadoop.example
 		<span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
 	<span class="tag">&lt;/<span class="title">dependencies</span>&gt;</span>
 <span class="tag">&lt;/<span class="title">project</span>&gt;</span>
-</pre></td></tr></table></figure>
+</pre></figure>
 
 
 <h2 id="commands">Commands</h2>
