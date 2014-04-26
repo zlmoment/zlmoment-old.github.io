@@ -6,7 +6,18 @@
   <title>Android数据存储之Shared Preferences | Hackecho</title>
   <meta name="author" content="Zhaoyu Li">
   
-  <meta name="description" content="任何一个应用程序都要依赖数据存储，而且这种存储必须不丢失数据，并且有效、简便使用和更新这些数据。在 Android 操作系统中一共提供了4种数据存储方式，但是由于存储的这些数据都是私有的，所以如果需要共享其他应用程序的数据，就需要使用 Content Provider（数据共享）。4种数据存储方式分">
+  <meta name="description" content="任何一个应用程序都要依赖数据存储，而且这种存储必须不丢失数据，并且有效、简便使用和更新这些数据。在 Android 操作系统中一共提供了4种数据存储方式，但是由于存储的这些数据都是私有的，所以如果需要共享其他应用程序的数据，就需要使用 Content Provider（数据共享）。4种数据存储方式分别为如下：
+1、Shared Preferences
+用来存储 “键-值”格式的数据。
+2、Files
+通过FileInputStream和FileOutputStream对文件进行操作。
+3、SQLite
+标准数据库，支持SQL语句。
+4、NetWork
+通过网络存储和获取数据。
+下面我们来着重介绍一下Shared Preferences的使用方法。
+Shared Preferences 类似于winform中做一些小型配置的ini文件，用来保存一些用户设置的参数。例如，可以通过它保存上一次用户所做的修改或者自定义参数设定，当再次启动程序后依然保持原有设置。
+在 Android系统提供的API中， 获取 Preferences对象有四种类型，分别如下：">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -103,6 +114,8 @@
 <p><strong>下面我们来着重介绍一下Shared Preferences的使用方法。</strong></p>
 <p>Shared Preferences 类似于winform中做一些小型配置的ini文件，用来保存一些用户设置的参数。例如，可以通过它保存上一次用户所做的修改或者自定义参数设定，当再次启动程序后依然保持原有设置。</p>
 <p>在 Android系统提供的API中， 获取 Preferences对象有四种类型，分别如下：</p>
+<a id="more"></a>
+
 <p>1、文件创建模式：Activity.MODE_APPEND</p>
 <p>如果该文件已经存在，然后将数据写入，而不是抹掉它现有文件的末尾。</p>
 <p>2、文件创建模式：MODE_PRIVATE</p>

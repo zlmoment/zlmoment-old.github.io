@@ -106,35 +106,15 @@
 <p><strong>下面我们来着重介绍一下Shared Preferences的使用方法。</strong></p>
 <p>Shared Preferences 类似于winform中做一些小型配置的ini文件，用来保存一些用户设置的参数。例如，可以通过它保存上一次用户所做的修改或者自定义参数设定，当再次启动程序后依然保持原有设置。</p>
 <p>在 Android系统提供的API中， 获取 Preferences对象有四种类型，分别如下：</p>
-<p>1、文件创建模式：Activity.MODE_APPEND</p>
-<p>如果该文件已经存在，然后将数据写入，而不是抹掉它现有文件的末尾。</p>
-<p>2、文件创建模式：MODE_PRIVATE</p>
-<p>默认模式，在那里创建的文件只能由应用程序调用,即为私有的</p>
-<p>3、文件创建模式：Activity.MODE_WORLD_READABLE</p>
-<p>允许所有其他应用程序有读取和创建文件的权限。</p>
-<p>4、文件创建模式：Activity.MODE_WORLD_WRITEABLE</p>
-<p>允许所有其他应用程序具有写入、访问和创建的文件权限。</p>
-<p>在每安装一个Android 应用程序时，data/data目录下都会产生一个对应的包文件夹，如果应用程序中使用了 Preferences 则会在该应用程序文件夹下产生一个shared_prefs文件夹保存我们的数据。</p>
-<p><strong>示例：</strong></p>
-<p>读取配置的方法：</p>
-<pre><code>//读取当前的配置信息
-private SharedPreferences config;
-config = getSharedPreferences(&quot;CONFIG&quot;,ConfigActivity.MODE_WORLD_WRITEABLE);
-minRecordTime = config.getInt(&quot;minRecordTime&quot;, 1000);
-minRecordDistance = config.getInt(&quot;minRecordDistance&quot;, 1);
-isGetMyLocAtStartAuto = config.getBoolean(&quot;isGetMyLocAtStartAuto&quot;, true);
-</code></pre><p>编辑配置的方法:</p>
-<pre><code>//写入sharepreference
-SharedPreferences config = getSharedPreferences(&quot;CONFIG&quot;,ConfigActivity.MODE_WORLD_WRITEABLE);
-SharedPreferences.Editor editor = config.edit();
-editor.putInt(&quot;minRecordTime&quot;, minRecordTime);
-editor.commit();
-</code></pre><p>示例比较简略，但很典型，摘自我自己的应用BJTUer（暂定名）。</p>
 
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2011/08/android-shared-preferences/#more" class="more-link">Read More</a>
+          </div>
         
         
       
