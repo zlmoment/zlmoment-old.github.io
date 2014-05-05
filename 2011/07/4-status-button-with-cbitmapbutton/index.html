@@ -8,7 +8,10 @@
   
   <meta name="description" content="今天上午由于特殊原因重装了系统，下午四点左右开始了交大一软通的界面绘制。这次一软通界面全面更新，各种控件该自绘的自绘，该贴图的贴图，力争给用户最好的视觉和操作体验。
 第二个选项卡效果是鼠标悬浮时的效果，其实这不是TabControl，而是普普通通的Button，但用到了按钮的四态。
-下面简单总结一下">
+下面简单总结一下四态按钮的实现，以备日后之需。
+为了实现一些按钮的特效，网上遍布着从CButton派生的各种各样的按钮类，其中最为著名的就是CButtonST类。但考虑到各方面原因，最好的选择还是自己努力实现想要的效果，一方面可以消除代码冗余，另一方面自己也学习到了知识。
+今天的主角是CBitmapButton类，可以参考MSDN自带的例子“CTRLTEST”学习CBitmapButton的用法。这里简单总结一些要点：
+按钮选中Owner Draw属性，不需要选择Bitmap属性；">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -99,6 +102,8 @@
 <p>为了实现一些按钮的特效，网上遍布着从CButton派生的各种各样的按钮类，其中最为著名的就是CButtonST类。但考虑到各方面原因，最好的选择还是自己努力实现想要的效果，一方面可以消除代码冗余，另一方面自己也学习到了知识。</p>
 <p>今天的主角是CBitmapButton类，可以参考MSDN自带的例子“CTRLTEST”学习CBitmapButton的用法。这里简单总结一些要点：</p>
 <p>按钮选中Owner Draw属性，不需要选择Bitmap属性；</p>
+<a id="more"></a>
+
 <p>按钮成员变量的类型定义为CBitmapButton，不可用ClassWizard生成CButton类进行修改，否则会出错；</p>
 <p>将位图与按钮进行关联，一般有两种方法：</p>
 <p>（一）使用CBitmapButton::LoadBitmaps装载各种状态的图片,使用SubclassDlgItem关联到想要的按钮，使用CBitmapButton::SizeToContent函数使按钮适合图片大小。注意Loadbitmaps一定要在关联到按钮之前进行！</p>

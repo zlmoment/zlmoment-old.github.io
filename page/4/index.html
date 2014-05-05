@@ -414,6 +414,8 @@ public function change($source) {
 <p>标准数据库，支持SQL语句。</p>
 <p>4、NetWork</p>
 <p>通过网络存储和获取数据。</p>
+<!--more-->
+
 <p><strong>下面我们来着重介绍一下Shared Preferences的使用方法。</strong></p>
 <p>Shared Preferences 类似于winform中做一些小型配置的ini文件，用来保存一些用户设置的参数。例如，可以通过它保存上一次用户所做的修改或者自定义参数设定，当再次启动程序后依然保持原有设置。</p>
 <p>在 Android系统提供的API中， 获取 Preferences对象有四种类型，分别如下：</p>
@@ -550,46 +552,15 @@ Hanlder
 <p>为了实现一些按钮的特效，网上遍布着从CButton派生的各种各样的按钮类，其中最为著名的就是CButtonST类。但考虑到各方面原因，最好的选择还是自己努力实现想要的效果，一方面可以消除代码冗余，另一方面自己也学习到了知识。</p>
 <p>今天的主角是CBitmapButton类，可以参考MSDN自带的例子“CTRLTEST”学习CBitmapButton的用法。这里简单总结一些要点：</p>
 <p>按钮选中Owner Draw属性，不需要选择Bitmap属性；</p>
-<p>按钮成员变量的类型定义为CBitmapButton，不可用ClassWizard生成CButton类进行修改，否则会出错；</p>
-<p>将位图与按钮进行关联，一般有两种方法：</p>
-<p>（一）使用CBitmapButton::LoadBitmaps装载各种状态的图片,使用SubclassDlgItem关联到想要的按钮，使用CBitmapButton::SizeToContent函数使按钮适合图片大小。注意Loadbitmaps一定要在关联到按钮之前进行！</p>
-<p>（二）使用CBitmapButton::AutoLoad函数关联到想要的按钮。</p>
-<p>在第三点中推荐使用第二种方法，但有一些注意事项：</p>
-<p>A、之前不能使用CBitmapButton::LoadBitmaps装载各种状态的图片，否则会出错。</p>
-<p>B、AutoLoad函数完成的关联和改变按钮大小的CBitmapButton::SizeToContent函数的功能。</p>
-<p>C、CBitmapButton::AutoLoad使用的位图是默认资源ID的，即它会自动装载相关资源位图。位图的资源ID格式为：&quot;按钮Caption+U&quot;、&quot;按钮Caption+D&quot;、&quot;按钮Caption+F&quot;、&quot;按钮Caption+X&quot;，分别代表Up、Down、Focus、Disable状态。如资源编辑时，希望关联的按钮的Caption为Test，那么其默认装载的位图资源的ID为：&quot;TestU&quot;/&quot;TestD&quot;/&quot;TestF&quot;/&quot;TestX&quot;，注意分号&quot;&quot;也是其ID的一部分。
-最后，将按钮的MouseMove消息在PreTranslateMessage中处理即可，代码如下：</p>
-<pre><code>BOOL Cyrt30Dlg::PreTranslateMessage(MSG* pMsg)
-{
-    if(WM_MOUSEMOVE == pMsg-&gt;message)
-    {
-        POINT p;
-        GetCursorPos(&amp;p);
-        CString s;
-        CWnd *hwnd=GetDlgItem(IDC_TabNav);
-        s.Format(&quot;%d&quot;,hwnd=WindowFromPoint(p));
-
-        CWnd *hwndTabNav=GetDlgItem(IDC_TabNav);
-                if (hwndTabNav == hwnd)
-        {
-            if (GetFocus()!=hwndTabNav)
-                hwndTabNav-&gt;SetFocus();
-        }
-        else
-        {
-            if (GetFocus() == hwndTabNav )
-                GetDlgItem(IDC_NULL)-&gt;SetFocus();
-
-        }
-    }
-    return CDialogEx::PreTranslateMessage(pMsg);
-}
-</code></pre><p>这样，就可以完美实现四态按钮了。</p>
 
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2011/07/4-status-button-with-cbitmapbutton/#more" class="more-link">Read More</a>
+          </div>
         
         
       
