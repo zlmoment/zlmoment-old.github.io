@@ -95,36 +95,15 @@
     <div class="entry">
       
         <p>在前文一篇文章《<a href="http://www.hackecho.com/" target="_blank">PHP中JSON的处理</a>》中，写到了JSON数据的生成和解析，后来一想，如果服务器既能返回JSON又能返回XML不是更好吗，至少多了一种选择。因为JSON和XML都是一种数据表示方法，相互转换起来应该不难。于是简单的到网上搜了一下，搜到了一些结果，但貌似所有的结构都源自一篇文章，内容都一样，可惜的是，那片文章中有严重的错误（竟然没有一个人提出来...），后来经过简单的修正和调试，终于得到了完美的转换代码（也有不完美，暂时还无法转换索引数组，但关联数组没有问题），现分享如下：）</p>
-<p>废话不多说，直接上代码：</p>
-<pre><code>public function json_to_xml($source,$charset=&#39;utf8&#39;) {
-    $array = json_decode($source,true);
-    $xml  =&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &#39;;
-    $xml .=&#39;&lt;data&gt;&#39;;
-    $xml .= $this-&gt;change($array);
-    $xml .=&#39;&lt;/data&gt;&#39;;
-    return $xml;
-}
-
-public function change($source) {
-    $string=&quot;&quot;;
-    foreach($source as $k=&gt;$v){
-        $string .=&quot;&lt;&quot;.$k.&quot;&gt;&quot;;
-        if(is_array($v) || is_object($v)){       //判断是否是数组，或者，对像
-            $string .= $this-&gt;change($v);        //是数组或者对像就的递归调用
-        }else{
-            $string .=$v;                        //取得标签数据
-        }
-    $string .=&quot;&lt;/&quot;.$k.&quot;&gt;&quot;;
-    }
-    return $string;
-}
-</code></pre><p>记住加上 header(&#39;Content-Type: text/xml&#39;);</p>
-<p>如有疑问欢迎留言讨论。</p>
 
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2011/08/convertion-of-xml-and-json/#more" class="more-link">Read More</a>
+          </div>
         
         
       

@@ -6,7 +6,7 @@
   <title>XML与JSON的格式转换方法 | Hackecho</title>
   <meta name="author" content="Zhaoyu Li">
   
-  <meta name="description" content="在前文一篇文章《PHP中JSON的处理》中，写到了JSON数据的生成和解析，后来一想，如果服务器既能返回JSON又能返回XML不是更好吗，至少多了一种选择。因为JSON和XML都是一种数据表示方法，相互转换起来应该不难。于是简单的到网上搜了一下，搜到了一些结果，但貌似所有的结构都源自一篇文章，内容都">
+  <meta name="description" content="在前文一篇文章《PHP中JSON的处理》中，写到了JSON数据的生成和解析，后来一想，如果服务器既能返回JSON又能返回XML不是更好吗，至少多了一种选择。因为JSON和XML都是一种数据表示方法，相互转换起来应该不难。于是简单的到网上搜了一下，搜到了一些结果，但貌似所有的结构都源自一篇文章，内容都一样，可惜的是，那片文章中有严重的错误（竟然没有一个人提出来...），后来经过简单的修正和调试，终于得到了完美的转换代码（也有不完美，暂时还无法转换索引数组，但关联数组没有问题），现分享如下：）">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -92,6 +92,9 @@
     <div class="entry">
       
         <p>在前文一篇文章《<a href="http://www.hackecho.com/" target="_blank">PHP中JSON的处理</a>》中，写到了JSON数据的生成和解析，后来一想，如果服务器既能返回JSON又能返回XML不是更好吗，至少多了一种选择。因为JSON和XML都是一种数据表示方法，相互转换起来应该不难。于是简单的到网上搜了一下，搜到了一些结果，但貌似所有的结构都源自一篇文章，内容都一样，可惜的是，那片文章中有严重的错误（竟然没有一个人提出来...），后来经过简单的修正和调试，终于得到了完美的转换代码（也有不完美，暂时还无法转换索引数组，但关联数组没有问题），现分享如下：）</p>
+<a id="more"></a>
+
+
 <p>废话不多说，直接上代码：</p>
 <pre><code>public function json_to_xml($source,$charset=&#39;utf8&#39;) {
     $array = json_decode($source,true);

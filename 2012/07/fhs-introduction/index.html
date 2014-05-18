@@ -7,7 +7,17 @@
   <meta name="author" content="Zhaoyu Li">
   
   <meta name="description" content="与Windows将硬盘看做“C盘”、“D盘”几个独立的分区不同，Linux将整个文件系统看做一棵树，这棵树的树根叫做根文件系统，用/表示。各个分区通过“挂载”（Mount）以文件夹的形式访问。
-在/中的文件夹很多，本文介绍常见文件夹的意义。Linux的目录结构确实比较复杂，但设置合理、层次鲜明。本文">
+在/中的文件夹很多，本文介绍常见文件夹的意义。Linux的目录结构确实比较复杂，但设置合理、层次鲜明。本文以FHS 2.3为例进行介绍。
+根文件系统
+/bin
+这一目录中存放了供所有用户使用的完成基本维护任务的命令。其中bin是binary的缩写，表示二进制文件，通常为可执行文件。一些常用的系统命令，如cp、ls等保存在该目录中。
+/boot
+这里存放的是启动Linux时使用的一些核心文件。如操作系统内核、引导程序Grub等。
+/dev
+在此目录中包含所有的系统设备文件。从此目录可以访问各种系统设备。如CD-ROM，磁盘驱动器，调制解调器和内存等。在该目录中还包含有各种实用功能，如用于创建设备文件的MAKEDEV。
+/etc
+该目录中包含系统和应用软件的配置文件。
+/etc/passwd">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -104,6 +114,8 @@
 <p><strong>/etc</strong></p>
 <p>该目录中包含系统和应用软件的配置文件。</p>
 <p><strong>/etc/passwd</strong></p>
+<a id="more"></a>
+
 <p>该目录中包含了系统中的用户描述信息，每行记录一个用户的信息。</p>
 <p><strong>/home</strong></p>
 <p>存储普通用户的个人文件。每个用户的主目录均在/home下以自己的用户名命名。</p>

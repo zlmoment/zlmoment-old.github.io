@@ -8,7 +8,13 @@
   
   <meta name="description" content="下载了一个Python改写的C语言100例，结果原作者使用的编码都是GBK，而我现在使用的Sublime Text 2和Textmate等都不支持GBK编码，导致打开全是乱码。网上也没有找到相应的转换工具，只好另辟蹊径。
 关键时刻还是 Terminal 给力，介绍一条shell命令：iconv
-就不">
+就不细细介绍了，看下面的例子，就都懂了：
+iconv --list # 显示可识别的编码名称
+iconv --list &gt;./infomation.log # 显示可识别的编码名称，将信息存入infomation.log文件中
+iconv -f GB2312 -t UTF-8 a.html &gt; b.html # 转换GB2312编码的文件a.html为UTF-8编码，存入b.html
+iconv -f GB2312 -t BIG5 a.html &gt; b.html # 转换GB2312编码的文件a.html为BIG5编码，存入b.html
+进入正题，我们先cd进入保存所有文件的文件夹，然后执行下列命令：
+find *.py -exec sh -c &quot;iconv -f GB18030 -t UTF8 {} &gt; {}.py&quot; \;">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -102,7 +108,9 @@ iconv -f GB2312 -t UTF-8 a.html &gt; b.html # 转换GB2312编码的文件a.html�
 iconv -f GB2312 -t BIG5 a.html &gt; b.html # 转换GB2312编码的文件a.html为BIG5编码，存入b.html
 </code></pre><p>进入正题，我们先cd进入保存所有文件的文件夹，然后执行下列命令：</p>
 <pre><code>find *.py -exec sh -c &quot;iconv -f GB18030 -t UTF8 {} &gt; {}.py&quot; \;  
-</code></pre><p>上面命令中的GB18030，如果你转换前的编码为GB2312，将 GB18030 代替为 GB2312 即可。</p>
+</code></pre><a id="more"></a>
+
+<p>上面命令中的GB18030，如果你转换前的编码为GB2312，将 GB18030 代替为 GB2312 即可。</p>
 <p>OK，搞定！</p>
 <h3 id="-">补充说明：</h3>
 <p>这只是为<strong>批量转换</strong>而生的方法，如果只是转换一两个文件，则可以直接在右键菜单中选择 服务-&gt;转换选定的简体中文文件 即可。当然，也可以用一款支持GBK的编辑器打开文件后存储一份新的UTF8格式的文件即可。</p>

@@ -7,7 +7,25 @@
   <meta name="author" content="Zhaoyu Li">
   
   <meta name="description" content="有两门课的作业要用到MPI，“高性能计算环境”和“并行与分布式系统”，所以简单了解了一下MPI的基础知识。MPI并不是并行程序设计的唯一方法，但却是一种行之有效的方法。而且MPI已在几乎所有主流的并行机上得到实现，具有很高的可移植性，适用范围非常广泛。这是一篇学习笔记，因此不会面面俱到。
-什么是MP">
+什么是MPI
+MPI是Massage Passing Interface的简写，是消息传递函数库的标准规范，由MPI论坛开发，支持Fortran和C，主要用于进程（Process）间通信。
+在MPI中，数据被显式由从一个进程发送给另一个进程，一个称为发送方，一个称为接收方。
+Hello World
+让我们从一个最简单的MPI Hello World程序开始。
+#include &quot;mpi.h&quot;
+#include &lt;stdio.h&gt;
+int main( int argc, char *argv[] )
+{
+    MPI_Init( &amp;argc, &amp;argv );
+    printf( &quot;Hello, world!\n&quot; );
+    MPI_Finalize();
+    return 0;
+}
+Notes:
+
+必须包含 mpi.h 头文件；
+
+MPI函数返回出错代码或 MPI_SUCCESS .">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -114,6 +132,8 @@ int main( int argc, char *argv[] )
 <li><p>MPI函数返回出错代码或 <code>MPI_SUCCESS</code> .</p>
 </li>
 </ol>
+<a id="more"></a>
+
 <p>编译并运行我们的程序（关于编译和运行本文后面有详细介绍）：</p>
 <pre><code>$ mpicc -o hello hello.c
 $ mpirun -np 4 hello

@@ -8,7 +8,17 @@
   
   <meta name="description" content="Parallel Reduction是NVIDIA-CUDA自带的例子，也几乎是所有CUDA学习者的的必看算法。在这个算法的优化中，Mark Harris为我们实现了7种不同的优化版本，将Bandwidth几乎提高到了峰值。相信我们通过仔细研读这个过程，一定能对CUDA程序的优化有更加深刻的认识。下面我们来一一细看这几种优化方案，数据和思想均摘录自官方SDK中Samples的算法说明。
 Parallel Reduction
-Parallel Reduction可以理解为将一个数组中的所有数相加求和的过程并行化。一般来讲，我们并行化的思路是基于“树”的二元规约，如下图：">
+Parallel Reduction可以理解为将一个数组中的所有数相加求和的过程并行化。一般来讲，我们并行化的思路是基于“树”的二元规约，如下图：
+
+
+
+但是这样的算法会产生一个问题，就是我们怎样让不同blocks中的线程通信呢？CUDA本身并不支持全局同步（global synchronization）。但是，CUDA的kernel运行时有一个特性，即同一时间只能有一个kernel运行，这样我们便可以将每一层规约作为一个kernel来重复递归调用。如下图：
+
+我们的目标就是基于这个算法进行优化，达到“榨干CUDA性能”的目的。我们选取Bandwidth作为测量标准（因为Bandwidth侧重于测量memory-bound kernels，而GFLOP/s侧重于测量compute-bound kernels）。我们最终目标是实现最大的Data Bandwidth。测试环境为G80 GPU，384-bit memory interface, 900 MHz DDR，Bandwidth峰值384 * 1800 / 8 = 86.4 GB/s。
+对于基本概念，放上一张图供参考：
+
+Reduction #1: Interleaved Addressing
+Interleaved Addressing的核心思想在于交错寻址，即典型的树状模型。示意图如下：">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -107,6 +117,9 @@ Parallel Reduction可以理解为将一个数组中的所有数相加求和的�
 <h3 id="reduction-1-interleaved-addressing">Reduction #1: Interleaved Addressing</h3>
 <p>Interleaved Addressing的核心思想在于交错寻址，即典型的树状模型。示意图如下：</p>
 <p><a href="/images/2013/04/Interleaved_Addressing.png"><img src="/images/2013/04/Interleaved_Addressing.png" alt=""></a></p>
+<a id="more"></a>
+
+
 <pre><code>/* This reduction interleaves which threads are active by using the modulo
    operator.  This operator is very expensive on GPUs, and the interleaved
    inactivity means that no whole warps are active, which is also very

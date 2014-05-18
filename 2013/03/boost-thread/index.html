@@ -10,7 +10,30 @@
 线程创建
 相关类为 boost::thread ，定义在 boost/thread.hpp 中，用于创建一个新线程。
 :::CPP
-#include &amp;l">
+#include &lt;boost/thread.hpp&gt; 
+#include &lt;iostream&gt; 
+
+void wait(int seconds) 
+{ 
+    boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
+} 
+
+void thread() 
+{ 
+    for (int i = 0; i &lt; 5; ++i) 
+    { 
+        wait(1); 
+        std::cout &lt;&lt; i &lt;&lt; std::endl; 
+    } 
+} 
+
+int main() 
+{ 
+    boost::thread t(thread); 
+    t.join(); 
+} 
+Notes:
+一旦上面例子中的变量 t 被创建，该 thread() 函数就在其所在线程中被立即执行， join() 的方法跟POSIX pthread中意义一样。">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -123,6 +146,8 @@ int main()
 } 
 </code></pre><p><strong>Notes:</strong></p>
 <p>一旦上面例子中的变量 <code>t</code> 被创建，该 <code>thread()</code> 函数就在其所在线程中被立即执行， <code>join()</code> 的方法跟POSIX pthread中意义一样。</p>
+<a id="more"></a>
+
 <h3 id="-">线程中断</h3>
 <pre><code>:::CPP
 #include &lt;boost/thread.hpp&gt; 

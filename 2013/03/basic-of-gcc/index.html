@@ -6,7 +6,24 @@
   <title>GCC 基础 | Hackecho</title>
   <meta name="author" content="Zhaoyu Li">
   
-  <meta name="description" content="GCC，糊里糊涂地用了好长时间，每次也都是简简单单的 gcc test.cpp 这样简单的命令，偶尔会用一下 -o。说实话C和C++写的确实也不多，大一的时候还处于懵懂时期，跟着老师用VC6，后来面向对象编程之后，几乎工作都在IDE下完成，对这类命令行下的编译指令接触更是甚少。如今才体会到什么叫书到">
+  <meta name="description" content="GCC，糊里糊涂地用了好长时间，每次也都是简简单单的 gcc test.cpp 这样简单的命令，偶尔会用一下 -o。说实话C和C++写的确实也不多，大一的时候还处于懵懂时期，跟着老师用VC6，后来面向对象编程之后，几乎工作都在IDE下完成，对这类命令行下的编译指令接触更是甚少。如今才体会到什么叫书到用时方恨少，不得不回过头来再打基础，认真学习。
+鉴于这不是一篇Tutorial，只是我的一篇笔记，所以并不会涵盖所有内容。
+基础
+gcc 命令只能编译 C++ 源文件，而不能自动和 C++ 程序使用的库连接。因此，通常使用 g++ 命令来完成 C++ 程序的编译和连接，该程序会自动调用 gcc 实现编译。
+一般来讲，编译过程分为四个阶段：预处理(也称预编译，Preprocessing)、编译(Compilation)、汇编 (Assembly)和连接(Linking)。下面举几个例子，关于参数的详细解释在文后会有。
+预编译
+:::Bash
+gcc -E test.c -o test.i 或 gcc -E test.c
+预编译之后的文件还是代码文件，比如将会将 stdio.h 文件中的内容插入到自己程序中。
+编译
+:::Bash
+gcc -S test.i -o test.s
+汇编
+:::Bash
+gcc -c test.s -o test.o
+连接
+:::Bash
+gcc test.o -o test">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -109,7 +126,9 @@ gcc -c test.s -o test.o
 </code></pre><p><strong>连接</strong></p>
 <pre><code>:::Bash
 gcc test.o -o test
-</code></pre><h3 id="-">库文件</h3>
+</code></pre><a id="more"></a>
+
+<h3 id="-">库文件</h3>
 <p>函数库实际上就是一些头文件（.h）和库文件（so、或lib、dll）的集合。Linux下的大多数函数都默认将头文件放到 <code>/usr/include/</code> 目录下，而库文件则放到 <code>/usr/lib/</code> 目录下；Windows所使用的库文件主要放在Visual Stido的目录下的 <code>include</code> 和 <code>lib</code> ，以及系统文件夹下。放在 <code>/lib</code> 和 <code>/usr/lib</code> 和 <code>/usr/local/lib</code> 里的库直接用 <code>-l</code> 参数就能链接了（关于 <code>-l</code> 参数见文后详解）。</p>
 <p>Linux下的库文件分为两大类分别是动态链接库（通常以.so结尾）和静态链接库（通常以.a结尾），二者的区别仅在于程序执行时所需的代码是在运行时动态加载的，还是在编译时静态加载的。默认情况下， GCC在链接时优先使用动态链接库，只有当动态链接库不存在时才考虑使用静态链接库，如果需要的话可以在编译时加上-static选项，强制使用静态链接库。</p>
 <p>静态库链接搜索路径顺序：</p>

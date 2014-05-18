@@ -122,132 +122,15 @@ int main()
 } 
 </code></pre><p><strong>Notes:</strong></p>
 <p>一旦上面例子中的变量 <code>t</code> 被创建，该 <code>thread()</code> 函数就在其所在线程中被立即执行， <code>join()</code> 的方法跟POSIX pthread中意义一样。</p>
-<h3 id="-">线程中断</h3>
-<pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
-
-void wait(int seconds) 
-{ 
-    boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
-} 
-
-void thread() 
-{ 
-    try 
-    { 
-        for (int i = 0; i &lt; 5; ++i) 
-        { 
-            wait(1); 
-            std::cout &lt;&lt; i &lt;&lt; std::endl; 
-        } 
-    } 
-    catch (boost::thread_interrupted&amp;) 
-    { 
-
-} 
-
-int main() 
-{ 
-    boost::thread t(thread); 
-    wait(3); 
-    t.interrupt(); 
-    t.join(); 
-} 
-</code></pre><p>在一个线程对象上调用 <code>interrupt()</code> 会中断相应的线程，就是说一个类型为 <code>boost::thread_interrupted</code> 的异常会在这个线程中抛出。 然后这只有在线程达到中断点时才会发生。如果给定的线程不包含任何中断点，简单调用 <code>interrupt()</code> 就不会起作用。每当遇到一个线程中断点，它就会检查 <code>interrupt()</code> 是否被调用过。只有被调用过了， <code>boost::thread_interrupted</code> 异常才会相应地抛出。</p>
-<p>下列函数中包含线程的中断检查点：</p>
-<ul>
-<li>boost::thread::join()</li>
-<li>boost::thread::timed_join()</li>
-<li>boost::thread::try_join_for(),</li>
-<li>boost::thread::try_join_until(),</li>
-<li>boost::condition_variable::wait()</li>
-<li>boost::condition_variable::timed_wait()</li>
-<li>boost::condition_variable::wait_for()</li>
-<li>boost::condition_variable::wait_until()</li>
-<li>boost::condition_variable_any::wait()</li>
-<li>boost::condition_variable_any::timed_wait()</li>
-<li>boost::condition_variable_any::wait_for()</li>
-<li>boost::condition_variable_any::wait_until()</li>
-<li>boost::thread::sleep()</li>
-<li>boost::this_thread::sleep_for()</li>
-<li>boost::this_thread::sleep_until()</li>
-<li>boost::this_thread::interruption_point()</li>
-</ul>
-<h3 id="-">同步</h3>
-<p>设计到线程的地方就会出现竞争条件(race condition)，所以进行同步是必不可少的。</p>
-<p>最简单的 <code>boost::mutex</code> 类。</p>
-<pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
-
-boost::mutex mutex; 
-
-void wait(int seconds) 
-{ 
-    boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
-} 
-
-void thread() 
-{ 
-    for (int i = 0; i &lt; 5; ++i) 
-    { 
-        wait(1); 
-        mutex.lock(); 
-        std::cout &lt;&lt; &quot;Thread &quot; &lt;&lt; boost::this_thread::get_id() &lt;&lt; &quot;: &quot; &lt;&lt; i &lt;&lt; std::endl; 
-        mutex.unlock(); 
-    } 
-} 
-
-int main() 
-{ 
-    boost::thread t1(thread); 
-    boost::thread t2(thread); 
-    t1.join(); 
-    t2.join(); 
-} 
-</code></pre><p>也可以使用 <code>boost::lock_guard</code> 类，来避免直接调用 <code>lock()</code> 和 <code>unlock()</code> 。</p>
-<pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
-
-boost::mutex mutex; 
-
-void wait(int seconds) 
-{ 
-    boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
-} 
-
-void thread() 
-{ 
-    for (int i = 0; i &lt; 5; ++i) 
-    { 
-        wait(1); 
-        boost::lock_guard&lt;boost::mutex&gt; lock(mutex); 
-        std::cout &lt;&lt; &quot;Thread &quot; &lt;&lt; boost::this_thread::get_id() &lt;&lt; &quot;: &quot; &lt;&lt; i &lt;&lt; std::endl; 
-    } 
-} 
-
-int main() 
-{ 
-    boost::thread t1(thread); 
-    boost::thread t2(thread); 
-    t1.join(); 
-    t2.join(); 
-} 
-</code></pre><p><code>boost::lock_guard</code> 在其构造和析构函数分别自动调用 <code>lock()</code> 和 <code>unlock()</code> 。</p>
-<h3 id="reference">Reference</h3>
-<ul>
-<li><p>Boost多线程 <a href="http://zh.highscore.de/cpp/boost/" target="_blank"><a href="http://zh.highscore.de/cpp/boost/">http://zh.highscore.de/cpp/boost/</a></a></p>
-</li>
-<li><p>Boost Thread Documentation <a href="http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html" target="_blank"><a href="http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html">http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html</a></a></p>
-</li>
-</ul>
 
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2013/03/boost-thread/#more" class="more-link">Read More</a>
+          </div>
         
         
       
