@@ -6,7 +6,10 @@
   <title>Connecting to EMR masternode via SSH | Hackecho</title>
   <meta name="author" content="Zhaoyu Li">
   
-  <meta name="description" content="This tutorial will show you how to connect to EMR masternode via SSH. Then you can install your own software packages, change configurations, or submi">
+  <meta name="description" content="This tutorial will show you how to connect to EMR masternode via SSH. Then you can install your own software packages, change configurations, or submit your job manually. 
+Amazon EMR is a flow job. When you submit a job to EMR, it will start a new cluster and then execute your job. When the job is done, the cluster will be shutdown and terminated automically. In this case, you can only use the software provided by Amazon unless you setup some bootstraps to execute some scripts by S3. However, this is a simpler way to keep the cluster and you can SSH login to the masternode and do whatever you want :)
+Creat the cluster
+First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the &quot;Auto-terminate&quot; option to No so that the cluster will wait when no job is running.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -95,6 +98,8 @@
 <p>Amazon EMR is a flow job. When you submit a job to EMR, it will start a new cluster and then execute your job. When the job is done, the cluster will be shutdown and terminated automically. In this case, you can only use the software provided by Amazon unless you setup some bootstraps to execute some scripts by S3. However, this is a simpler way to keep the cluster and you can SSH login to the masternode and do whatever you want :)</p>
 <h3 id="creat-the-cluster">Creat the cluster</h3>
 <p>First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the &quot;Auto-terminate&quot; option to No so that the cluster will wait when no job is running.</p>
+<a id="more"></a>
+
 <p><img src="/images/2014/05/emr-1.png" alt="emr-1"></p>
 <p>And also, you should select your key pair file in the configurations, in this case it is EMR.pem.</p>
 <p>For this cluster, I use Hadoop 2.2.0 and add Pig Hive and HBase. It contains three m1-large nodes in total.</p>

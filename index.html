@@ -94,25 +94,15 @@
 <p>Amazon EMR is a flow job. When you submit a job to EMR, it will start a new cluster and then execute your job. When the job is done, the cluster will be shutdown and terminated automically. In this case, you can only use the software provided by Amazon unless you setup some bootstraps to execute some scripts by S3. However, this is a simpler way to keep the cluster and you can SSH login to the masternode and do whatever you want :)</p>
 <h3 id="creat-the-cluster">Creat the cluster</h3>
 <p>First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the &quot;Auto-terminate&quot; option to No so that the cluster will wait when no job is running.</p>
-<p><img src="/images/2014/05/emr-1.png" alt="emr-1"></p>
-<p>And also, you should select your key pair file in the configurations, in this case it is EMR.pem.</p>
-<p>For this cluster, I use Hadoop 2.2.0 and add Pig Hive and HBase. It contains three m1-large nodes in total.</p>
-<h3 id="connect-to-the-masternode">Connect to the masternode</h3>
-<p>Then click the &quot;Start the cluster&quot; button to start the cluster. After several minutes, when the status of the cluster becomes &quot;waiting&quot;, you can continue to the next step. </p>
-<p>Note: make sure you have downloaded the key pair, which is .pem file.</p>
-<p>In the overview of the cluster, you can see a Master Public DNS address, which is the address you need to connect to the masternode.</p>
-<p><img src="/images/2014/05/emr-2.png" alt="emr-2"></p>
-<p>Assuem your pem file is EMR.pem, you can use the following command to connect to the masternode:</p>
-<pre><code>ssh hadoop@ec2-54-187-3-164.us-west-2.compute.amazonaws.com -i EMR.pem
-</code></pre><p>Notice that the username you use is &#39;hadoop&#39;.</p>
-<p>Now you have connected to the masternode.</p>
-<p><img src="/images/2014/05/emr-3.png" alt="emr-3"></p>
-<p>As you can see, the mahout is installed in this version.</p>
 
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2014/05/connecting-to-emr-masternode-via-ssh/#more" class="more-link">Read More</a>
+          </div>
         
         
       
