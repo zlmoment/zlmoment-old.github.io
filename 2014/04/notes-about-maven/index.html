@@ -15,7 +15,7 @@ groupId: com.hackecho.hadoop
 artifactId: WordCount
 version: 1.0
 package: com.hackecho.hadoop.example
-You&#39;ll get following project structure:">
+You’ll get following project structure:">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -101,41 +101,42 @@ You&#39;ll get following project structure:">
     <div class="entry">
       
         <p>Here is a brief introduction to Maven, and some basic commands.</p>
-<h2 id="creating-project">Creating Project</h2>
+<h2 id="Creating_Project">Creating Project</h2>
 <p>Command:</p>
-<pre><code>mvn archetype:generate
+<pre><code><span class="tag">mvn</span> <span class="tag">archetype</span><span class="pseudo">:generate</span>
 </code></pre><p>In the interactive mode, here are some examples to show what they mean:</p>
-<pre><code>groupId: com.hackecho.hadoop
-artifactId: WordCount
-version: 1.0
-package: com.hackecho.hadoop.example
-</code></pre><p>You&#39;ll get following project structure:</p>
+<pre><code><span class="label">groupId:</span> <span class="keyword">com</span><span class="preprocessor">.hackecho</span><span class="preprocessor">.hadoop</span>
+<span class="label">artifactId:</span> WordCount
+<span class="label">version:</span> <span class="number">1.0</span>
+<span class="label">package:</span> <span class="keyword">com</span><span class="preprocessor">.hackecho</span><span class="preprocessor">.hadoop</span><span class="preprocessor">.example</span>
+</code></pre><p>You’ll get following project structure:</p>
 <a id="more"></a>
 
-<pre><code>WordCount
-|-- pom.xml
-`-- src
-    |-- main
-    |   `-- java
-    |       `-- com
-    |           `-- hackecho
-    |               `-- hadoop
-    |                   `-- example
-    |                       `-- App.java
-    `-- test
-        `-- java
-            `-- com
-                `-- hackecho
-                    `-- hadoop
-                        `-- example
-                            `-- AppTest.java
+<pre><code><span class="comment">WordCount</span>
+<span class="comment">|</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">pom</span><span class="string">.</span><span class="comment">xml</span>
+<span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">src</span>
+    <span class="comment">|</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">main</span>
+    <span class="comment">|</span>   <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">java</span>
+    <span class="comment">|</span>       <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">com</span>
+    <span class="comment">|</span>           <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">hackecho</span>
+    <span class="comment">|</span>               <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">hadoop</span>
+    <span class="comment">|</span>                   <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">example</span>
+    <span class="comment">|</span>                       <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">App</span><span class="string">.</span><span class="comment">java</span>
+    <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">test</span>
+        <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">java</span>
+            <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">com</span>
+                <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">hackecho</span>
+                    <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">hadoop</span>
+                        <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">example</span>
+                            <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">AppTest</span><span class="string">.</span><span class="comment">java</span>
 </code></pre><p>or you can use un-interative mode directly:</p>
-<pre><code>mvn archetype:generate -DgroupId=com.hackecho.hadoop -DartifactId=WordCount -DinteractiveMode=false
-</code></pre><h2 id="pom">POM</h2>
+<pre><code>mvn archetype:generate <span class="attribute">-DgroupId</span><span class="subst">=</span>com<span class="built_in">.</span>hackecho<span class="built_in">.</span>hadoop <span class="attribute">-DartifactId</span><span class="subst">=</span>WordCount <span class="attribute">-DinteractiveMode</span><span class="subst">=</span><span class="literal">false</span>
+</code></pre><h2 id="POM">POM</h2>
 <p>Project Object Model. Similar to <code>build.xml</code> in ant. </p>
-<p>POM reference: <a href="http://maven.apache.org/pom.html" target="_blank">Link</a></p>
+<p>POM reference: <a href="http://maven.apache.org/pom.html" target="_blank" rel="external">Link</a></p>
 <p>An example POM with Hadoop 2.2.0 included:</p>
-<figure class="highlight xml"><figcaption><span>pom.xml </span></figcaption><pre><span class="pi">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<figure class="highlight xml"><figcaption><span>pom.xml </span></figcaption><pre>
+<span class="pi">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 
 <span class="tag">&lt;<span class="title">project</span> <span class="attribute">xmlns</span>=<span class="value">"http://maven.apache.org/POM/4.0.0"</span> <span class="attribute">xmlns:xsi</span>=<span class="value">"http://www.w3.org/2001/XMLSchema-instance"</span>
   <span class="attribute">xsi:schemaLocation</span>=<span class="value">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"</span>&gt;</span>
@@ -177,10 +178,9 @@ package: com.hackecho.hadoop.example
 <span class="tag">&lt;/<span class="title">project</span>&gt;</span>
 </pre></figure>
 
-
-<h2 id="commands">Commands</h2>
+<h2 id="Commands">Commands</h2>
 <p>Package:</p>
-<pre><code>mvn package
+<pre><code>mvn <span class="built_in">package</span>
 </code></pre><p>Compile:</p>
 <pre><code>mvn compile
 </code></pre><p>Compile and test:</p>
@@ -188,11 +188,11 @@ package: com.hackecho.hadoop.example
 </code></pre><p>Clean ./target:</p>
 <pre><code>mvn clean
 </code></pre><p>Change project to Eclipse project:</p>
-<pre><code>mvn eclipse:eclipse
+<pre><code><span class="tag">mvn</span> <span class="tag">eclipse</span><span class="pseudo">:eclipse</span>
 </code></pre><p>Undo previous command:</p>
-<pre><code>mvn eclipse:clean
-</code></pre><h2 id="references">References</h2>
-<p><a href="http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html" target="_blank">Maven in 5 Minutes</a></p>
+<pre><code><span class="tag">mvn</span> <span class="tag">eclipse</span><span class="pseudo">:clean</span>
+</code></pre><h2 id="References">References</h2>
+<p><a href="http://maven.apache.org/guides/getting-started/maven-in-five-minutes.html" target="_blank" rel="external">Maven in 5 Minutes</a></p>
 
       
     </div>
@@ -313,7 +313,7 @@ package: com.hackecho.hadoop.example
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -343,7 +343,7 @@ package: com.hackecho.hadoop.example
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

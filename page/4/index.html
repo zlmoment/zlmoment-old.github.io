@@ -96,7 +96,7 @@
 <p>我们把原服务器格式化重新安装了Ubuntu 11.04。之前想安装Windows Server 2003，不过又想正好借机实践一下近期学的Linux知识，于是果断换了Ubuntu系统。考虑到使用方便问题，没有用Server版，桌面版够用。</p>
 <p>安装的过程还算顺利，服务器配置很强大，跑个Ubuntu还是很顺利的。然后就遇到了第一个问题，也是我们今天遇到的最坑爹，最苦恼，最没有办法的问题。。</p>
 <p>由于是内网部署，我们配好静态IP后，竟然发现不能访问！可以ping通，但访问时一直都是Forbidden状态。我们上网查各种方法来试图解决，都无法打通内网和外网这个桥梁。唯一能访问的知识同域内的几个网站，比如特思论坛。更痛苦的是无法连接上交大的开源镜像，导致Ubuntu无法配置PHP服务器环境。。。</p>
-<p>其实问题很简单，管理员的内外网端口映射已经做好，但防火墙配置出现问题，把我们的所有请求都拦截了...也就是说，我们需要联系管理员配置下网络防火墙即可。。。</p>
+<p>其实问题很简单，管理员的内外网端口映射已经做好，但防火墙配置出现问题，把我们的所有请求都拦截了…也就是说，我们需要联系管理员配置下网络防火墙即可。。。</p>
 <p>接着我们配置好了PHP运行环境，将我们的项目进行部署。这里的问题都是关于ThinkPHP的了，大牛可以直接略过。</p>
 
       
@@ -136,7 +136,7 @@
       
         <p><img src="/images/2011/10/a8206193_s-300x199.jpg" alt=""></p>
 <hr>
-<p>09年10月末，秋殇（一）发表在我的QQ空间里。后来我把它导入了这个博客（地址：<a href="http://www.hackecho.com/" target="_blank">《驻足在马路边的秋殇》</a>），留存纪念。如今，两年过去了，我已很少再动文字。偶尔会去红袖一把，期望能添些墨香，或者仅仅是不想失去这种感觉。如今的时间不多，或者，心累了。</p>
+<p>09年10月末，秋殇（一）发表在我的QQ空间里。后来我把它导入了这个博客（地址：<a href="http://www.hackecho.com/" target="_blank" rel="external">《驻足在马路边的秋殇》</a>），留存纪念。如今，两年过去了，我已很少再动文字。偶尔会去红袖一把，期望能添些墨香，或者仅仅是不想失去这种感觉。如今的时间不多，或者，心累了。</p>
 <p>秋，到了。</p>
 <p>少年不识愁滋味，爱上层楼，爱上层楼，为赋新词强说愁。而今识尽愁滋味，欲说还休，欲说还休，却道天凉好个秋。</p>
 <p>不及幼安忧国忧民，却也能体会此情此景。秋殇总能让人若有所感，泛起一些思绪，安静下来，仔细地体会。</p>
@@ -332,7 +332,7 @@
     </header>
     <div class="entry">
       
-        <p>在前文一篇文章《<a href="http://www.hackecho.com/" target="_blank">PHP中JSON的处理</a>》中，写到了JSON数据的生成和解析，后来一想，如果服务器既能返回JSON又能返回XML不是更好吗，至少多了一种选择。因为JSON和XML都是一种数据表示方法，相互转换起来应该不难。于是简单的到网上搜了一下，搜到了一些结果，但貌似所有的结构都源自一篇文章，内容都一样，可惜的是，那片文章中有严重的错误（竟然没有一个人提出来...），后来经过简单的修正和调试，终于得到了完美的转换代码（也有不完美，暂时还无法转换索引数组，但关联数组没有问题），现分享如下：）</p>
+        <p>在前文一篇文章《<a href="http://www.hackecho.com/" target="_blank" rel="external">PHP中JSON的处理</a>》中，写到了JSON数据的生成和解析，后来一想，如果服务器既能返回JSON又能返回XML不是更好吗，至少多了一种选择。因为JSON和XML都是一种数据表示方法，相互转换起来应该不难。于是简单的到网上搜了一下，搜到了一些结果，但貌似所有的结构都源自一篇文章，内容都一样，可惜的是，那片文章中有严重的错误（竟然没有一个人提出来…），后来经过简单的修正和调试，终于得到了完美的转换代码（也有不完美，暂时还无法转换索引数组，但关联数组没有问题），现分享如下：）</p>
 
       
     </div>
@@ -422,9 +422,9 @@
         <p>当一个程序第一次启动时，Android会同时启动一个对应的主线程(Main Thread)，主线程主要负责处理与UI相关的事件，如：用户的按键事件，用户接触屏幕的事件以及屏幕绘图事件，并把相关的事件分发到对应的组件进行处理。所以主线程通常又被叫做UI线程。</p>
 <p>比如说从网上获取一个网页，在一个TextView中将其源代码显示出来，这种涉及到网络操作的程序一般都是需要开一个线程完成网络访问，但是在获得页面源码后，是不能直接在网络操作线程中调用TextView.setText()的，因为其他线程中是不能直接访问主UI线程成员。</p>
 <p>Android提供了几种在其他线程中访问UI线程的方法：</p>
-<pre><code>Activity.runOnUiThread( Runnable )
-View.post( Runnable )
-View.postDelayed( Runnable, long )
+<pre><code>Activity<span class="preprocessor">.runOnUiThread</span>( Runnable )
+View<span class="preprocessor">.post</span>( Runnable )
+View<span class="preprocessor">.postDelayed</span>( Runnable, long )
 Hanlder
 </code></pre><p>这些类或方法同样会使你的代码很复杂很难理解。然而当你需要实现一些很复杂的操作并需要频繁地更新UI时这会变得更糟糕。</p>
 <p>为了解决这个问题，Android 1.5提供了一个工具类：AsyncTask，它使创建需要与用户界面交互的长时间运行的任务变得更简单。不需要借助线程和Handler即可实现。</p>
@@ -636,7 +636,7 @@ Hanlder
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -666,7 +666,7 @@ Hanlder
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

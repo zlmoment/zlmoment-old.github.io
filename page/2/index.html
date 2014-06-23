@@ -93,85 +93,85 @@
         <p>这学期选了两门挺有意思的课，一门叫Programming High Performance Computing，还有一门Parallel and Distributed Processing。两周刚刚上下来，感觉传递的知识量有我之前悠哉悠哉一学期学到的都多。不知道是美国本科生的基础好还是美国大学的教育好，同班的美国同学接受这些知识看起来都毫无压力。不过语言确实是一个因素，比如HPC的老师两节课讲了几十个英文缩写，还都与电路有关，感觉回到了当年狂补计算机组成原理的时候。这些英文缩写估计对于美国学生接受起来要更好一点吧。我只有更努力了。</p>
 <p>重新好好学习一下以前的知识，认真记住。PDP的教授第一节课说了一句话让我印象非常深刻，他说：“They value you not because what you can search but what you can do.”其实非常羡慕老教授课堂上信手拈来的各种复杂代码和命令参数，只靠Google是不行的。</p>
 <p>本篇博客就来复习一下Makefile吧，这两门课每次交作业都要求必须包含Makefile，就像HPC的Slides中说的：“Real programmers use Makefiles!”</p>
-<h3 id="outline">Outline</h3>
+<h3 id="Outline">Outline</h3>
 <ul>
-<li><p>What&#39;s Makefile</p>
+<li><p>What’s Makefile</p>
 </li>
 <li><p>Generating Multiple Targets</p>
 </li>
 <li><p>Macros</p>
 </li>
 </ul>
-<h3 id="what-s-makefile">What&#39;s Makefile</h3>
+<h3 id="What’s_Makefile">What’s Makefile</h3>
 <p>Under the UNIX shell, make is a command generator. The makefile is a description file which creates a sequence of commands for execution by the UNIX shell.</p>
 <p>Generally, a program is built from one or more files and each of these files may have other files as prerequisites in turn. In a makefile, the prerequisites should be carefully stated. There are two important types of lines in a description file. A dependency line or rule line contains a colon, and a command line always starts <strong>with a tab</strong>.</p>
-<p>To the left of the colon on the dependency line is a target; to the right of the colon are the target&#39;s prerequisites. If myprog has prerequisites a.c and b.c, we have</p>
-<pre><code> myprog :  a.c  b.c
+<p>To the left of the colon on the dependency line is a target; to the right of the colon are the target’s prerequisites. If myprog has prerequisites a.c and b.c, we have</p>
+<pre><code> myprog :  a<span class="preprocessor">.c</span>  b<span class="preprocessor">.c</span>
 </code></pre><p>The command lines just tells make how to make the target. For example,</p>
-<pre><code> myprog : a.c b.c
-      gcc -o myprog a.c b.c
+<pre><code> myprog : a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
+      gcc -o myprog a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
 </code></pre><p>Then, type <code>make</code>, the UNIX prompt will excute the command as you typed.</p>
-<h3 id="generating-multiple-targets">Generating Multiple Targets</h3>
+<h3 id="Generating_Multiple_Targets">Generating Multiple Targets</h3>
 <p>If we want to generate more than one programs, for example, let program prog01 depend on a.c and b.c, prog02 depend on m.c and n.c, and prog03 depend on u.c, v.c and w.c. </p>
 <pre><code> all : prog01 prog02 prog03
 
- prog01 : a.c b.c
-      gcc -o prog01 a.c b.c
+ prog01 : a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
+      gcc -o prog01 a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
 
- prog02 : m.c n.c
-      gcc -o prog02 m.c n.c
+ prog02 : m<span class="preprocessor">.c</span> n<span class="preprocessor">.c</span>
+      gcc -o prog02 m<span class="preprocessor">.c</span> n<span class="preprocessor">.c</span>
 
- prog03 : u.c v.c w.c
-      gcc -o prog03 u.c v.c w.c
+ prog03 : u<span class="preprocessor">.c</span> v<span class="preprocessor">.c</span> w<span class="preprocessor">.c</span>
+      gcc -o prog03 u<span class="preprocessor">.c</span> v<span class="preprocessor">.c</span> w<span class="preprocessor">.c</span>
 </code></pre><p>Thus, if one of these three programs is not up-to-date, <code>all</code> will be generated which in turn causes all programs compiled. If the dependency line defining <code>all</code> is the first line of your Makefile, just type <code>make</code> will be the same as typing <code>make all</code>.</p>
-<h3 id="macros">Macros</h3>
-<p>A macro definition is a line containing an equal sign (=). When make encounters a name that appears to the left of the equal sign, that name is replaced by the contents to the right of the equal sign. It is not necessary to delimit the text string with double quote (&quot;) or single quote (&#39;). If they are used, they become part of the text string.</p>
+<h3 id="Macros">Macros</h3>
+<p>A macro definition is a line containing an equal sign (=). When make encounters a name that appears to the left of the equal sign, that name is replaced by the contents to the right of the equal sign. It is not necessary to delimit the text string with double quote (“) or single quote (‘). If they are used, they become part of the text string.</p>
 <p>If we have the macro definition as follows,</p>
-<pre><code> NAME = Zhaoyu Li
+<pre><code><span class="attribute"> NAME </span>=<span class="string"> Zhaoyu Li</span>
 </code></pre><p>Then subsequent references to <code>${NAME}</code> or <code>$(NAME)</code> are interpreted as <code>Zhaoyu Li</code>.</p>
-<h3 id="examples">Examples</h3>
+<h3 id="Examples">Examples</h3>
 <p>Here are two examples,</p>
-<pre><code> SUBDIRS = src analyze
+<pre><code> <span class="constant">SUBDIRS</span> = src analyze
 
- all: subdirs test analysis
-      @echo &quot;After Build, run &#39;make analysis&#39; to run analysis&quot;
+ <span class="symbol">all:</span> subdirs test analysis
+      <span class="variable">@echo</span> <span class="string">"After Build, run 'make analysis' to run analysis"</span>
 
- test: 
-      @echo &quot;About to self-test&quot;; ./src/hw1
+ <span class="symbol">test:</span> 
+      <span class="variable">@echo</span> <span class="string">"About to self-test"</span>; ./src/hw1
 
- analysis: 
-      @cd analyze &amp;&amp; make analysis
+ <span class="symbol">analysis:</span> 
+      <span class="variable">@cd</span> analyze &amp;&amp; make analysis
 
- subdirs:
-      @for dir in $(SUBDIRS); do \
-           $(MAKE) -C $$dir; \
+ <span class="symbol">subdirs:</span>
+      <span class="variable">@for</span> dir <span class="keyword">in</span> <span class="variable">$(</span><span class="constant">SUBDIRS</span>); <span class="keyword">do</span> \
+           <span class="variable">$(</span><span class="constant">MAKE</span>) -<span class="constant">C</span> <span class="variable">$$</span>dir; \
       done
 
- clean:
-      @for dir in $(SUBDIRS); do \
-           $(MAKE) -C $$dir clean; \
+ <span class="symbol">clean:</span>
+      <span class="variable">@for</span> dir <span class="keyword">in</span> <span class="variable">$(</span><span class="constant">SUBDIRS</span>); <span class="keyword">do</span> \
+           <span class="variable">$(</span><span class="constant">MAKE</span>) -<span class="constant">C</span> <span class="variable">$$</span>dir clean; \
       done
-</code></pre><p>Let&#39;s see another example. Suppose you are provided with two files, MyThreads.h and MyThreads.o. The former is a header file that has to be included into your source files and the latter is a library of functions for you to use. In other words, your source files in which multithreaded capability is used depend on MyThreads.h and your executable depends on MyThreads.o.</p>
+</code></pre><p>Let’s see another example. Suppose you are provided with two files, MyThreads.h and MyThreads.o. The former is a header file that has to be included into your source files and the latter is a library of functions for you to use. In other words, your source files in which multithreaded capability is used depend on MyThreads.h and your executable depends on MyThreads.o.</p>
 <p>Suppose your assignment has the following files, prog01.c (the main function), and abc.c, def.c and xyz.c. All of these files contain access to multithread functions defined in MyThreads.h. You also designed some utility functions collected in files ut1.c and ut2.c. None of these two have access to the multithread capability. However, in your judgment, you believe any change made to ut1.c and ut2.c requires recompilation of abc.c and xyz.c. Therefore, on the source level, prog01.c, abc.c, def.c and xyz.c depend on MyThreads.h, and abc.c and xyz.c also depend on ut1.c and ut2.c. Suppose the final executable is to be called prog01.</p>
 <pre><code> CC = gcc -ansi
 
- prog01 : prog01.o abc.o def.o xyz.o ut1.o ut2.o MyThreads.o
-      ${CC} -o prog01 prog01.o abc.o def.o xyz.o ut1.o ut2.o MyThreads.o -lthread
+ prog01 : prog01<span class="preprocessor">.o</span> abc<span class="preprocessor">.o</span> def<span class="preprocessor">.o</span> xyz<span class="preprocessor">.o</span> ut1<span class="preprocessor">.o</span> ut2<span class="preprocessor">.o</span> MyThreads<span class="preprocessor">.o</span>
+      ${CC} -o prog01 prog01<span class="preprocessor">.o</span> abc<span class="preprocessor">.o</span> def<span class="preprocessor">.o</span> xyz<span class="preprocessor">.o</span> ut1<span class="preprocessor">.o</span> ut2<span class="preprocessor">.o</span> MyThreads<span class="preprocessor">.o</span> -lthread
 
- prog01.o : prog01.c MyThreads.h
-      ${CC} -c prog01.c
+ prog01<span class="preprocessor">.o</span> : prog01<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
+      ${CC} -c prog01<span class="preprocessor">.c</span>
 
- abc.o : abc.c c ut2.c MyThreads.h
-      ${CC} -c abc.c
- def.o : def.c MyThreads.h
-      ${CC} -c def.c
- xyz.o : xyz.c ut1.c ut2.c MyThreads.h
-      ${CC} -c xyz.c
+ abc<span class="preprocessor">.o</span> : abc<span class="preprocessor">.c</span> c ut2<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
+      ${CC} -c abc<span class="preprocessor">.c</span>
+ def<span class="preprocessor">.o</span> : def<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
+      ${CC} -c def<span class="preprocessor">.c</span>
+ xyz<span class="preprocessor">.o</span> : xyz<span class="preprocessor">.c</span> ut1<span class="preprocessor">.c</span> ut2<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
+      ${CC} -c xyz<span class="preprocessor">.c</span>
 
- ut1.o : ut1.c
-      ${CC} -c ut1.c
- ut2.o : ut2.c
-      ${CC} -c ut2.c
+ ut1<span class="preprocessor">.o</span> : ut1<span class="preprocessor">.c</span>
+      ${CC} -c ut1<span class="preprocessor">.c</span>
+ ut2<span class="preprocessor">.o</span> : ut2<span class="preprocessor">.c</span>
+      ${CC} -c ut2<span class="preprocessor">.c</span>
 </code></pre><p>Above is the basic concepts of Makefile. If you want to be more expert, try the offcial documents.</p>
 
       
@@ -206,7 +206,7 @@
     <div class="entry">
       
         <p>I am writing this article for a memo of CS8860, Parallel and distributed system.</p>
-<h3 id="overview">Overview</h3>
+<h3 id="Overview">Overview</h3>
 <p>Technically, a thread is defined as an independent stream of instructions that can be scheduled to run as such by the operating system.</p>
 <p>In the UNIX environment a thread:</p>
 <ul>
@@ -220,11 +220,11 @@
 </li>
 <li><p>Dies if the parent process dies - or something similar</p>
 </li>
-<li><p>Is &quot;lightweight&quot; because most of the overhead has already been accomplished through the creation of its process.</p>
+<li><p>Is “lightweight” because most of the overhead has already been accomplished through the creation of its process.</p>
 </li>
 </ul>
 <p>All threads within a process share the same address space.</p>
-<h3 id="several-common-models">Several common models</h3>
+<h3 id="Several_common_models">Several common models</h3>
 <p>Several common models for threaded programs exist:</p>
 <ul>
 <li><p><strong>Manager/worker:</strong> a single thread, the manager assigns work to other threads, the workers. Typically, the manager handles all input and parcels out work to the other tasks. At least two forms of the manager/worker model are common: static worker pool and dynamic worker pool.</p>
@@ -234,7 +234,7 @@
 <li><p><strong>Peer:</strong> similar to the manager/worker model, but after the main thread creates other threads, it participates in the work.</p>
 </li>
 </ul>
-<h3 id="shared-memory-model-">Shared Memory Model:</h3>
+<h3 id="Shared_Memory_Model:">Shared Memory Model:</h3>
 <ul>
 <li><p>All threads have access to the same global, shared memory</p>
 </li>
@@ -243,13 +243,13 @@
 <li><p>Programmers are responsible for synchronizing access (protecting) globally shared data.</p>
 </li>
 </ul>
-<h3 id="the-pthreads-api">The Pthreads API</h3>
+<h3 id="The_Pthreads_API">The Pthreads API</h3>
 <p>The Pthreads API contains around 100 subroutines. This article will focus on a subset of these.</p>
-<h3 id="compiling-threaded-programs">Compiling Threaded Programs</h3>
-<pre><code>INTEL Linux:          icc -pthread
-PGI Linux:            pgcc -lpthread
-GNU Linux:            gcc -pthread
-</code></pre><h3 id="threading-management">Threading Management</h3>
+<h3 id="Compiling_Threaded_Programs">Compiling Threaded Programs</h3>
+<pre><code>INTEL Linux:          icc <span class="attribute">-pthread</span>
+PGI Linux:            pgcc <span class="attribute">-lpthread</span>
+GNU Linux:            gcc <span class="attribute">-pthread</span>
+</code></pre><h3 id="Threading_Management">Threading Management</h3>
 <p><strong> Creating and Terminating Threads </strong></p>
 <p>Initially, your <code>main()</code> program comprises a single, default thread. All other threads must be explicitly created by the programmer.</p>
 <p><code>pthread_create</code> creates a new thread and makes it executable. This routine can be called any number of times from anywhere within your code.</p>
@@ -267,7 +267,7 @@ GNU Linux:            gcc -pthread
 <p>Once created, threads are peers, and may create other threads. There is no implied hierarchy or dependency between threads.</p>
 <p>There are several ways in which a thread may be terminated:</p>
 <ul>
-<li><p>The thread returns normally from its starting routine. It&#39;s work is done.</p>
+<li><p>The thread returns normally from its starting routine. It’s work is done.</p>
 </li>
 <li><p>The thread makes a call to the <code>pthread_exit</code> subroutine - whether its work is done or not.</p>
 </li>
@@ -280,28 +280,28 @@ GNU Linux:            gcc -pthread
 </ul>
 <p>Pay attention, the pthread_exit() routine does not close files; any files opened inside the thread will remain open after the thread is terminated.</p>
 <p>Example:</p>
-<pre><code>#include &lt;pthread.h&gt; 
-#include &lt;stdio.h&gt; 
-#define NUM_THREADS  5 
+<pre><code><span class="comment">#include &lt;pthread.h&gt; </span>
+<span class="comment">#include &lt;stdio.h&gt; </span>
+<span class="comment">#define NUM_THREADS  5 </span>
 
-void *PrintHello(void *threadid) 
+void <span class="variable">*PrintHello</span>(void <span class="variable">*threadid</span>) 
 { 
-   int tid; 
-   tid = (int)threadid; 
-   printf(&quot;Hello World! It&#39;s me, thread #%d!\n&quot;, tid); 
+   <span class="keyword">int</span> tid; 
+   tid = (<span class="keyword">int</span>)threadid; 
+   <span class="keyword">printf</span>(<span class="string">"Hello World! It's me, thread #<span class="variable">%d</span>!\n"</span>, tid); 
    pthread_exit(NULL); 
 } 
 
-int main (int argc, char *argv[]) 
+<span class="keyword">int</span> main (<span class="keyword">int</span> argc, char <span class="variable">*argv</span>[]) 
 { 
    pthread_t threads[NUM_THREADS]; 
-   int rc, t; 
-   for(t=0; t&lt;NUM_THREADS; t++){ 
-      printf(&quot;In main: creating thread %d\n&quot;, t); 
-      rc = pthread_create(&amp;threads[t], NULL, PrintHello, (void *)t); 
-      if (rc){ 
-         printf(&quot;ERROR; return code from pthread_create() is %d\n&quot;, rc); 
-         exit(-1); 
+   <span class="keyword">int</span> rc, t; 
+   <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++){ 
+      <span class="keyword">printf</span>(<span class="string">"In main: creating thread <span class="variable">%d</span>\n"</span>, t); 
+      rc = pthread_create(&amp;threads[t], NULL, PrintHello, (void <span class="variable">*)</span>t); 
+      <span class="keyword">if</span> (rc){ 
+         <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_create() is <span class="variable">%d</span>\n"</span>, rc); 
+         <span class="keyword">exit</span>(-<span class="number">1</span>); 
       } 
    } 
    pthread_exit(NULL); 
@@ -309,9 +309,9 @@ int main (int argc, char *argv[])
 </code></pre><p><strong> Passing Arguments to Threads </strong></p>
 <p>All arguments must be passed by reference and cast to (void *).</p>
 <p><strong> Joining and Detaching Threads </strong></p>
-<pre><code>:::C
-int pthread_join(pthread_t target_thread, void **status);
-</code></pre><p>&quot;Joining&quot; is one way to accomplish synchronization between threads. This means that some other thread is required to call pthread_join to collect a terminated thread, in a fashion similar to the requirement for a parent process to collect status for terminated child processes.For example:</p>
+<pre><code><span class="attribute">:::C</span>
+int pthread<span class="emphasis">_join(pthread_</span>t target<span class="emphasis">_thread, void **status);</span>
+</code></pre><p>“Joining” is one way to accomplish synchronization between threads. This means that some other thread is required to call pthread_join to collect a terminated thread, in a fashion similar to the requirement for a parent process to collect status for terminated child processes.For example:</p>
 <p><a href="/images/2013/02/forkjoin.gif"><img src="/images/2013/02/forkjoin.gif" alt=""></a></p>
 <p>The <code>pthread_join()</code> subroutine blocks the calling thread until the specified threadid thread terminates.</p>
 <p>To explicitly create a thread as joinable or detached, the attr argument in the <code>pthread_create()</code> routine is used. The typical 4 step process is:</p>
@@ -327,69 +327,69 @@ int pthread_join(pthread_t target_thread, void **status);
 </ul>
 <p>Example:</p>
 <pre><code>:::C
-/*****************************************************************************
- * FILE: join.c
+/<span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span>*
+ * FILE: <span class="keyword">join</span>.c
  * DESCRIPTION:
- *   This example demonstrates how to &quot;wait&quot; for thread completions by using
- *   the Pthread join routine.  Threads are explicitly created in a joinable
- *   state for portability reasons. Use of the pthread_exit status argument is
+ *   This example demonstrates how to <span class="string">"wait"</span> <span class="keyword">for</span> thread completions by using
+ *   the Pthread <span class="keyword">join</span> routine.  Threads are explicitly created in a joinable
+ *   <span class="keyword">state</span> <span class="keyword">for</span> portability reasons. Use of the pthread_exit status argument is
  *   also shown. Compare to detached.c
- * AUTHOR: 8/98 Blaise Barney
- * LAST REVISED:  01/30/09
- ******************************************************************************/
-#include &lt;pthread.h&gt;
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#define NUM_THREADS    4
+ * AUTHOR: <span class="number">8</span>/<span class="number">98</span> Blaise Barney
+ * LAST REVISED:  <span class="number">01</span>/<span class="number">30</span>/09
+ <span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span>/
+<span class="comment">#include &lt;pthread.h&gt;</span>
+<span class="comment">#include &lt;stdio.h&gt;</span>
+<span class="comment">#include &lt;stdlib.h&gt;</span>
+<span class="comment">#define NUM_THREADS    4</span>
 
-void *BusyWork(void *t)
+void <span class="variable">*BusyWork</span>(void <span class="variable">*t</span>)
 {
-    int i;
+    <span class="keyword">int</span> i;
     long tid;
-    double result=0.0;
+    double result=<span class="number">0</span>.<span class="number">0</span>;
     tid = (long)t;
-    printf(&quot;Thread %ld starting...\n&quot;,tid);
-    for (i=0; i&lt;1000000; i++)
+    <span class="keyword">printf</span>(<span class="string">"Thread <span class="variable">%ld</span> starting...\n"</span>,tid);
+    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">1000000</span>; i++)
     {
-        result = result + sin(i) * tan(i);
+        result = result + <span class="keyword">sin</span>(i) * tan(i);
     }
-    printf(&quot;Thread %ld done. Result = %e\n&quot;,tid, result);
-    pthread_exit((void*) t);
+    <span class="keyword">printf</span>(<span class="string">"Thread <span class="variable">%ld</span> done. Result = <span class="variable">%e</span>\n"</span>,tid, result);
+    pthread_exit((void<span class="variable">*)</span> t);
 }
 
-int main (int argc, char *argv[])
+<span class="keyword">int</span> main (<span class="keyword">int</span> argc, char <span class="variable">*argv</span>[])
 {
     pthread_t thread[NUM_THREADS];
     pthread_attr_t attr;
-    int rc;
+    <span class="keyword">int</span> rc;
     long t;
-    void *status;
+    void <span class="variable">*status</span>;
 
-    /* Initialize and set thread detached attribute */
+    <span class="regexp">/* Initialize and set thread detached attribute */</span>
     pthread_attr_init(&amp;attr);
     pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_JOINABLE);
 
-    for(t=0; t&lt;NUM_THREADS; t++) {
-        printf(&quot;Main: creating thread %ld\n&quot;, t);
-        rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (void *)t);
-        if (rc) {
-            printf(&quot;ERROR; return code from pthread_create() is %d\n&quot;, rc);
-            exit(-1);
+    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++) {
+        <span class="keyword">printf</span>(<span class="string">"Main: creating thread <span class="variable">%ld</span>\n"</span>, t);
+        rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (void <span class="variable">*)</span>t);
+        <span class="keyword">if</span> (rc) {
+            <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_create() is <span class="variable">%d</span>\n"</span>, rc);
+            <span class="keyword">exit</span>(-<span class="number">1</span>);
         }
     }
 
-    /* Free attribute and wait for the other threads */
+    /* Free attribute <span class="keyword">and</span> <span class="keyword">wait</span> <span class="keyword">for</span> the other threads <span class="variable">*/</span>
     pthread_attr_destroy(&amp;attr);
-    for(t=0; t&lt;NUM_THREADS; t++) {
+    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++) {
         rc = pthread_join(thread[t], &amp;status);
-        if (rc) {
-            printf(&quot;ERROR; return code from pthread_join() is %d\n&quot;, rc);
-            exit(-1);
+        <span class="keyword">if</span> (rc) {
+            <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_join() is <span class="variable">%d</span>\n"</span>, rc);
+            <span class="keyword">exit</span>(-<span class="number">1</span>);
         }
-        printf(&quot;Main: completed join with thread %ld having a status of %ld\n&quot;,t,(long)status);
+        <span class="keyword">printf</span>(<span class="string">"Main: completed join with thread <span class="variable">%ld</span> having a status of <span class="variable">%ld</span>\n"</span>,t,(long)status);
     }
 
-    printf(&quot;Main: program completed. Exiting.\n&quot;);
+    <span class="keyword">printf</span>(<span class="string">"Main: program completed. Exiting.\n"</span>);
     pthread_exit(NULL);
 }
 </code></pre>
@@ -429,91 +429,90 @@ int main (int argc, char *argv[])
 <p>我们已生成斐波那契数列为例，来循序渐进了解yield。</p>
 <p>生成斐波那契数列：</p>
 <pre><code>:::Python
-def fab(max): 
-    n, a, b = 0, 0, 1 
-    while n &lt; max: 
-        print b 
+<span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span> 
+    n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span> 
+    <span class="keyword">while</span> n &lt; max: 
+        <span class="keyword">print</span> b 
         a, b = b, a + b 
-        n = n + 1 
+        n = n + <span class="number">1</span> 
 </code></pre><p>上面这个函数中直接用到了print函数，导致该函数复用性极差。我们想到可以返回一个List，改写如下：</p>
 <pre><code>:::Python
-def fab(max): 
-    n, a, b = 0, 0, 1 
+<span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span> 
+    n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span> 
     L = [] 
-    while n &lt; max: 
+    <span class="keyword">while</span> n &lt; max: 
         L.append(b) 
         a, b = b, a + b 
-        n = n + 1 
-    return L 
+        n = n + <span class="number">1</span> 
+    <span class="keyword">return</span> L 
 </code></pre><p>但这个函数的内存占用会随着max的增大而增大，如果要控制内存占用，最好不要用List保存中间结果，而是通过iterable对象来迭代。举个例子：</p>
-<pre><code>:::Python
+<pre><code><span class="attribute">:::Python</span>
 for i in range(1000): pass
 </code></pre><p>上述代码会生成一个1000元素的List；</p>
-<pre><code>:::Python
+<pre><code><span class="attribute">:::Python</span>
 for i in xrange(1000): pass 
 </code></pre><p>而上述代码则会产生一个iterable对象，每次迭代中返回下一个值，内存占用很小。</p>
 <p>我们来改写一下fab函数：</p>
 <pre><code>:::Python
-class Fab(object): 
+<span class="class"><span class="keyword">class</span> <span class="title">Fab</span><span class="params">(object)</span>:</span> 
 
-    def __init__(self, max): 
+    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max)</span>:</span> 
         self.max = max 
-        self.n, self.a, self.b = 0, 0, 1 
+        self.n, self.a, self.b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span> 
 
-    def __iter__(self): 
-        return self 
+    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span> 
+        <span class="keyword">return</span> self 
 
-    def next(self): 
-        if self.n &lt; self.max: 
+    <span class="function"><span class="keyword">def</span> <span class="title">next</span><span class="params">(self)</span>:</span> 
+        <span class="keyword">if</span> self.n &lt; self.max: 
             r = self.b 
             self.a, self.b = self.b, self.a + self.b 
-            self.n = self.n + 1 
-            return r 
-        raise StopIteration() 
+            self.n = self.n + <span class="number">1</span> 
+            <span class="keyword">return</span> r 
+        <span class="keyword">raise</span> StopIteration() 
 </code></pre><p>这样就可以通过循环返回下一个值了：for n in Fab(5)。</p>
 <p>但毕竟使用类重写后函数显得更加复杂，这时，yield 就派上用场了。</p>
 <pre><code>:::Python
-def fab(max): 
-    n, a, b = 0, 0, 1 
-    while n &lt; max: 
-        yield b 
-        # print b 
+<span class="function"><span class="keyword">def</span> <span class="title">fab</span><span class="params">(max)</span>:</span> 
+    n, a, b = <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span> 
+    <span class="keyword">while</span> n &lt; max: 
+        <span class="keyword">yield</span> b 
+        <span class="comment"># print b </span>
         a, b = b, a + b 
-        n = n + 1 
-</code></pre><p>简单地讲，yield 的作用就是把一个函数变成一个 generator，带有 yield 的函数不再是一个普通函数，Python 解释器会将其视为一个 generator，调用 fab(5) 不会执行 fab 函数，而是返回一个 iterable 对象！在 for 循环执行时，每次循环都会执行 fab 函数内部的代码，执行到 yield b 时，fab 函数就返回一个迭代值，下次迭代时，代码从 yield b 的下一条语句继续执行，而函数的本地变量看起来和上次中断执行前是完全一样的，于是函数继续执行，直到再次遇到 yield。
-也可以手动调用 fab(5) 的 next() 方法（因为 fab(5) 是一个 generator 对象，该对象具有 next() 方法），这样我们就可以更清楚地看到 fab 的执行流程：</p>
-<pre><code>:::Python
-&gt;&gt;&gt; f = fab(5) 
-&gt;&gt;&gt; f.next() 
-1 
-&gt;&gt;&gt; f.next() 
-1 
-&gt;&gt;&gt; f.next() 
-2 
-&gt;&gt;&gt; f.next() 
-3 
-&gt;&gt;&gt; f.next() 
-5 
-&gt;&gt;&gt; f.next() 
-Traceback (most recent call last): 
- File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt; 
-StopIteration 
+        n = n + <span class="number">1</span> 
+</code></pre><p>简单地讲，yield 的作用就是把一个函数变成一个 generator，带有 yield 的函数不再是一个普通函数，Python 解释器会将其视为一个 generator，调用 fab(5) 不会执行 fab 函数，而是返回一个 iterable 对象！在 for 循环执行时，每次循环都会执行 fab 函数内部的代码，执行到 yield b 时，fab 函数就返回一个迭代值，下次迭代时，代码从 yield b 的下一条语句继续执行，而函数的本地变量看起来和上次中断执行前是完全一样的，于是函数继续执行，直到再次遇到 yield。<br>也可以手动调用 fab(5) 的 next() 方法（因为 fab(5) 是一个 generator 对象，该对象具有 next() 方法），这样我们就可以更清楚地看到 fab 的执行流程：</p>
+<pre><code><span class="symbol">:</span><span class="constant">::Python</span>
+&gt;&gt;&gt; f = fab(<span class="number">5</span>) 
+&gt;&gt;&gt; f.<span class="keyword">next</span>() 
+<span class="number">1</span> 
+&gt;&gt;&gt; f.<span class="keyword">next</span>() 
+<span class="number">1</span> 
+&gt;&gt;&gt; f.<span class="keyword">next</span>() 
+<span class="number">2</span> 
+&gt;&gt;&gt; f.<span class="keyword">next</span>() 
+<span class="number">3</span> 
+&gt;&gt;&gt; f.<span class="keyword">next</span>() 
+<span class="number">5</span> 
+&gt;&gt;&gt; f.<span class="keyword">next</span>() 
+<span class="constant">Traceback</span> (most recent call last)<span class="symbol">:</span> 
+ <span class="constant">File</span> <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;<span class="class"><span class="keyword">module</span>&gt; </span>
+<span class="constant">StopIteration</span> 
 </code></pre><p>yield 的好处是显而易见的，把一个函数改写为一个 generator 就获得了迭代能力，比起用类的实例保存状态来计算下一个 next() 的值，不仅代码简洁，而且执行流程异常清晰。</p>
 <p>每次调用 fab 函数都会生成一个新的 generator 实例，各实例互不影响。</p>
 <p><strong>另一个例子</strong></p>
 <p>另一个 yield 的例子来源于文件读取。如果直接对文件对象调用 read() 方法，会导致不可预测的内存占用。比较好的方法是利用固定长度的缓冲区来不断读取文件内容。通过 yield，我们不再需要编写读文件的迭代类，就可以轻松实现文件读取：</p>
 <pre><code>:::Python
-def read_file(fpath): 
-    BLOCK_SIZE = 1024 
-    with open(fpath, &#39;rb&#39;) as f: 
-        while True: 
+<span class="function"><span class="keyword">def</span> <span class="title">read_file</span><span class="params">(fpath)</span>:</span> 
+    BLOCK_SIZE = <span class="number">1024</span> 
+    <span class="keyword">with</span> open(fpath, <span class="string">'rb'</span>) <span class="keyword">as</span> f: 
+        <span class="keyword">while</span> <span class="keyword">True</span>: 
             block = f.read(BLOCK_SIZE) 
-            if block: 
-                yield block 
-            else: 
-                return 
-                # 在一个 generator function 中，如果没有 return，则默认执行至函数完毕，如果在执行过程中 return，则直接抛出 StopIteration 终止迭代。
-</code></pre><p>参考资料：<a href="http://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/" target="_blank">廖雪峰-Python yield 使用浅析</a></p>
+            <span class="keyword">if</span> block: 
+                <span class="keyword">yield</span> block 
+            <span class="keyword">else</span>: 
+                <span class="keyword">return</span> 
+                <span class="comment"># 在一个 generator function 中，如果没有 return，则默认执行至函数完毕，如果在执行过程中 return，则直接抛出 StopIteration 终止迭代。</span>
+</code></pre><p>参考资料：<a href="http://www.ibm.com/developerworks/cn/opensource/os-cn-python-yield/" target="_blank" rel="external">廖雪峰-Python yield 使用浅析</a></p>
 
       
     </div>
@@ -586,8 +585,8 @@ def read_file(fpath):
     <div class="entry">
       
         <p>与Windows将硬盘看做“C盘”、“D盘”几个独立的分区不同，Linux将整个文件系统看做一棵树，这棵树的树根叫做根文件系统，用/表示。各个分区通过“挂载”（Mount）以文件夹的形式访问。</p>
-<p>在/中的文件夹很多，本文介绍常见文件夹的意义。Linux的目录结构确实比较复杂，但设置合理、层次鲜明。本文以<a href="http://www.pathname.com/fhs/" target="_blank">FHS 2.3</a>为例进行介绍。</p>
-<h2 id="-">根文件系统</h2>
+<p>在/中的文件夹很多，本文介绍常见文件夹的意义。Linux的目录结构确实比较复杂，但设置合理、层次鲜明。本文以<a href="http://www.pathname.com/fhs/" target="_blank" rel="external">FHS 2.3</a>为例进行介绍。</p>
+<h2 id="根文件系统">根文件系统</h2>
 <p><strong>/bin</strong></p>
 <p>这一目录中存放了供所有用户使用的完成基本维护任务的命令。其中bin是binary的缩写，表示二进制文件，通常为可执行文件。一些常用的系统命令，如cp、ls等保存在该目录中。</p>
 <p><strong>/boot</strong></p>
@@ -674,18 +673,18 @@ def read_file(fpath):
         <p>后天就要高考了，但这似乎已经与我无关。那段时光已经过去三年，可每每到这个时候，都会禁不住想起当年的我，当年的18班。</p>
 <p>时间正在将过往一丝一丝地抹去，我想在淡忘之前，再次品味一下那年的生活。</p>
 <p>关键字：运动场，角落，封闭的军事化管理，星空，考试那天</p>
-<h3 id="-">运动场</h3>
+<h3 id="运动场">运动场</h3>
 <p>每天晚饭吃过以后，大约6点半，我们会三三两两到运动场上跑步，一般是跑6圈，然后满头大汗地回到教室等待晚自修。不管天气多么热，尤其是临近6月的时候，跑道上塑胶的味道很具有冲击感，但我们都依旧坚持着。当时的想法很简单，身体好才能保证学习，而要想身体好就要锻炼。那时候跟我一起跑的通常是永明，我高三时的同桌，物理超牛逼的一个人，现在在北大学物理系。跑步完之后，有时候我们会坐在草坪上，望着天空，莫名地感叹一下高三的生活，憧憬一下美好的未来，讨论一下大学，讨论一下理想。那时候没有多余的想法，黑色的高三也没那么苦，只是觉得很充实，很带感。</p>
-<h3 id="-">角落</h3>
+<h3 id="角落">角落</h3>
 <p>后来，我们在教室的位置换成了桌子和桌子相互隔开的布局，谁也不是谁的同桌。我特别向往教室最后面的角落里的那个座位，或许只是想求得一份宁静，在聒噪的高三里，能有一片属于自己的瓦尔登湖。</p>
 <p>再后来，我后面的位置成了兴华的山水宝地。6月初即将高考的时候，我们还会在角落里说一些不着边的话题，整晚整晚地讨论。晚间下课，这个角落会是一帮人的美食之地，食堂买来的烧饼、馒头，超市买来的虾皮、老干妈，偶尔还会有一些新奇的玩意儿，大家热闹地讨论着，玩笑着。</p>
-<h3 id="-">封闭的军事化管理</h3>
+<h3 id="封闭的军事化管理">封闭的军事化管理</h3>
 <p>我们学校向河北的衡中学习，实行封闭式的军事化管理，加上我们竞争压力比较大，每个人都拼命地学习。你永远无法体会高考面对98万考生同省竞争的压力，同样的大学，对于我们的分数会高出很多。每天五点半就要起床，一直到晚上十点半，紧张、规律的生活按照预定的轨道有条不紊。</p>
 <p>不过我却很感谢这样的生活，磨练了那个时候的我们。就像永明走路一样，只有加快步伐，才能缩短浪费在路途中的时间。如今，永明走路的步伐依旧是那么快，我总也赶不上。</p>
-<h3 id="-">星空</h3>
+<h3 id="星空">星空</h3>
 <p>冬天的时候，每天5点半起床，走在去教室的路上，总会抬头找北斗七星的形状。清晨的感觉，就是夜的感觉；夜的感觉，就是努力的感觉。</p>
 <p>清晨的夜，还有停车棚的自行车，留给我了永远无法磨灭的记忆。只要抬头仰望星空，就好像回到了那个时候，再来一首周杰伦的《简单爱》，我会觉得是时光倒流。</p>
-<h3 id="-">考试那天</h3>
+<h3 id="考试那天">考试那天</h3>
 <p>靠！考试那天，我的嘴唇被蚊子咬了。听起来貌似很荒谬，但更荒谬的是，初中中考的那一天，我的嘴唇也被蚊子咬了。我一直觉得冥冥之中是谁在安排着，或许上辈子我与蚊子有仇吧，简直巧合的难以令人相信。而且，截至目前，我的嘴唇总共被蚊子咬过两次，就是这两次。</p>
 <p>说实话，考试那两天记忆不太深，感觉跟平常一样。语文作文搞砸了，理综没感觉，数学还不错，英语还凑合。然后，考完英语的那天下午，我们不像其他人一样，而是来到了教室估分。随后，奋斗在批阅前线的老师们发来了参考答案，那几天便疯狂地选校、填志愿。那时侯谁知道，这一选，选的是自己整个青春。</p>
 
@@ -720,14 +719,14 @@ def read_file(fpath):
     </header>
     <div class="entry">
       
-        <p>来源：<a href="http://blog.renren.com/blog/230557688/844071536" target="_blank">http://blog.renren.com/blog/230557688/844071536</a></p>
+        <p>来源：<a href="http://blog.renren.com/blog/230557688/844071536" target="_blank" rel="external">http://blog.renren.com/blog/230557688/844071536</a></p>
 <p>少睡不是长久之计，关键还是要高效地管理时间，提供十条高效做事的经验。</p>
 <p>每天都过的很快，好像起床以后忙活几下，又到了晚上，很快又要睡觉了。To-do-list上的事好像总是做不完，有的时候积压地太多以至于都不想去碰了。每天从早到晚都是忙碌状态，但是总觉得做不了几件事，要是给我1天48小时该多好。</p>
 <p>事情太多时间不够，但是睡少了又效率低下，这实在是个悖论。似乎很多牛人都可以睡的很少，每天4-5小时睡眠，或者间歇式的睡眠，就可以高效地做事。这个境界我总是达不到，也没有想去达到。少睡不是长久之计，关键还是要高效地管理时间。</p>
 <p>我今天和一个朋友请教了这个问题，很受启发。我朋友是卡内基梅陇大学的计算机在读博士，发表了好几篇顶级论文，科研做的很牛。除学术以外，他还忙活不少其他的事，他是云飞跃留学平台的兼职编辑，他业余时间喜欢研究摄影，最近又在开发一款手机游戏，他周末也会花不少时间陪女朋友。尽管做那么多事，他告诉我说他每天都精力充沛，做事效率很高！</p>
 <p>但是他每天可以睡8小时！</p>
 <p>他讲了好几条高效做事的经验：</p>
-<h3 id="1-">1、作息要规律，这是重中之重。</h3>
+<h3 id="1、作息要规律，这是重中之重。">1、作息要规律，这是重中之重。</h3>
 <p>他的作息大致是这样的：</p>
 <p>6:00 起床和早餐</p>
 <p>7:15 – 7:30 跑步到学校</p>
@@ -739,23 +738,23 @@ def read_file(fpath):
 <p>19:30 – 22:30 做事</p>
 <p>22:30 睡觉</p>
 <p>所以每天约有11小时在做事。他说只有作息规律了，身体机能才能达到最大的发挥。就像生产线一样，只有流程化了，效率才能提高。作息经常不规律，身体就要不断调整，这个调整很消耗能量，影响效率。就像一个GPS，总是在re-calculating，还怎么指路呢？</p>
-<h3 id="2-">2、不要熬夜，熬夜伤身。</h3>
+<h3 id="2、不要熬夜，熬夜伤身。">2、不要熬夜，熬夜伤身。</h3>
 <p>很多人觉得12点，1点睡觉没关系，只要习惯就行了，人的适应能力很好的。但是大量的医学研究表明，长期熬夜会引发很多病，而且这些病一旦爆发，往往后果很严重。我知道卡内基梅陇的人很能熬夜，刚来的时候我有几次半夜2点回家，等校车的有不少人。但后来我感觉这边的课程和科研压力很大，一直熬夜下去会一发不可收拾，我就强迫自己改变。改变前你要先明白一点：只要睡眠不减少，不管早睡晚睡，每天做事的时间实际是差不多的。</p>
-<h3 id="3-">3、每天要有固定的时间锻炼，至少半小时。</h3>
+<h3 id="3、每天要有固定的时间锻炼，至少半小时。">3、每天要有固定的时间锻炼，至少半小时。</h3>
 <p>锻炼可以促进新城代谢，调节身体机能。每天经常锻炼的人，虽然消耗了体力，但是换来的是精神充沛，相反那些不锻炼的人，经常觉得累。</p>
-<h3 id="4-">4、做事之前多想想。</h3>
+<h3 id="4、做事之前多想想。">4、做事之前多想想。</h3>
 <p>想明白你为什么做这件事，怎样做可以达到最佳的效果。很多人是拿起事情就做，兵来将挡水来土掩，一股脑的做完了事。这实际上是非常不明智而且低效的做法，因为目的不清晰就会走岔路，做事方法不优化就会浪费时间。有的时候你花5分钟多想想，可以节省你好几个小时。</p>
-<h3 id="5-">5、做事不要拖。</h3>
+<h3 id="5、做事不要拖。">5、做事不要拖。</h3>
 <p>很多人喜欢拖，事情就不断积累下来了，然后被一个又一个的deadline折磨。重要的事情一定要在合适的时间尽快处理掉。一件事如果比较耗时，要做好规划，每天做一点。</p>
-<h3 id="6-">6、每天要做的事尽量写下来，不要只是放在脑中。</h3>
-<h3 id="7-">7、做事要专注。</h3>
+<h3 id="6、每天要做的事尽量写下来，不要只是放在脑中。">6、每天要做的事尽量写下来，不要只是放在脑中。</h3>
+<h3 id="7、做事要专注。">7、做事要专注。</h3>
 <p>很多人做事的时候，开着renren、Facebook、weibo、QQ和其他网页，不时会去看看有什么新情况。你以为它们只会占居你很少的时间，其实这些时间碎片严重影响了你的效率。就像睡觉一样，你如果被断断续续的声音影响，你就没法进入深度睡眠。所以，做重要的事情的时候，把这些务必都关了，邮件也尽量定期去查看，免得经常被新来的邮件打断。</p>
-<h3 id="8-">8、控制好做事的节奏，张弛有度。</h3>
+<h3 id="8、控制好做事的节奏，张弛有度。">8、控制好做事的节奏，张弛有度。</h3>
 <p>从早到晚做事不可能保持一样的效率，如果你早上精神好，那就在早上尽量做重要的事，下午和晚上做一些相对轻松的事。在1小时内做事，也要把握节奏，可以高强度地做50分钟，然后低强度的做10分钟或者休息。道理大家都懂，但很多人一忙起来就不能自拔了。</p>
 <p>我再根据自己的经验补充2条吧：</p>
-<h3 id="9-multi-task-task-task-">9、如果你喜欢multi-task（多任务处理），尽量减少task之间频繁切换，并且每个task的时间要控制好。</h3>
+<h3 id="9、如果你喜欢multi-task（多任务处理），尽量减少task之间频繁切换，并且每个task的时间要控制好。">9、如果你喜欢multi-task（多任务处理），尽量减少task之间频繁切换，并且每个task的时间要控制好。</h3>
 <p>我一般一小时内就做一个task，如果1小时到了，我通常就会换下一个（如果没有deadline限制）。长时间做一个task往往会效率低下。</p>
-<h3 id="10-">10、知道什么事你能做，什么事你不能做。</h3>
+<h3 id="10、知道什么事你能做，什么事你不能做。">10、知道什么事你能做，什么事你不能做。</h3>
 <p>我们经常想做很多事，但是精力有限，能力有限，使得我们必须做出选择。有些事你如果做不好就尽量不要去接受去承诺。选择是一种智慧，有所放弃才能保证你的睡眠。</p>
 <p>希望这些经验对你有帮助！</p>
 
@@ -790,105 +789,105 @@ def read_file(fpath):
     </header>
     <div class="entry">
       
-        <p>Stackoverflow上面有一个问题（<a href="http://stackoverflow.com/questions/739654/understanding-python-decorators" target="_blank">Here</a>），问题是这样的：</p>
+        <p>Stackoverflow上面有一个问题（<a href="http://stackoverflow.com/questions/739654/understanding-python-decorators" target="_blank" rel="external">Here</a>），问题是这样的：</p>
 <p>如果使用如下的代码：</p>
 <pre><code>:::Python
-@makebold
-@makeitalic
-def say():
-    return &quot;Hello&quot;
+<span class="decorator">@makebold</span>
+<span class="decorator">@makeitalic</span>
+<span class="function"><span class="keyword">def</span> <span class="title">say</span><span class="params">()</span>:</span>
+    <span class="keyword">return</span> <span class="string">"Hello"</span>
 </code></pre><p>打印出如下的输出：</p>
-<pre><code>:::HTML
+<pre><code><span class="attribute">:::HTML</span>
 &lt;b&gt;&lt;i&gt;Hello&lt;/i&gt;&lt;/b&gt;
 </code></pre><p>你会怎么做？最后给出的答案是：</p>
 <pre><code>:::Python
-def makebold(fn):
-    def wrapped():
-        return &quot;&lt;b&gt;&quot; + fn() + &quot;&lt;/b&gt;&quot;
-    return wrapped
+<span class="function"><span class="keyword">def</span> <span class="title">makebold</span><span class="params">(fn)</span>:</span>
+    <span class="function"><span class="keyword">def</span> <span class="title">wrapped</span><span class="params">()</span>:</span>
+        <span class="keyword">return</span> <span class="string">"&lt;b&gt;"</span> + fn() + <span class="string">"&lt;/b&gt;"</span>
+    <span class="keyword">return</span> wrapped
 
-def makeitalic(fn):
-    def wrapped():
-        return &quot;&lt;i&gt;&quot; + fn() + &quot;&lt;/i&gt;&quot;
-    return wrapped
+<span class="function"><span class="keyword">def</span> <span class="title">makeitalic</span><span class="params">(fn)</span>:</span>
+    <span class="function"><span class="keyword">def</span> <span class="title">wrapped</span><span class="params">()</span>:</span>
+        <span class="keyword">return</span> <span class="string">"&lt;i&gt;"</span> + fn() + <span class="string">"&lt;/i&gt;"</span>
+    <span class="keyword">return</span> wrapped
 
-@makebold
-@makeitalic
-def hello():
-    return &quot;hello world&quot;
+<span class="decorator">@makebold</span>
+<span class="decorator">@makeitalic</span>
+<span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span>
+    <span class="keyword">return</span> <span class="string">"hello world"</span>
 
-print hello() ## 返回 &lt;b&gt;&lt;i&gt;hello world&lt;/i&gt;&lt;/b&gt;
+<span class="keyword">print</span> hello() <span class="comment">## 返回 &lt;b&gt;&lt;i&gt;hello world&lt;/i&gt;&lt;/b&gt;</span>
 </code></pre><p>其中的@其实就是Python的装饰器。</p>
 <p>装饰器模式可以在不影响其它对象的情况下，以动态、透明的方式给单个对象添加职责，也能够处理那些可以撤销的职责。经常用于日志记录、性能测试等场合。</p>
 <p>想象一下这个很常见的场景，你写了一个方法只提供给以登陆的用户访问，你可以写以下代码：</p>
 <pre><code>:::Python
-def A():
-    if user.is_login():
+<span class="function"><span class="keyword">def</span> <span class="title">A</span><span class="params">()</span>:</span>
+    <span class="keyword">if</span> user.is_login():
         do something
-    else:
-        pass
+    <span class="keyword">else</span>:
+        <span class="keyword">pass</span>
 </code></pre><p>这当然没什么问题，但是你又写了一个方法B，也要求只有登录用户可以访问，于是有写了以下代码：</p>
 <pre><code>:::Python
-def B():
-    if user.is_login():
+<span class="function"><span class="keyword">def</span> <span class="title">B</span><span class="params">()</span>:</span>
+    <span class="keyword">if</span> user.is_login():
         do something
-    else:
-        pass
+    <span class="keyword">else</span>:
+        <span class="keyword">pass</span>
 </code></pre><p>问题出来了，如果不是两个方法而是一堆方法，你可能就有点受不了啦。当然聪明的你可以想出这个方法：</p>
 <pre><code>:::Python
-def A():
-    pass
-def B():
-    pass
-def login_required(fn):
-    def ff():
-        if user.is_login():
+<span class="function"><span class="keyword">def</span> <span class="title">A</span><span class="params">()</span>:</span>
+    <span class="keyword">pass</span>
+<span class="function"><span class="keyword">def</span> <span class="title">B</span><span class="params">()</span>:</span>
+    <span class="keyword">pass</span>
+<span class="function"><span class="keyword">def</span> <span class="title">login_required</span><span class="params">(fn)</span>:</span>
+    <span class="function"><span class="keyword">def</span> <span class="title">ff</span><span class="params">()</span>:</span>
+        <span class="keyword">if</span> user.is_login():
             fn()
-        else:
-            pass
-    return ff
+        <span class="keyword">else</span>:
+            <span class="keyword">pass</span>
+    <span class="keyword">return</span> ff
 
 A = login_required(A)
 B = login_required(B)
 </code></pre><p>你可能没有想到，对于这么好用的东西，python优雅的支持，这就是@修饰符：</p>
 <pre><code>:::Python
-def login_required(fn):
-    def ff():
-        if user.is_login():
+<span class="function"><span class="keyword">def</span> <span class="title">login_required</span><span class="params">(fn)</span>:</span>
+    <span class="function"><span class="keyword">def</span> <span class="title">ff</span><span class="params">()</span>:</span>
+        <span class="keyword">if</span> user.is_login():
             fn()
-        else:
-            pass
-    return ff
+        <span class="keyword">else</span>:
+            <span class="keyword">pass</span>
+    <span class="keyword">return</span> ff
 
-@login_required
-def A():
-    pass
-@login_required
-def B():
-    pass
+<span class="decorator">@login_required</span>
+<span class="function"><span class="keyword">def</span> <span class="title">A</span><span class="params">()</span>:</span>
+    <span class="keyword">pass</span>
+<span class="decorator">@login_required</span>
+<span class="function"><span class="keyword">def</span> <span class="title">B</span><span class="params">()</span>:</span>
+    <span class="keyword">pass</span>
 </code></pre><p><strong>在方法A上边写一个@修饰符，调用方法A的时候会调用修饰符后边的方法B，方法B以A方法为参数，而且需要返回一个可调用的对象，这个可调用的对象会使用A方法提供的参数执行。</strong>看这个例子：</p>
 <pre><code>:::Python
-#!/usr/bin/env python  
+<span class="comment">#!/usr/bin/env python  </span>
 
-def a(fn):
-    print &#39;a&#39;
-    def d(st):
-        print st+&#39;d&#39;
-    return d
+<span class="function"><span class="keyword">def</span> <span class="title">a</span><span class="params">(fn)</span>:</span>
+    <span class="keyword">print</span> <span class="string">'a'</span>
+    <span class="function"><span class="keyword">def</span> <span class="title">d</span><span class="params">(st)</span>:</span>
+        <span class="keyword">print</span> st+<span class="string">'d'</span>
+    <span class="keyword">return</span> d
 
-def b(fn):
-    print &#39;b&#39;
-    return fn
+<span class="function"><span class="keyword">def</span> <span class="title">b</span><span class="params">(fn)</span>:</span>
+    <span class="keyword">print</span> <span class="string">'b'</span>
+    <span class="keyword">return</span> fn
 
-@a
-@b
-def c(st):
-    print st
+<span class="decorator">@a</span>
+<span class="decorator">@b</span>
+<span class="function"><span class="keyword">def</span> <span class="title">c</span><span class="params">(st)</span>:</span>
+    <span class="keyword">print</span> st
 
-c(&#39;c&#39;)
+c(<span class="string">'c'</span>)
 </code></pre><p>输出结果是：bacd</p>
-<p>我们调用c(&#39;c&#39;)的时候会先调用b(c)，b(c)打印字符&quot;b&quot;然后返回c，然后再调用a(c)，a(c)打印字符&quot;a&quot;，然后返回方法d，然后再执行d(&#39;c&#39;)，打印cd。</p>
-<p>参考资料：<a href="http://blog.csdn.net/shangzhihaohao" target="_blank">http://blog.csdn.net/shangzhihaohao</a></p>
+<p>我们调用c(‘c’)的时候会先调用b(c)，b(c)打印字符”b”然后返回c，然后再调用a(c)，a(c)打印字符”a”，然后返回方法d，然后再执行d(‘c’)，打印cd。</p>
+<p>参考资料：<a href="http://blog.csdn.net/shangzhihaohao" target="_blank" rel="external">http://blog.csdn.net/shangzhihaohao</a></p>
 
       
     </div>
@@ -922,7 +921,7 @@ c(&#39;c&#39;)
     <div class="entry">
       
         <p>我觉得有必要记录一下生活。</p>
-<p>两年前，我对自己的生活就一个要求：“每天都要创造价值”。当时还和某某人深入探讨过，什么是价值，怎样去创造的问题。不知到某某人还记得否，当年为此想法兴高采烈，一致认为应该将其写本书，也像那谁谁一样火一把。后来遗憾的是，再也没有机会和某某人探讨这个问题了，只好躬身而行，久而久之，竟然也成了一种习惯性的思维。如果某天不能创造点价值（在自己看来），就没有勇气结束一天。不过毕竟人无完人，长期以来，这种思维导致的直接后果就是养成了晚睡的好习惯...看来必须调整一下了。</p>
+<p>两年前，我对自己的生活就一个要求：“每天都要创造价值”。当时还和某某人深入探讨过，什么是价值，怎样去创造的问题。不知到某某人还记得否，当年为此想法兴高采烈，一致认为应该将其写本书，也像那谁谁一样火一把。后来遗憾的是，再也没有机会和某某人探讨这个问题了，只好躬身而行，久而久之，竟然也成了一种习惯性的思维。如果某天不能创造点价值（在自己看来），就没有勇气结束一天。不过毕竟人无完人，长期以来，这种思维导致的直接后果就是养成了晚睡的好习惯…看来必须调整一下了。</p>
 <p>最近几天，除了迫在眉睫的TOEFL、GRE外，其它时间全部沉浸在Tornado中。想起以前的时候，阿北坐在星巴克，用四五个月的时间创造了豆瓣，我就有种莫名的冲动。但我创造的不是豆瓣，而是一个中国的关于Python的开源社区。细节就不透露了，PyPub.com，敬请期待。</p>
 <p>其实我想吐槽一下Tornado，就不能有一个像样的文档吗！各种问题搞不清楚，查不到资料。还好Tornado是个轻量级的框架，还可以读一读源码找找问题。其实也是一举两得的事情，就像当我把Markdown的Python实现的源码过了一遍的时候，其语法也就了解的差不多了，也就是说，如果你把JAVA的C++源码读一遍，大抵也就可以用JAVA编程了（偷笑）。但一举两得的事往往要艰难得多，很多时候我们不愿意去做罢了。</p>
 <p>最近比较有感触的一句话：“世界是一本书，没旅行过的人只看到其中一页。”比起中规中矩的生活，我更喜欢有挑战的生活，更喜欢新的气息，我想去阅读这本书，因为我们只有这一次生命来阅读它。阅尽人世繁华，何尝不是一种人生。因为如此，也许我不会过早地结婚，但我会从结婚的那一天起，带我的爱人环游世界。</p>
@@ -1043,7 +1042,7 @@ c(&#39;c&#39;)
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -1073,7 +1072,7 @@ c(&#39;c&#39;)
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

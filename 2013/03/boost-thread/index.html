@@ -10,8 +10,8 @@
 线程创建
 相关类为 boost::thread ，定义在 boost/thread.hpp 中，用于创建一个新线程。
 :::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
+#include &amp;lt;boost/thread.hpp&amp;gt; 
+#include &amp;lt;iostream&amp;gt; 
 
 void wait(int seconds) 
 { 
@@ -20,10 +20,10 @@ void wait(int seconds)
 
 void thread() 
 { 
-    for (int i = 0; i &lt; 5; ++i) 
+    for (int i = 0; i &amp;lt; 5; ++i) 
     { 
         wait(1); 
-        std::cout &lt;&lt; i &lt;&lt; std::endl; 
+        std::cout &amp;lt;&amp;lt; i &amp;lt;&amp;lt; std::endl; 
     } 
 } 
 
@@ -119,27 +119,27 @@ Notes:
     <div class="entry">
       
         <p>这是一篇方法总结和作业笔记，已备需要的时候查阅。本文将介绍C++ Boost库 <code>Boost.Thread</code> ，用于开发独立于平台的多线程应用程序。</p>
-<h3 id="-">线程创建</h3>
+<h3 id="线程创建">线程创建</h3>
 <p>相关类为 <code>boost::thread</code> ，定义在 <code>boost/thread.hpp</code> 中，用于创建一个新线程。</p>
 <pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
+<span class="preprocessor">#include &lt;boost/thread.hpp&gt; </span>
+<span class="preprocessor">#include &lt;iostream&gt; </span>
 
-void wait(int seconds) 
+<span class="keyword">void</span> wait(<span class="keyword">int</span> seconds) 
 { 
     boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
 } 
 
-void thread() 
+<span class="keyword">void</span> thread() 
 { 
-    for (int i = 0; i &lt; 5; ++i) 
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) 
     { 
-        wait(1); 
-        std::cout &lt;&lt; i &lt;&lt; std::endl; 
+        wait(<span class="number">1</span>); 
+        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="built_in">std</span>::endl; 
     } 
 } 
 
-int main() 
+<span class="keyword">int</span> main() 
 { 
     boost::thread t(thread); 
     t.join(); 
@@ -148,35 +148,35 @@ int main()
 <p>一旦上面例子中的变量 <code>t</code> 被创建，该 <code>thread()</code> 函数就在其所在线程中被立即执行， <code>join()</code> 的方法跟POSIX pthread中意义一样。</p>
 <a id="more"></a>
 
-<h3 id="-">线程中断</h3>
+<h3 id="线程中断">线程中断</h3>
 <pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
+<span class="preprocessor">#include &lt;boost/thread.hpp&gt; </span>
+<span class="preprocessor">#include &lt;iostream&gt; </span>
 
-void wait(int seconds) 
+<span class="keyword">void</span> wait(<span class="keyword">int</span> seconds) 
 { 
     boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
 } 
 
-void thread() 
+<span class="keyword">void</span> thread() 
 { 
-    try 
+    <span class="keyword">try</span> 
     { 
-        for (int i = 0; i &lt; 5; ++i) 
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) 
         { 
-            wait(1); 
-            std::cout &lt;&lt; i &lt;&lt; std::endl; 
+            wait(<span class="number">1</span>); 
+            <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="built_in">std</span>::endl; 
         } 
     } 
-    catch (boost::thread_interrupted&amp;) 
+    <span class="keyword">catch</span> (boost::thread_interrupted&amp;) 
     { 
 
 } 
 
-int main() 
+<span class="keyword">int</span> main() 
 { 
     boost::thread t(thread); 
-    wait(3); 
+    wait(<span class="number">3</span>); 
     t.interrupt(); 
     t.join(); 
 } 
@@ -200,73 +200,73 @@ int main()
 <li>boost::this_thread::sleep_until()</li>
 <li>boost::this_thread::interruption_point()</li>
 </ul>
-<h3 id="-">同步</h3>
+<h3 id="同步">同步</h3>
 <p>设计到线程的地方就会出现竞争条件(race condition)，所以进行同步是必不可少的。</p>
 <p>最简单的 <code>boost::mutex</code> 类。</p>
-<pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
+<pre><code><span class="symbol">:</span><span class="constant">::CPP</span>
+<span class="comment">#include &lt;boost/thread.hpp&gt; </span>
+<span class="comment">#include &lt;iostream&gt; </span>
 
-boost::mutex mutex; 
+<span class="symbol">boost:</span><span class="symbol">:mutex</span> mutex; 
 
 void wait(int seconds) 
 { 
-    boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
+    <span class="symbol">boost:</span><span class="symbol">:this_thread</span><span class="symbol">:</span><span class="symbol">:sleep</span>(<span class="symbol">boost:</span><span class="symbol">:posix_time</span><span class="symbol">:</span><span class="symbol">:seconds</span>(seconds)); 
 } 
 
 void thread() 
 { 
-    for (int i = 0; i &lt; 5; ++i) 
+    <span class="keyword">for</span> (int i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) 
     { 
-        wait(1); 
+        wait(<span class="number">1</span>); 
         mutex.lock(); 
-        std::cout &lt;&lt; &quot;Thread &quot; &lt;&lt; boost::this_thread::get_id() &lt;&lt; &quot;: &quot; &lt;&lt; i &lt;&lt; std::endl; 
+        <span class="symbol">std:</span><span class="symbol">:cout</span> &lt;&lt; <span class="string">"Thread "</span> &lt;&lt; <span class="symbol">boost:</span><span class="symbol">:this_thread</span><span class="symbol">:</span><span class="symbol">:get_id</span>() &lt;&lt; <span class="string">": "</span> &lt;&lt; i &lt;&lt; <span class="symbol">std:</span><span class="symbol">:endl</span>; 
         mutex.unlock(); 
     } 
 } 
 
 int main() 
 { 
-    boost::thread t1(thread); 
-    boost::thread t2(thread); 
+    <span class="symbol">boost:</span><span class="symbol">:thread</span> t1(thread); 
+    <span class="symbol">boost:</span><span class="symbol">:thread</span> t2(thread); 
     t1.join(); 
     t2.join(); 
 } 
 </code></pre><p>也可以使用 <code>boost::lock_guard</code> 类，来避免直接调用 <code>lock()</code> 和 <code>unlock()</code> 。</p>
-<pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
+<pre><code><span class="symbol">:</span><span class="constant">::CPP</span>
+<span class="comment">#include &lt;boost/thread.hpp&gt; </span>
+<span class="comment">#include &lt;iostream&gt; </span>
 
-boost::mutex mutex; 
+<span class="symbol">boost:</span><span class="symbol">:mutex</span> mutex; 
 
 void wait(int seconds) 
 { 
-    boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
+    <span class="symbol">boost:</span><span class="symbol">:this_thread</span><span class="symbol">:</span><span class="symbol">:sleep</span>(<span class="symbol">boost:</span><span class="symbol">:posix_time</span><span class="symbol">:</span><span class="symbol">:seconds</span>(seconds)); 
 } 
 
 void thread() 
 { 
-    for (int i = 0; i &lt; 5; ++i) 
+    <span class="keyword">for</span> (int i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) 
     { 
-        wait(1); 
-        boost::lock_guard&lt;boost::mutex&gt; lock(mutex); 
-        std::cout &lt;&lt; &quot;Thread &quot; &lt;&lt; boost::this_thread::get_id() &lt;&lt; &quot;: &quot; &lt;&lt; i &lt;&lt; std::endl; 
+        wait(<span class="number">1</span>); 
+        <span class="symbol">boost:</span><span class="symbol">:lock_guard&lt;boost</span><span class="symbol">:</span><span class="symbol">:mutex&gt;</span> lock(mutex); 
+        <span class="symbol">std:</span><span class="symbol">:cout</span> &lt;&lt; <span class="string">"Thread "</span> &lt;&lt; <span class="symbol">boost:</span><span class="symbol">:this_thread</span><span class="symbol">:</span><span class="symbol">:get_id</span>() &lt;&lt; <span class="string">": "</span> &lt;&lt; i &lt;&lt; <span class="symbol">std:</span><span class="symbol">:endl</span>; 
     } 
 } 
 
 int main() 
 { 
-    boost::thread t1(thread); 
-    boost::thread t2(thread); 
+    <span class="symbol">boost:</span><span class="symbol">:thread</span> t1(thread); 
+    <span class="symbol">boost:</span><span class="symbol">:thread</span> t2(thread); 
     t1.join(); 
     t2.join(); 
 } 
 </code></pre><p><code>boost::lock_guard</code> 在其构造和析构函数分别自动调用 <code>lock()</code> 和 <code>unlock()</code> 。</p>
-<h3 id="reference">Reference</h3>
+<h3 id="Reference">Reference</h3>
 <ul>
-<li><p>Boost多线程 <a href="http://zh.highscore.de/cpp/boost/" target="_blank"><a href="http://zh.highscore.de/cpp/boost/">http://zh.highscore.de/cpp/boost/</a></a></p>
+<li><p>Boost多线程 <a href="http://zh.highscore.de/cpp/boost/" target="_blank" rel="external">http://zh.highscore.de/cpp/boost/</a></p>
 </li>
-<li><p>Boost Thread Documentation <a href="http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html" target="_blank"><a href="http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html">http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html</a></a></p>
+<li><p>Boost Thread Documentation <a href="http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html" target="_blank" rel="external">http://www.boost.org/doc/libs/1_53_0/doc/html/thread.html</a></p>
 </li>
 </ul>
 
@@ -389,7 +389,7 @@ int main()
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -419,7 +419,7 @@ int main()
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

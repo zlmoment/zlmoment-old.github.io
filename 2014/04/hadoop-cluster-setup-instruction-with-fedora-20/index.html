@@ -113,78 +113,55 @@ During the installation, let us create a admin user ‘hadoop’.">
 <li>Start the cluster</li>
 <li>How to add a new datanode</li>
 </ol>
-<h2 id="1-fedora-20-installation">1. Fedora 20 installation</h2>
-<p>If your machine is x32, you need to download the installation image for x32, which is ‘i386 DVD’. The image can be got from <a href="http://fedoraproject.org/en_GB/get-fedora-all" target="_blank">this link</a>.</p>
+<h2 id="1-_Fedora_20_installation">1. Fedora 20 installation</h2>
+<p>If your machine is x32, you need to download the installation image for x32, which is ‘i386 DVD’. The image can be got from <a href="http://fedoraproject.org/en_GB/get-fedora-all" target="_blank" rel="external">this link</a>.</p>
 <p>During the installation, let us create a admin user <code>‘hadoop’</code>.</p>
 <a id="more"></a>
 
-<h2 id="2-basic-configuration">2. Basic configuration</h2>
+<h2 id="2-_Basic_configuration">2. Basic configuration</h2>
 <p>Let us assume there are three machines including one namenode and two datanode with following IP addresses and hostname.</p>
-<p><style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;border:none;width:100%}
-.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
-.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
-.tg .tg-s6z2{text-align:center}
-.tg .tg-spn1{background-color:#f9f9f9;text-align:center}
-</style></p>
-<table class="tg">
-  <tr>
-    <th class="tg-s6z2">Hostname</th>
-    <th class="tg-s6z2">IP Addrees</th>
-  </tr>
-  <tr>
-    <td class="tg-spn1">master</td>
-    <td class="tg-spn1">192.168.0.2</td>
-  </tr>
-  <tr>
-    <td class="tg-s6z2">slave1</td>
-    <td class="tg-s6z2">192.168.0.3</td>
-  </tr>
-  <tr>
-    <td class="tg-spn1">slave2</td>
-    <td class="tg-spn1">192.168.0.4</td>
-  </tr>
-</table>
+<p><style type="text/css"><br>.tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;border:none;width:100%}<br>.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}<br>.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}<br>.tg .tg-s6z2{text-align:center}<br>.tg .tg-spn1{background-color:#f9f9f9;text-align:center}<br></style></p>
+<table class="tg"><br>  <tr><br>    <th class="tg-s6z2">Hostname</th><br>    <th class="tg-s6z2">IP Addrees</th><br>  </tr><br>  <tr><br>    <td class="tg-spn1">master</td><br>    <td class="tg-spn1">192.168.0.2</td><br>  </tr><br>  <tr><br>    <td class="tg-s6z2">slave1</td><br>    <td class="tg-s6z2">192.168.0.3</td><br>  </tr><br>  <tr><br>    <td class="tg-spn1">slave2</td><br>    <td class="tg-spn1">192.168.0.4</td><br>  </tr><br></table>
 
 <p>First, you need to change the hostname for every node so that you can identify them easily in terminal. </p>
 <p>Edit <code>/etc/hostname</code> to change the hostname:</p>
-<pre><code>$ sudo vi /etc/hostname
+<pre><code>$ <span class="built_in">sudo</span> vi /etc/hostname
 </code></pre><p>You may also need to add this line in <code>/etc/sysconfig/network</code> :</p>
-<pre><code>HOSTNAME=master
+<pre><code><span class="attribute">HOSTNAME</span>=<span class="string">master</span>
 </code></pre><p>Edit <code>/etc/hosts</code> :</p>
-<pre><code>192.168.0.2 &lt;tab&gt; master
-192.168.0.3 &lt;tab&gt; slave1
-192.168.0.4 &lt;tab&gt; slave2
+<pre><code>192.168.0.2 <span class="tag">&lt;<span class="title">tab</span>&gt;</span> master
+192.168.0.3 <span class="tag">&lt;<span class="title">tab</span>&gt;</span> slave1
+192.168.0.4 <span class="tag">&lt;<span class="title">tab</span>&gt;</span> slave2
 </code></pre><p>Do the above operations on every node with corresponding data.</p>
-<h2 id="3-ssh-without-password">3. SSH without password</h2>
+<h2 id="3-_SSH_without_password">3. SSH without password</h2>
 <p>Namenode manages every datanode by secure shell (SSH), you need to configure SSH with public key authentication so that each node can access each other without password.</p>
 <p>First, disable the firewall and iptables on each node. </p>
-<pre><code>$ sudo systemctl stop firewalld
-$ sudo systemctl disable firewalld
-$ sudo systemctl stop iptables
-$ sudo systemctl disable iptables
+<pre><code>$ <span class="built_in">sudo</span> systemctl stop firewalld
+$ <span class="built_in">sudo</span> systemctl disable firewalld
+$ <span class="built_in">sudo</span> systemctl stop iptables
+$ <span class="built_in">sudo</span> systemctl disable iptables
 </code></pre><p>On master, generate public key:</p>
-<pre><code>$ ssh-keygen -t rsa -P ‘’
+<pre><code>$ ssh<span class="attribute">-keygen</span> <span class="attribute">-t</span> rsa <span class="attribute">-P</span> ‘’
 </code></pre><p>Press Enter all the way to the end and the key pair id_rsa (private key) and id_rsa.pub (public key) will be stored in <code>~/.ssh/</code> .</p>
 <p>Add public key to authorized keys:</p>
-<pre><code>$ cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+<pre><code><span class="variable">$ </span>cat ~<span class="regexp">/.ssh/id</span>_rsa.pub &gt;&gt; ~<span class="regexp">/.ssh/authorized</span>_keys
 </code></pre><p>Make sure the permission of this file is correct:</p>
-<pre><code>$ chmod 600 authorized_keys
+<pre><code><span class="variable">$ </span>chmod <span class="number">600</span> authorized_keys
 </code></pre><p>You may need some SSH configurations. Edit file /etc/ssh/sshd_config, check if the the ‘#’ before the following items are deleted. If not, delete the ‘#’ before these items (this step needs to be done on every node).</p>
-<pre><code>RSAAuthentication yes
-PubkeyAuthentication yes
+<pre><code>RSAAuthentication <span class="literal">yes</span>
+PubkeyAuthentication <span class="literal">yes</span>
 </code></pre><p>Restart SSH service:</p>
-<pre><code>$ sudo systemctl restart sshd
+<pre><code>$ <span class="built_in">sudo</span> systemctl restart sshd
 </code></pre><p>Now, use scp command to copy authorized_keys to every node (if dir ~/.ssh doesn’t exist, create it at first, and chmod it to 755):</p>
-<pre><code>$ scp ~/.ssh/authorized_keys hadoop@slave1:~/.ssh/
+<pre><code><span class="variable">$ </span>scp ~<span class="regexp">/.ssh/authorized</span>_keys hadoop<span class="variable">@slave1</span><span class="symbol">:~/</span>.ssh/
 </code></pre><p>Now test if you can login to other node without password:</p>
-<pre><code>$ ssh slave1
+<pre><code><span class="variable">$ </span>ssh slave1
 </code></pre><p>Next you need to config every datanode to access namenode without password. It is the same as in namenode, just generate public key and add it to authorized_keys on namenode.</p>
-<h2 id="4-hadoop-package-and-related-packages-installation">4. Hadoop package and related packages installation</h2>
+<h2 id="4-_Hadoop_package_and_related_packages_installation">4. Hadoop package and related packages installation</h2>
 <p>Using Fedora 20, you don’t have to config Java, Hadoop, etc. by yourself. You can use the following command to install and config everything.</p>
-<pre><code>$ yum install hadoop-common hadoop-common-native hadoop-hdfs hadoop-mapreduce hadoop-mapreduce-examples hadoop-yarn
+<pre><code>$ yum install hadoop<span class="attribute">-common</span> hadoop<span class="attribute">-common</span><span class="attribute">-native</span> hadoop<span class="attribute">-hdfs</span> hadoop<span class="attribute">-mapreduce</span> hadoop<span class="attribute">-mapreduce</span><span class="attribute">-examples</span> hadoop<span class="attribute">-yarn</span>
 </code></pre><p>Do it on every node. This may take a while on commodity machines. Go and get a cup of coffee and wait for the process to finish. </p>
-<h2 id="5-hadoop-configuration">5. Hadoop configuration</h2>
+<h2 id="5-_Hadoop_configuration">5. Hadoop configuration</h2>
 <p>Now you need to config Hadoop. All the files are located at /etc/hadoop.</p>
 <p>Edit <code>core-site.xml</code>:</p>
 <p>You need to change item <code>‘fs.default.name’</code> to the address of your namenode and port. Here is a sample file:</p>
@@ -209,11 +186,11 @@ PubkeyAuthentication yes
 <span class="tag">&lt;/<span class="title">configuration</span>&gt;</span>
 </pre></figure>
 
-
 <p>Edit <code>mapred-site.xml</code>:</p>
 <p>You need to change item <code>‘mapred.job.tracker’</code> to the address of job tracker node address and port.  Normally, job tracker and namenode are the same machine.</p>
 <p>Here is a sample file:</p>
-<figure class="highlight xml"><pre><span class="pi">&lt;?xml version="1.0"?&gt;</span>
+<figure class="highlight xml"><pre>
+<span class="pi">&lt;?xml version="1.0"?&gt;</span>
 <span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span>
  
 <span class="tag">&lt;<span class="title">configuration</span>&gt;</span>
@@ -235,10 +212,10 @@ PubkeyAuthentication yes
 <span class="tag">&lt;/<span class="title">configuration</span>&gt;</span>
 </pre></figure>
 
-
 <p>Edit <code>hdfs-site.xml</code>:</p>
 <p>You may need to delete some items as the inside instruction. Here is a sample file:</p>
-<figure class="highlight xml"><pre><span class="pi">&lt;?xml version="1.0"?&gt;</span>
+<figure class="highlight xml"><pre>
+<span class="pi">&lt;?xml version="1.0"?&gt;</span>
 <span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span>
  
 <span class="tag">&lt;<span class="title">configuration</span>&gt;</span>
@@ -265,25 +242,24 @@ PubkeyAuthentication yes
 <span class="tag">&lt;/<span class="title">configuration</span>&gt;</span>
 </pre></figure>
 
-
 <p>Now you need to tell Hadoop which node is namenode and which node is datanode. Create two files if they don’t exist:</p>
-<pre><code>$ sudo touch masters; sudo touch slaves
+<pre><code>$ <span class="built_in">sudo</span> touch masters; <span class="built_in">sudo</span> touch slaves
 </code></pre><p>In the file masters, list all the namenodes you have. Do the same for the file slaves. For example, here is a sample of file slaves:</p>
 <pre><code>slave1
 slave2
 </code></pre><p>Now you need to distribute all these files to all the nodes in cluster. Use scp to do it. Later we will use some tools to distribute them automatically. </p>
-<pre><code>$ scp -r /etc/hadoop/* root@slave1:/etc/hadoop/
+<pre><code><span class="variable">$ </span>scp -r /etc/hadoop/* root<span class="variable">@slave1</span><span class="symbol">:/etc/hadoop/</span>
 </code></pre><p>All the configurations are done.</p>
-<h2 id="6-start-the-cluster">6. Start the cluster</h2>
+<h2 id="6-_Start_the_cluster">6. Start the cluster</h2>
 <p>To start the cluster, you need to initialize the HDFS directories at first. On namenode, run the following command:</p>
-<pre><code>$ sudo hdfs-create-dirs
+<pre><code>$ sudo hdfs<span class="attribute">-create</span><span class="attribute">-dirs</span>
 </code></pre><p>Then, use the following command to start all services we need:</p>
-<pre><code>$ sudo systemctl start hadoop-namenode hadoop-datanode hadoop-nodemanager hadoop-resourcemanager
+<pre><code>$ sudo systemctl start hadoop<span class="attribute">-namenode</span> hadoop<span class="attribute">-datanode</span> hadoop<span class="attribute">-nodemanager</span> hadoop<span class="attribute">-resourcemanager</span>
 </code></pre><p>And also, you need to run the following command on every datanode:</p>
-<pre><code>$ sudo systemctl start hadoop-datanode
+<pre><code>$ <span class="built_in">sudo</span> systemctl start hadoop-datanode
 </code></pre><p>(Also, you can use $ sudo start-all.sh to start the whole cluster, then you don’t need to run anything on datanode.)</p>
 <p>Then the cluster would be started successfully.</p>
-<h2 id="7-how-to-add-a-new-datanode">7. How to add a new datanode</h2>
+<h2 id="7-_How_to_add_a_new_datanode">7. How to add a new datanode</h2>
 <p>Fedora makes it simple to add a new datanode to the cluster. Basically, there are several steps:</p>
 <ol>
 <li>Install Fedora</li>
@@ -291,9 +267,9 @@ slave2
 <li>Install Hadoop package and get the updated config files from namenode</li>
 <li>Restart cluster</li>
 </ol>
-<h2 id="references">References</h2>
-<p><a href="http://fedoraproject.org/wiki/Changes/Hadoop" target="_blank">http://fedoraproject.org/wiki/Changes/Hadoop</a></p>
-<p><a href="http://timothysc.github.io/blog/2013/09/14/hadoop-mapreduce/" target="_blank">http://timothysc.github.io/blog/2013/09/14/hadoop-mapreduce/</a></p>
+<h2 id="References">References</h2>
+<p><a href="http://fedoraproject.org/wiki/Changes/Hadoop" target="_blank" rel="external">http://fedoraproject.org/wiki/Changes/Hadoop</a></p>
+<p><a href="http://timothysc.github.io/blog/2013/09/14/hadoop-mapreduce/" target="_blank" rel="external">http://timothysc.github.io/blog/2013/09/14/hadoop-mapreduce/</a></p>
 
       
     </div>
@@ -414,7 +390,7 @@ slave2
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -444,7 +420,7 @@ slave2
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

@@ -92,63 +92,63 @@
     </header>
     <div class="entry">
       
-        <p>不知道问什么，网上的几乎所有关于WebSocket的讲解都是旧版协议，开源的PHP-WebSocket也早不更新了。一开始还以为是服务器程序的原因，后来发现是协议变更了。而且好不容易将握手协议更换为新版后，发现传送的数据都是乱码（见<a href="http://weibo.com/1784705505/ygyi4A0Pj" target="_blank">这里</a>），原来数据报文的格式也进行了非常大的变更！</p>
-<p>之前我们曾介绍过基于WebSocket协议的服务器实现，但那篇文章中提到的WebSocket协议标准还是草案7.5、7.6的标准，如今只有Safari支持此版本的协议，Chrome和Firefox最新版都已升级至Hybi-10（<a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10" target="_blank">协议地址</a>）。因此，我们再来介绍一下WebSocket新版协议Hybi-10。这次协议变更非常大，主要集中在握手协议和数据传输的格式上。下面我们来详细介绍一下。</p>
-<h3 id="-">握手协议</h3>
+        <p>不知道问什么，网上的几乎所有关于WebSocket的讲解都是旧版协议，开源的PHP-WebSocket也早不更新了。一开始还以为是服务器程序的原因，后来发现是协议变更了。而且好不容易将握手协议更换为新版后，发现传送的数据都是乱码（见<a href="http://weibo.com/1784705505/ygyi4A0Pj" target="_blank" rel="external">这里</a>），原来数据报文的格式也进行了非常大的变更！</p>
+<p>之前我们曾介绍过基于WebSocket协议的服务器实现，但那篇文章中提到的WebSocket协议标准还是草案7.5、7.6的标准，如今只有Safari支持此版本的协议，Chrome和Firefox最新版都已升级至Hybi-10（<a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10" target="_blank" rel="external">协议地址</a>）。因此，我们再来介绍一下WebSocket新版协议Hybi-10。这次协议变更非常大，主要集中在握手协议和数据传输的格式上。下面我们来详细介绍一下。</p>
+<h3 id="握手协议">握手协议</h3>
 <p>我们先来看一下大致的区别：</p>
 <ol>
-<li>最老的websocket草案标准中是没有安全key，草案7.5、7.6中有两个安全key，而现在的草案10中只有一个安全key，即将7.5、7.6中http头中的&quot;Sec-WebSocket-Key1&quot;与&quot;Sec-WebSocket-Key2&quot;合并为了一个&quot;Sec-WebSocket-Key&quot;</li>
+<li>最老的websocket草案标准中是没有安全key，草案7.5、7.6中有两个安全key，而现在的草案10中只有一个安全key，即将7.5、7.6中http头中的”Sec-WebSocket-Key1”与”Sec-WebSocket-Key2”合并为了一个”Sec-WebSocket-Key”</li>
 </ol>
 <ol>
-<li>把http头中Upgrade的值由&quot;WebSocket&quot;修改为了&quot;websocket&quot;；http头中的&quot;-Origin&quot;修改为了&quot;Sec-WebSocket-Origin&quot;;</li>
+<li>把http头中Upgrade的值由”WebSocket”修改为了”websocket”；http头中的”-Origin”修改为了”Sec-WebSocket-Origin”;</li>
 </ol>
 <ol>
-<li>增加了http头&quot;Sec-WebSocket-Accept&quot;，用来返回原来草案7.5、7.6服务器返回给客户端的握手验证，原来是以内容的形式返回，现在是放到了http头中；另外服务器返回客户端的验证方式也有变化。</li>
+<li>增加了http头”Sec-WebSocket-Accept”，用来返回原来草案7.5、7.6服务器返回给客户端的握手验证，原来是以内容的形式返回，现在是放到了http头中；另外服务器返回客户端的验证方式也有变化。</li>
 </ol>
 <p>服务器生成验证的方式变化较大，我们来做一介绍。</p>
 <p>旧版：</p>
-<pre><code>GET / HTTP/1.1
-Upgrade: WebSocket
-Connection: Upgrade
-Host: 127.0.0.1:1337
-Origin: http://127.0.0.1:8000
-Cookie: sessionid=xxxx; calView=day; dayCurrentDate=1314288000000
-Sec-WebSocket-Key1: cV`p1* 42#7  ^9}_ 647  08{
-Sec-WebSocket-Key2: O8 415 8x37R A8   4
-;&quot;######
+<pre><code>GET / HTTP/<span class="number">1.1</span>
+<span class="label">Upgrade:</span> WebSocket
+<span class="label">Connection:</span> Upgrade
+<span class="label">Host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">1337</span>
+<span class="label">Origin:</span> http://<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">8000</span>
+<span class="label">Cookie:</span> sessionid=xxxx<span class="comment">; calView=day; dayCurrentDate=1314288000000</span>
+<span class="keyword">Sec</span>-WebSocket-Key1: cV`p1* <span class="number">42</span><span class="preprocessor">#7  ^9}_ 647  08{</span>
+<span class="keyword">Sec</span>-WebSocket-Key2: O8 <span class="number">415</span> <span class="number">8</span>x37R A8   <span class="number">4</span>
+<span class="comment">;"######</span>
 </code></pre><p>旧版生成Token的方法如下：</p>
 <p>取出Sec-WebSocket-Key1中的所有数字字符形成一个数值，这里是1427964708，然后除以Key1中的空格数目，得到一个数值，保留该数值整数位，得到数值N1；对Sec-WebSocket-Key2采取同样的算法，得到第二个整数N2；把N1和N2按照Big-Endian字符序列连接起来，然后再与另外一个Key3连接，得到一个原始序列ser_key。Key3是指在握手请求最后，有一个8字节的奇怪的字符串“;”######”，这个就是Key3。然后对ser_key进行一次md5运算得出一个16字节长的digest，这就是老版本协议需要的token，然后将这个token附在握手消息的最后发送回Client，即可完成握手。</p>
 <p>新版：</p>
-<pre><code>GET / HTTP/1.1
-Upgrade: websocket
-Connection: Upgrade
-Host: 127.0.0.1:1337
-Sec-WebSocket-Origin: http://127.0.0.1:8000
-Sec-WebSocket-Key: erWJbDVAlYnHvHNulgrW8Q==
-Sec-WebSocket-Version: 8
-Cookie: csrftoken=xxxxxx; sessionid=xxxxx
+<pre><code><span class="request">GET <span class="string">/</span> HTTP/1.1</span>
+<span class="attribute">Upgrade</span>: <span class="string">websocket</span>
+<span class="attribute">Connection</span>: <span class="string">Upgrade</span>
+<span class="attribute">Host</span>: <span class="string">127.0.0.1:1337</span>
+<span class="attribute">Sec-WebSocket-Origin</span>: <span class="string">http://127.0.0.1:8000</span>
+<span class="attribute">Sec-WebSocket-Key</span>: <span class="string">erWJbDVAlYnHvHNulgrW8Q==</span>
+<span class="attribute">Sec-WebSocket-Version</span>: <span class="string">8</span>
+<span class="attribute">Cookie</span>: <span class="string">csrftoken=xxxxxx; sessionid=xxxxx</span>
 </code></pre><p>新版生成Token的方法如下：</p>
 <p>首先服务器将key（长度24）截取出来，如4tAjitqO9So2Wu8lkrsq3w==，用它和自定义的一个字符串（长度36）258EAFA5-E914-47DA-95CA-C5AB0DC85B11连接起来，然后把这一字符串进行SHA-1算法加密，得到长度为20字节的二进制数据，再将这些数据经过Base64编码，最终得到服务端的密钥，也就是ser_key。服务器将ser_key附在返回值Sec-WebSocket-Accept后，至此握手成功。</p>
-<h3 id="-">数据报文格式</h3>
+<h3 id="数据报文格式">数据报文格式</h3>
 <p>旧版协议比较简单，仅仅是在原始数据前加了个’\x00′，在最后面加了个’\xFF’，即假如Client发送一个字符串’test’，实际上WebSocket Server收到的数据是：’x00test\xFF’，所以只需要剥离掉首尾那两个字符就可以了。</p>
 <p>新版的协议对这部分规定比较复杂，以下是其格式标准：（下图在Firefox可能会出现错乱，请换用Chrome）</p>
-<pre><code>      0                   1                   2                   3
-      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+<pre><code>      <span class="number">0</span>                   <span class="number">1</span>                   <span class="number">2</span>                   <span class="number">3</span>
+      <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span> <span class="number">0</span> <span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span> <span class="number">6</span> <span class="number">7</span> <span class="number">8</span> <span class="number">9</span> <span class="number">0</span> <span class="number">1</span>
      +-+-+-+-+-------+-+-------------+-------------------------------+
-     |F|R|R|R| opcode|M| Payload len |    Extended payload length    |
-     |I|S|S|S|  (4)  |A|     (7)     |             (16/63)           |
-     |N|V|V|V|       |S|             |   (if payload len==126/127)   |
-     | |1|2|3|       |K|             |                               |
+     |<span class="literal">F</span>|R|R|R| opcode|M| Payload len |    Extended payload length    |
+     |I|S|S|S|  (<span class="number">4</span>)  |A|     (<span class="number">7</span>)     |             (<span class="number">16</span>/<span class="number">63</span>)           |
+     |N|V|V|V|       |S|             |   (<span class="keyword">if</span> payload len==<span class="number">126</span>/<span class="number">127</span>)   |
+     | |<span class="number">1</span>|<span class="number">2</span>|<span class="number">3</span>|       |K|             |                               |
      +-+-+-+-+-------+-+-------------+ - - - - - - - - - - - - - - - +
-     |     Extended payload length continued, if payload len == 127  |
+     |     Extended payload length continued, <span class="keyword">if</span> payload len == <span class="number">127</span>  |
      + - - - - - - - - - - - - - - - +-------------------------------+
-     |                               |Masking-key, if MASK set to 1  |
+     |                               |Masking-key, <span class="keyword">if</span> MASK set to <span class="number">1</span>  |
      +-------------------------------+-------------------------------+
      | Masking-key (continued)       |          Payload Data         |
      +-------------------------------- - - - - - - - - - - - - - - - +
-     :                     Payload Data continued ...                :
+     :                     Payload Data continued <span class="keyword">...</span>                :
      + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
-     |                     Payload Data continued ...                |
+     |                     Payload Data continued <span class="keyword">...</span>                |
      +---------------------------------------------------------------+
 </code></pre><p><strong>FIN：</strong>1位，用来表明这是一个消息的最后的消息片断，当然第一个消息片断也可能是最后的一个消息片断；</p>
 <p><strong>RSV1, RSV2, RSV3:</strong> 分别都是1位，如果双方之间没有约定自定义协议，那么这几位的值都必须为0,否则必须断掉WebSocket连接；</p>
@@ -179,55 +179,52 @@ Cookie: csrftoken=xxxxxx; sessionid=xxxxx
 </ul>
 <p><strong>Mask:</strong>1位，定义传输的数据是否有加掩码,如果设置为1,掩码键必须放在masking-key区域，客户端发送给服务端的所有消息，此位的值都是1；</p>
 <p><strong>Payload length: </strong>传输数据的长度，以字节的形式表示：7位、7+16位、或者7+64位。如果这个值以字节表示是0-125这个范围，那这个值就表示传输数据的长度；如果这个值是126，则随后的两个字节表示的是一个16进制无符号数，用来表示传输数据的长度；如果这个值是127,则随后的是8个字节表示的一个64位无符合数，这个数用来表示传输数据的长度。多字节长度的数量是以网络字节的顺序表示。负载数据的长度为扩展数据及应用数据之和，扩展数据的长度可能为0,因而此时负载数据的长度就为应用数据的长度。</p>
-<p><strong>Masking-key:</strong>0或4个字节，客户端发送给服务端的数据，都是通过内嵌的一个32位值作为掩码的；掩码键只有在掩码位设置为1的时候存在。
-<strong>Payload data: </strong> (x+y)位，负载数据为扩展数据及应用数据长度之和。
-<strong>Extension data:</strong>x位，如果客户端与服务端之间没有特殊约定，那么扩展数据的长度始终为0，任何的扩展都必须指定扩展数据的长度，或者长度的计算方式，以及在握手时如何确定正确的握手方式。如果存在扩展数据，则扩展数据就会包括在负载数据的长度之内。
-<strong>Application data:</strong>y位，任意的应用数据，放在扩展数据之后，应用数据的长度=负载数据的长度-扩展数据的长度。</p>
+<p><strong>Masking-key:</strong>0或4个字节，客户端发送给服务端的数据，都是通过内嵌的一个32位值作为掩码的；掩码键只有在掩码位设置为1的时候存在。<br><strong>Payload data: </strong> (x+y)位，负载数据为扩展数据及应用数据长度之和。<br><strong>Extension data:</strong>x位，如果客户端与服务端之间没有特殊约定，那么扩展数据的长度始终为0，任何的扩展都必须指定扩展数据的长度，或者长度的计算方式，以及在握手时如何确定正确的握手方式。如果存在扩展数据，则扩展数据就会包括在负载数据的长度之内。<br><strong>Application data:</strong>y位，任意的应用数据，放在扩展数据之后，应用数据的长度=负载数据的长度-扩展数据的长度。</p>
 <p>以下是Python实现的解码和编码，兼容新旧版协议，仅供参考：</p>
 <pre><code>:::Python
-def send_data(self, raw_str):
-    if self.sockets[self][&#39;new_version&#39;]:
+<span class="function"><span class="keyword">def</span> <span class="title">send_data</span><span class="params">(self, raw_str)</span>:</span>
+    <span class="keyword">if</span> self.sockets[self][<span class="string">'new_version'</span>]:
         back_str = []
-        back_str.append(&#39;\x81&#39;)
+        back_str.append(<span class="string">'\x81'</span>)
         data_length = len(raw_str)
 
-        if data_length &lt;= 125:
+        <span class="keyword">if</span> data_length &lt;= <span class="number">125</span>:
             back_str.append(chr(data_length))
-        else:
-            back_str.append(chr(126))
-            back_str.append(chr(data_length &gt;&gt; 8))
-            back_str.append(chr(data_length &amp; 0xFF))
+        <span class="keyword">else</span>:
+            back_str.append(chr(<span class="number">126</span>))
+            back_str.append(chr(data_length &gt;&gt; <span class="number">8</span>))
+            back_str.append(chr(data_length &amp; <span class="number">0xFF</span>))
 
-        back_str = &quot;&quot;.join(back_str) + raw_str
+        back_str = <span class="string">""</span>.join(back_str) + raw_str
         self.transport.write(back_str)
-    else:
-        back_str = &#39;\x00%s\xFF&#39; % (raw_str)
+    <span class="keyword">else</span>:
+        back_str = <span class="string">'\x00%s\xFF'</span> % (raw_str)
         self.transport.write(back_str)
 
-def parse_recv_data(self, msg):
-    raw_str = &#39;&#39;
+<span class="function"><span class="keyword">def</span> <span class="title">parse_recv_data</span><span class="params">(self, msg)</span>:</span>
+    raw_str = <span class="string">''</span>
 
-    if self.sockets[self][&#39;new_version&#39;]:
-        code_length = ord(msg[1]) &amp; 127
+    <span class="keyword">if</span> self.sockets[self][<span class="string">'new_version'</span>]:
+        code_length = ord(msg[<span class="number">1</span>]) &amp; <span class="number">127</span>
 
-        if code_length == 126:
-            masks = msg[4:8]
-            data = msg[8:]
-        elif code_length == 127:
-            masks = msg[10:14]
-            data = msg[14:]
-        else:
-            masks = msg[2:6]
-            data = msg[6:]
+        <span class="keyword">if</span> code_length == <span class="number">126</span>:
+            masks = msg[<span class="number">4</span>:<span class="number">8</span>]
+            data = msg[<span class="number">8</span>:]
+        <span class="keyword">elif</span> code_length == <span class="number">127</span>:
+            masks = msg[<span class="number">10</span>:<span class="number">14</span>]
+            data = msg[<span class="number">14</span>:]
+        <span class="keyword">else</span>:
+            masks = msg[<span class="number">2</span>:<span class="number">6</span>]
+            data = msg[<span class="number">6</span>:]
 
-        i = 0
-        for d in data:
-            raw_str += chr(ord(d) ^ ord(masks[i%4]))
-            i += 1
-    else:
-        raw_str = msg.split(&quot;\xFF&quot;)[0][1:]
+        i = <span class="number">0</span>
+        <span class="keyword">for</span> d <span class="keyword">in</span> data:
+            raw_str += chr(ord(d) ^ ord(masks[i%<span class="number">4</span>]))
+            i += <span class="number">1</span>
+    <span class="keyword">else</span>:
+        raw_str = msg.split(<span class="string">"\xFF"</span>)[<span class="number">0</span>][<span class="number">1</span>:]
 
-    return raw_str
+    <span class="keyword">return</span> raw_str
 </code></pre>
       
     </div>
@@ -348,7 +345,7 @@ def parse_recv_data(self, msg):
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -378,7 +375,7 @@ def parse_recv_data(self, msg):
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

@@ -93,20 +93,20 @@
     </header>
     <div class="entry">
       
-        <p>在上一篇文章《<a href="http://www.hackecho.com/" target="_blank">VPS折腾记</a>》中提到在升级Wordpress或添加删除主题和插件的时候需要填写FTP账户信息的问题，提示一般如下：</p>
+        <p>在上一篇文章《<a href="http://www.hackecho.com/" target="_blank" rel="external">VPS折腾记</a>》中提到在升级Wordpress或添加删除主题和插件的时候需要填写FTP账户信息的问题，提示一般如下：</p>
 <blockquote>
 <p>要执行请求的操作，WordPress 需要访问您网页服务器的权限。 请输入您的 FTP 登录凭据以继续。 如果您忘记了您的登录凭据（如用户名、密码），请联系您的网站托管商。</p>
 </blockquote>
 <p>一般情况下，虚拟主机很少会出现这样的情况，如果使用 VPS 的话，这种情况就会比较多。主要原因是网站服务器运行PHP的用户和Wordpress文件夹的所有者不一样，目的就是为了安全，Wordpress在升级时会创建一个临时文件看看owner是不是和当前运行的PHP是否一样，如果不一样，就会出现这个界面。</p>
 <p>第一种解决办法很简单，就是直接在wp-config.php 中加入FTP的配置代码：</p>
-<pre><code>// ** FTP SETTINGS FOR AUTO-UPDATE ** //
-define(‘FTP_HOST’, ‘localhost’);
-define(‘FTP_USER’, ‘ftp帐号’);
-define(‘FTP_PASS’, ‘ftp密码’);
+<pre><code><span class="comment">// ** FTP SETTINGS FOR AUTO-UPDATE ** //</span>
+<span class="class"><span class="keyword">define</span></span>(‘FTP_HOST’, ‘localhost’);
+<span class="class"><span class="keyword">define</span></span>(‘FTP_USER’, ‘ftp帐号’);
+<span class="class"><span class="keyword">define</span></span>(‘FTP_PASS’, ‘ftp密码’);
 </code></pre><p>当然我们更想从根本上解决问题，那么第二种个方法，就要从用户组下手了。</p>
 <p>针对有高级管理权限的用户，如服务器或 VPS 等管理员，只需将 PHP 和网站目录设置成同一个用户组即可。一般是 www 用户组跑 PHP，所以将网站所在目录内所有文件夹和文件设置成www用户组即可，输入命令：</p>
-<pre><code>chown -R www /home/wwwroot  
-chgrp -R www /home/wwwroot  
+<pre><code>chown <span class="attribute">-R</span> www /home/wwwroot  
+chgrp <span class="attribute">-R</span> www /home/wwwroot  
 </code></pre><p>记住将上述命令中的网站目录路径改为自己的路径即可。</p>
 
       
@@ -228,7 +228,7 @@ chgrp -R www /home/wwwroot
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -258,7 +258,7 @@ chgrp -R www /home/wwwroot
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

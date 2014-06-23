@@ -95,27 +95,27 @@
     <div class="entry">
       
         <p>这是一篇方法总结和作业笔记，已备需要的时候查阅。本文将介绍C++ Boost库 <code>Boost.Thread</code> ，用于开发独立于平台的多线程应用程序。</p>
-<h3 id="-">线程创建</h3>
+<h3 id="线程创建">线程创建</h3>
 <p>相关类为 <code>boost::thread</code> ，定义在 <code>boost/thread.hpp</code> 中，用于创建一个新线程。</p>
 <pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
+<span class="preprocessor">#include &lt;boost/thread.hpp&gt; </span>
+<span class="preprocessor">#include &lt;iostream&gt; </span>
 
-void wait(int seconds) 
+<span class="keyword">void</span> wait(<span class="keyword">int</span> seconds) 
 { 
     boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
 } 
 
-void thread() 
+<span class="keyword">void</span> thread() 
 { 
-    for (int i = 0; i &lt; 5; ++i) 
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) 
     { 
-        wait(1); 
-        std::cout &lt;&lt; i &lt;&lt; std::endl; 
+        wait(<span class="number">1</span>); 
+        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="built_in">std</span>::endl; 
     } 
 } 
 
-int main() 
+<span class="keyword">int</span> main() 
 { 
     boost::thread t(thread); 
     t.join(); 
@@ -239,7 +239,7 @@ int main()
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -269,7 +269,7 @@ int main()
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

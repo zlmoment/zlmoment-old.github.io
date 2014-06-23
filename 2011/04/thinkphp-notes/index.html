@@ -95,19 +95,19 @@ Action：模块控制器类，你暂时可以理解为一个Action文件代表�
         <p>因为是自己的笔记，所以比较杂乱，见谅。</p>
 <p><strong>Action：</strong>模块控制器类，你暂时可以理解为一个Action文件代表着一个应用模块，Action文件中的每一个方法(function)代表着一个操作，操作分为有输出到模板的操作和只具执行不需要输出的操作。对于有输出的操作，则代表了你的项目中一个展示给用户应用的web页面。（注意：这不是正统的术语解释）</p>
 <pre><code>//IndexAction.class.php
-&lt;?php
-class IndexAction extends Action{
-    public function index(){
+<span class="php"><span class="preprocessor">&lt;?php</span>
+<span class="class"><span class="keyword">class</span> <span class="title">IndexAction</span> <span class="keyword">extends</span> <span class="title">Action</span>{</span>
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span><span class="params">()</span>{</span>
         ....
     }
 }
-?&gt;
+<span class="preprocessor">?&gt;</span></span>
 </code></pre><p><strong>Model：</strong>数据表相对应的Model类，可以理解为一个Model文件对应着你项目数据库的其中一个表。</p>
 <pre><code>//UserModel.class.php
-&lt;?php
-    class UserModel extends Model
-    {}
-?&gt;
+<span class="php"><span class="preprocessor">&lt;?php</span>
+    <span class="class"><span class="keyword">class</span> <span class="title">UserModel</span> <span class="keyword">extends</span> <span class="title">Model</span>
+    {</span>}
+<span class="preprocessor">?&gt;</span></span>
 </code></pre><p>Action目录放置命名为xxxAction.class.php的控制器文件，Model目录放置对应数据库表的命名为xxxModel.class.php的类文件。</p>
 <p>1 在TP开发中，要增加一个应用模块，就在Action文件夹里建立一个类，类的文件命名格式是模块名称+Action.class.php。例如我们这里的应用模块是Index，所以定义文件名为IndexAction.class.php</p>
 <p>2 应用模块类的定义要继承框架的Action类。要为这个应用模块添加一个操作，则定义一个以此操作为命名的function.例如上面的index操作。</p>
@@ -115,162 +115,154 @@ class IndexAction extends Action{
 <p>配置设置可以利用C函数动态改变。</p>
 <p><strong>有关TP的模板引擎的变量输出：</strong></p>
 <p>在应用模块中，如果某个操作是需要页面显示的，只要对应在Myapp/Tpl/default/里建立一个文件夹，文件夹以模块的名称来命名，然后在这个文件夹下建立一个以这个function名称来命名的html文件，就可以在这个方法中使用$this-&gt;display()方法来直接调用该模板。（也可以调用其它模块的其它模板或显式指定模板文件位置和名称，先忽略）</p>
-<pre><code>Tpl -&gt; default -&gt; 模块名的文件夹 -&gt; 函数名的html文件（即模板）
+<pre><code>Tpl<span class="function"> -&gt;</span> <span class="reserved">default</span><span class="function"> -&gt;</span> 模块名的文件夹<span class="function"> -&gt;</span> 函数名的html文件（即模板）
 </code></pre><p>在Action类里面使用 assign方法对模板变量赋值：</p>
-<pre><code>$this-&gt;assign(&#39;name&#39;,$value);
+<pre><code>$this-&gt;assign('name',$value);
 // 下面的写法是等效的
 $this-&gt;name = $value ;
 // 模板变量赋值后就需要调用模板文件来输出相关的变量，模板调用通过display方法来实现
 $this-&gt;;display();
-&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;{$name}&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
+<span class="doctype">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"&gt;</span>
+<span class="tag">&lt;<span class="title">html</span>&gt;</span>
+<span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">title</span>&gt;</span>{$name}<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+<span class="tag">&lt;<span class="title">body</span>&gt;</span>
     测试输出：{$name}
-&lt;/body&gt;
-&lt;/html&gt;
+<span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
 </code></pre><p>如果要同时输出多个模板变量，可以使用下面的方式：</p>
-<pre><code>$array = array();
-$array[&#39;name&#39;]    =    &#39;thinkphp&#39;;
-$array[&#39;email&#39;]    =    &#39;abc@123.com&#39;;
-$array[&#39;phone&#39;]    =    &#39;12345678&#39;;
-</code></pre><p>用{$array.name}在模板中输出
-智能模式下的URL基本结构是这样的</p>
-<pre><code>http://servername/appName/moduleName/actionName/params
+<pre><code><span class="variable">$array</span> = <span class="keyword">array</span>();
+<span class="variable">$array</span>[<span class="string">'name'</span>]    =    <span class="string">'thinkphp'</span>;
+<span class="variable">$array</span>[<span class="string">'email'</span>]    =    <span class="string">'abc@123.com'</span>;
+<span class="variable">$array</span>[<span class="string">'phone'</span>]    =    <span class="string">'12345678'</span>;
+</code></pre><p>用{$array.name}在模板中输出<br>智能模式下的URL基本结构是这样的</p>
+<pre><code><span class="keyword">http</span>://servername/appName/moduleName/actionName/<span class="built_in">params</span>
 </code></pre><p>你可以理解为</p>
-<pre><code>http:// 服务器地址 / 入口文件位置 / 应用模块名称 /具体操作名称/ GET变量参数
+<pre><code>http:<span class="comment">// 服务器地址 / 入口文件位置 / 应用模块名称 /具体操作名称/ GET变量参数</span>
 </code></pre><p>如：</p>
-<pre><code>http://127.0.0.1/index.php/Index/index
+<pre><code>http:<span class="regexp">//</span><span class="number">127.0</span>.<span class="number">0</span>.<span class="number">1</span>/<span class="keyword">index</span>.php/Index/<span class="keyword">index</span>
 </code></pre><p>配置开启rewrite。</p>
 <p><strong>模型对象：</strong>即数据对象，你项目里每一个Model类文件都会对应着一个数据表(或者视图)，模型与数据表存在一种映射关系。</p>
 <p>开发过程中，只要简单地定义好与数据表对应的模型类（xxxModel.class.php），就可以进行对数据操作了。</p>
 <p>关于MVC模式的经典语录：C的作用，就是从M中取得数据到V</p>
 <p>自动完成功能要详细阅读手册。</p>
 <p><strong>模板常量：</strong></p>
-<pre><code>__ROOT__    网站根目录地址
-__APP__         当前项目（入口文件）地址
-__URL__         当前模块地址
-__ACTION__   当前操作地址
-__SELF__       当前 URL 地址
+<pre><code><span class="strong">__ROOT__</span>    网站根目录地址
+<span class="strong">__APP__</span>         当前项目（入口文件）地址
+<span class="strong">__URL__</span>         当前模块地址
+<span class="strong">__ACTION__</span>   当前操作地址
+<span class="strong">__SELF__</span>       当前 URL 地址
 </code></pre><p><strong>dump($var, $echo=true,$label=null, $strict=true)</strong>函数。浏览器友好的变量输出。</p>
-<p>连贯操作:所谓连贯操作，是TP利用__call方法来实现的一些特殊的Model类方法，可以对数据对象连续调用数个方法(参数)来设定特定的条件，然后执行最终所指定的操作，这类特定方法的命名都很直观易记：
-用于查询表达式的</p>
-<pre><code>&#39;field&#39;//要查询的字段名
-&#39;table&#39;//数据表名称 不指定时，默认为当前数据对象所对应的表
-&#39;where&#39;//查询条件
-&#39;order&#39;// 排序
-&#39;limit&#39;//结果限制
-&#39;having&#39;//having支持
-&#39;group&#39;//group支持
-&#39;distinct&#39;//distinct筛选支持
-&#39;lazy&#39;//惰性查询支持
+<p>连贯操作:所谓连贯操作，是TP利用__call方法来实现的一些特殊的Model类方法，可以对数据对象连续调用数个方法(参数)来设定特定的条件，然后执行最终所指定的操作，这类特定方法的命名都很直观易记：<br>用于查询表达式的</p>
+<pre><code><span class="string">'field'</span><span class="comment">//要查询的字段名</span>
+<span class="string">'table'</span><span class="comment">//数据表名称 不指定时，默认为当前数据对象所对应的表</span>
+<span class="string">'where'</span><span class="comment">//查询条件</span>
+<span class="string">'order'</span><span class="comment">// 排序</span>
+<span class="string">'limit'</span><span class="comment">//结果限制</span>
+<span class="string">'having'</span><span class="comment">//having支持</span>
+<span class="string">'group'</span><span class="comment">//group支持</span>
+<span class="string">'distinct'</span><span class="comment">//distinct筛选支持</span>
+<span class="string">'lazy'</span><span class="comment">//惰性查询支持</span>
 </code></pre><p>用于统计查询的</p>
-<pre><code>&#39;count&#39;//统计满足条件的记录个数
-&#39;sum&#39;//统计某个字段的总和
-&#39;min&#39;//取得某个字段的最小值
-&#39;max&#39;//取得某个字段的最大值
-&#39;avg&#39;//统计某个字段的平均值
+<pre><code><span class="string">'count'</span><span class="comment">//统计满足条件的记录个数</span>
+<span class="string">'sum'</span><span class="comment">//统计某个字段的总和</span>
+<span class="string">'min'</span><span class="comment">//取得某个字段的最小值</span>
+<span class="string">'max'</span><span class="comment">//取得某个字段的最大值</span>
+<span class="string">'avg'</span><span class="comment">//统计某个字段的平均值</span>
 </code></pre><p><strong>获取单条记录：</strong></p>
-<pre><code>find($options=array());
-//$options=array()是查询条件表达式。
+<pre><code>find(<span class="variable">$options</span>=array());
+<span class="regexp">//</span><span class="variable">$options</span>=array()是查询条件表达式。
 </code></pre><p>利用find方法进行查询，会自动加上limit=1来得到指定条件的一条记录。</p>
-<pre><code>//SELECT * FROM `think_form` WHERE id=&#39;2&#39; LIMIT 1
-$data = $Form-&gt;find(2);
-dump ( $data );
-dump( $Form-&gt;getLastSql() );
-exit;
+<pre><code>//SELECT * FROM <span class="string">`think_form`</span> WHERE id=<span class="string">'2'</span> LIMIT <span class="number">1</span>
+<span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;find(<span class="number">2</span>);
+<span class="keyword">dump</span> ( <span class="variable">$data</span> );
+<span class="keyword">dump</span>( <span class="variable">$Form</span>-&gt;getLastSql() );
+<span class="keyword">exit</span>;
 
-// SELECT * FROM `think_form` WHERE ( `email` = &#39;abcdefg&#39; ) LIMIT 1
-$where[&#39;email&#39;] = &#39;abcdefg&#39;;
-$options[&#39;where&#39;] = $where;
-$data = $Form-&gt;find($options);
-dump ( $data );
-dump( $Form-&gt;;getLastSql() );
-exit;
+<span class="regexp">//</span> SELECT * FROM <span class="string">`think_form`</span> WHERE ( <span class="string">`email`</span> = <span class="string">'abcdefg'</span> ) LIMIT <span class="number">1</span>
+<span class="variable">$where</span>[<span class="string">'email'</span>] = <span class="string">'abcdefg'</span>;
+<span class="variable">$options</span>[<span class="string">'where'</span>] = <span class="variable">$where</span>;
+<span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;find(<span class="variable">$options</span>);
+<span class="keyword">dump</span> ( <span class="variable">$data</span> );
+<span class="keyword">dump</span>( <span class="variable">$Form</span>-&gt;;getLastSql() );
+<span class="keyword">exit</span>;
 </code></pre><p>但是这样未免麻烦了些，这时我们可以使用连贯操作，结果是一样的。不过这样就直观了很多</p>
-<pre><code>$where[&#39;email&#39;] = &#39;abcdefg&#39;; //多个条件时同样如此设置
-$data = $Form-&gt;where($where)-&gt;find();
-dump ( $data );
-dump( $Form-&gt;getLastSql() );
-exit;
-</code></pre><p><strong>2 getField($field,$condition=&#39;&#39;) 获取一条记录的某个字段的值</strong></p>
-<pre><code>//SELECT `email` AS `abcdefg` FROM `think_form` LIMIT 1
-$where[&#39;email&#39;] = &#39;abcdefg&#39;;
-$data = $Form-&gt;getField($where);
-</code></pre><p>注意：这里如果我们使用<code>$data = $Form-&gt;where($where)-&gt;getField();</code>
-返回的将会是这个条件的id值
-sql将会是<code>SELECT * FROM <code>think_form</code> WHERE ( <code>email</code> = &#39;abcdefg&#39; ) LIMIT 1</code></p>
-<p><strong>3 getFields($field,$condition=&#39;&#39;,$sepa=&#39; &#39;)获取数据集的个别字段值</strong></p>
-<pre><code>$data = $Form-&gt;getFields(&#39;email&#39;);
-// SELECT `email` FROM `think_form
-</code></pre><p><strong>4 getby字段名(&#39;字段值&#39;) --动态根据指定字段获取一条数据</strong></p>
-<pre><code>$data = $Form-&gt;getbyemail(&#39;abcdefg&#39;);
-//SELECT * FROM `think_form` WHERE email=&#39;abcdefg&#39; LIMIT 1
+<pre><code><span class="variable">$where</span>[<span class="string">'email'</span>] = <span class="string">'abcdefg'</span>; <span class="regexp">//</span>多个条件时同样如此设置
+<span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;where(<span class="variable">$where</span>)-&gt;find();
+<span class="keyword">dump</span> ( <span class="variable">$data</span> );
+<span class="keyword">dump</span>( <span class="variable">$Form</span>-&gt;getLastSql() );
+<span class="keyword">exit</span>;
+</code></pre><p><strong>2 getField($field,$condition=’’) 获取一条记录的某个字段的值</strong></p>
+<pre><code>//SELECT <span class="string">`email`</span> AS <span class="string">`abcdefg`</span> FROM <span class="string">`think_form`</span> LIMIT <span class="number">1</span>
+<span class="variable">$where</span>[<span class="string">'email'</span>] = <span class="string">'abcdefg'</span>;
+<span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;getField(<span class="variable">$where</span>);
+</code></pre><p>注意：这里如果我们使用<code>$data = $Form-&gt;where($where)-&gt;getField();</code><br>返回的将会是这个条件的id值<br>sql将会是<code>SELECT * FROM <code>think_form</code> WHERE ( <code>email</code> = ‘abcdefg’ ) LIMIT 1</code></p>
+<p><strong>3 getFields($field,$condition=’’,$sepa=’ ‘)获取数据集的个别字段值</strong></p>
+<pre><code><span class="variable">$data</span> <span class="subst">=</span> <span class="variable">$Form</span><span class="subst">-&gt;</span>getFields(<span class="string">'email'</span>);
+<span class="comment">// SELECT `email` FROM `think_form</span>
+</code></pre><p><strong>4 getby字段名(‘字段值’) —动态根据指定字段获取一条数据</strong></p>
+<pre><code><span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;getbyemail(<span class="string">'abcdefg'</span>);
+<span class="regexp">//</span><span class="constant">SELECT</span> * <span class="constant">FROM</span> `think_form` <span class="constant">WHERE</span> email=<span class="string">'abcdefg'</span> <span class="constant">LIMIT</span> <span class="number">1</span>
 </code></pre><p><strong>5 获取多条记录select($options=array()) 或 findAll($options=array())</strong></p>
 <p>$option 参数设定的是查询表达式，不设置时，默认是获取全部数据.参数支持如下键名</p>
 <pre><code>table 指定表名称，可以跨表访问，若不填则是当前DAO
-distinct 指定是否只列出不重复数据，如果想列出不重复数据，则为true，不填则无此功能
+<span class="keyword">distinct</span> 指定是否只列出不重复数据，如果想列出不重复数据，则为<span class="literal">true</span>，不填则无此功能
 field 指定要搜索的字段，不填则为*
-join 填写join，可以支持数组或者直接使用字符串，如果是字符串，那么只支持LEFT JOIN，
-       如果想使用RIGHT JOIN，那么只能使用数组定义，并且必须写清RIGHT JOIN
-where 指定查询条件&lt;/pre&gt;
-where可以多说点，功能很多。
-</code></pre><p>首先说最简单的字符串查询，直接执行就OK了。
-使用数组指定查询条件。</p>
-<pre><code>$whereArr=array(
-    &quot;account&quot;=&gt;&quot;tdweb&quot;,
-    &quot;home&quot;=&gt;&quot;China&quot;
+<span class="keyword">join</span> 填写<span class="keyword">join</span>，可以支持数组或者直接使用字符串，如果是字符串，那么只支持LEFT <span class="keyword">JOIN</span>，
+       如果想使用RIGHT <span class="keyword">JOIN</span>，那么只能使用数组定义，并且必须写清RIGHT <span class="keyword">JOIN</span>
+<span class="keyword">where</span> 指定查询条件&lt;/pre&gt;
+<span class="keyword">where</span>可以多说点，功能很多。
+</code></pre><p>首先说最简单的字符串查询，直接执行就OK了。<br>使用数组指定查询条件。</p>
+<pre><code><span class="variable">$whereArr</span>=<span class="keyword">array</span>(
+    <span class="string">"account"</span>=&gt;<span class="string">"tdweb"</span>,
+    <span class="string">"home"</span>=&gt;<span class="string">"China"</span>
 );
-$options=array(
-    &quot;where&quot;=&gt;$whereArr
+<span class="variable">$options</span>=<span class="keyword">array</span>(
+    <span class="string">"where"</span>=&gt;<span class="variable">$whereArr</span>
 );
-$Dao-&gt;select($options);
-</code></pre><p>这样默认是查询<code>SELECT * FROM <code>test</code> WHERE ( <code>account</code> = &#39;tdweb&#39; ) AND ( <code>home</code> = &#39;China&#39; )</code>是查询相等条件的。
-那如果我想查询like条件怎么办？
-解决方法之一是定义LIKE_MATCH_FIELDS配置，这里指明要进行like查询的字段。现在我们稍微改下程序。</p>
-<pre><code>public function testDb()  
-{  
-    C(&#39;LIKE_MATCH_FIELDS&#39;,&quot;account&quot;);  
-    $Dao=D(&quot;Test&quot;);  
-    $whereArr=array(  
-    &quot;account&quot;=&gt;&quot;tdweb&quot;,  
-    &quot;home&quot;=&gt;&quot;China&quot;  
+<span class="variable">$Dao</span>-&gt;select(<span class="variable">$options</span>);
+</code></pre><p>这样默认是查询<code>SELECT * FROM <code>test</code> WHERE ( <code>account</code> = ‘tdweb’ ) AND ( <code>home</code> = ‘China’ )</code>是查询相等条件的。<br>那如果我想查询like条件怎么办？<br>解决方法之一是定义LIKE_MATCH_FIELDS配置，这里指明要进行like查询的字段。现在我们稍微改下程序。</p>
+<pre><code><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testDb</span><span class="params">()</span>  
+{</span>  
+    C(<span class="string">'LIKE_MATCH_FIELDS'</span>,<span class="string">"account"</span>);  
+    <span class="variable">$Dao</span>=D(<span class="string">"Test"</span>);  
+    <span class="variable">$whereArr</span>=<span class="keyword">array</span>(  
+    <span class="string">"account"</span>=&gt;<span class="string">"tdweb"</span>,  
+    <span class="string">"home"</span>=&gt;<span class="string">"China"</span>  
 );  
-$options=array(  
+<span class="variable">$options</span>=<span class="keyword">array</span>(  
 
 );  
-dump($Dao-&gt;select($options));  
-echo $Dao-&gt;getLastSql();  
+dump(<span class="variable">$Dao</span>-&gt;select(<span class="variable">$options</span>));  
+<span class="keyword">echo</span> <span class="variable">$Dao</span>-&gt;getLastSql();  
 }  
-</code></pre><p>得到的SQL就是<code>SELECT * FROM <code>test</code> WHERE ( <code>account</code> LIKE &#39;%tdweb%&#39; ) AND ( <code>home</code> = &#39;China&#39; )</code></p>
+</code></pre><p>得到的SQL就是<code>SELECT * FROM <code>test</code> WHERE ( <code>account</code> LIKE ‘%tdweb%’ ) AND ( <code>home</code> = ‘China’ )</code></p>
 <p>接着，可以看如下代码</p>
-<pre><code>public function testDb()  
-{  
-    $Dao=D(&quot;Test&quot;);  
-    $whereArr=array(  
-    &quot;account&quot;=&gt;array(&quot;eq&quot;,&quot;tdweb&quot;),  
-    &quot;home&quot;=&gt;array(&quot;like&quot;,&quot;%Chi%&quot;),  
-    &quot;age&quot;=&gt;array(&quot;between&quot;,&quot;1,3&quot;)  
+<pre><code><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testDb</span><span class="params">()</span>  
+{</span>  
+    <span class="variable">$Dao</span>=D(<span class="string">"Test"</span>);  
+    <span class="variable">$whereArr</span>=<span class="keyword">array</span>(  
+    <span class="string">"account"</span>=&gt;<span class="keyword">array</span>(<span class="string">"eq"</span>,<span class="string">"tdweb"</span>),  
+    <span class="string">"home"</span>=&gt;<span class="keyword">array</span>(<span class="string">"like"</span>,<span class="string">"%Chi%"</span>),  
+    <span class="string">"age"</span>=&gt;<span class="keyword">array</span>(<span class="string">"between"</span>,<span class="string">"1,3"</span>)  
 );  
-$options=array(  
-    &quot;where&quot;=&gt;$whereArr  
+<span class="variable">$options</span>=<span class="keyword">array</span>(  
+    <span class="string">"where"</span>=&gt;<span class="variable">$whereArr</span>  
 );  
-dump($Dao-&gt;select($options));  
-echo $Dao-&gt;getLastSql();  
+dump(<span class="variable">$Dao</span>-&gt;select(<span class="variable">$options</span>));  
+<span class="keyword">echo</span> <span class="variable">$Dao</span>-&gt;getLastSql();  
 }  
-</code></pre><p>这里的$whereArr定义为一个二级数组，没一个字段都定义了一个数组，这样可以支持更高级复杂的查询。
-其中支持的关键字：</p>
-<pre><code>EQ 相等  
-NEQ 不相等  
-GT 大于  
+</code></pre><p>这里的$whereArr定义为一个二级数组，没一个字段都定义了一个数组，这样可以支持更高级复杂的查询。<br>其中支持的关键字：</p>
+<pre><code><span class="literal">EQ</span> 相等  
+<span class="literal">NEQ</span> 不相等  
+<span class="literal">GT</span> 大于  
 EGT 不大于  
-LT 小于  
+<span class="literal">LT</span> 小于  
 ELT 不小于  
 NOTLIKE 不相似  
 LIKE 相似  
-NULL 空  
+<span class="built_in">NULL</span> 空  
 NOTNULL 不为空  
 EXP 使用自己写的表达式  
 </code></pre><p>上述内容还需消化。。</p>
@@ -394,7 +386,7 @@ EXP 使用自己写的表达式
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -424,7 +416,7 @@ EXP 使用自己写的表达式
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

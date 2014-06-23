@@ -95,19 +95,19 @@
     <div class="entry">
       
         <p>有两门课的作业要用到MPI，“高性能计算环境”和“并行与分布式系统”，所以简单了解了一下MPI的基础知识。MPI并不是并行程序设计的唯一方法，但却是一种行之有效的方法。而且MPI已在几乎所有主流的并行机上得到实现，具有很高的可移植性，适用范围非常广泛。这是一篇学习笔记，因此不会面面俱到。</p>
-<h3 id="-mpi">什么是MPI</h3>
+<h3 id="什么是MPI">什么是MPI</h3>
 <p>MPI是Massage Passing Interface的简写，是消息传递函数库的标准规范，由MPI论坛开发，支持Fortran和C，主要用于进程（Process）间通信。</p>
 <p>在MPI中，数据被显式由从一个进程发送给另一个进程，一个称为发送方，一个称为接收方。</p>
-<h3 id="hello-world">Hello World</h3>
+<h3 id="Hello_World">Hello World</h3>
 <p>让我们从一个最简单的MPI Hello World程序开始。</p>
-<pre><code>#include &quot;mpi.h&quot;
-#include &lt;stdio.h&gt;
-int main( int argc, char *argv[] )
+<pre><code><span class="preprocessor">#include "mpi.h"</span>
+<span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[] )
 {
     MPI_Init( &amp;argc, &amp;argv );
-    printf( &quot;Hello, world!\n&quot; );
+    printf( <span class="string">"Hello, world!\n"</span> );
     MPI_Finalize();
-    return 0;
+    <span class="keyword">return</span> <span class="number">0</span>;
 }
 </code></pre><p>Notes:</p>
 <ol>
@@ -233,7 +233,7 @@ int main( int argc, char *argv[] )
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -263,7 +263,7 @@ int main( int argc, char *argv[] )
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

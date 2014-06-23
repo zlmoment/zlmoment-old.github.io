@@ -104,7 +104,7 @@ Interleaved Addressing的核心思想在于交错寻址，即典型的树状模�
     <div class="entry">
       
         <p>Parallel Reduction是NVIDIA-CUDA自带的例子，也几乎是所有CUDA学习者的的必看算法。在这个算法的优化中，Mark Harris为我们实现了7种不同的优化版本，将Bandwidth几乎提高到了峰值。相信我们通过仔细研读这个过程，一定能对CUDA程序的优化有更加深刻的认识。下面我们来一一细看这几种优化方案，<strong>数据和思想均摘录自官方SDK中Samples的算法说明</strong>。</p>
-<h3 id="parallel-reduction">Parallel Reduction</h3>
+<h3 id="Parallel_Reduction">Parallel Reduction</h3>
 <p>Parallel Reduction可以理解为将一个数组中的所有数相加求和的过程并行化。一般来讲，我们并行化的思路是基于“树”的二元规约，如下图：</p>
 <p><a href="/images/2013/04/parallel_reduction_tree_based.png"><img src="/images/2013/04/parallel_reduction_tree_based.png" alt=""></a></p>
 <a id="more"></a>
@@ -114,36 +114,36 @@ Interleaved Addressing的核心思想在于交错寻址，即典型的树状模�
 <p>我们的目标就是基于这个算法进行优化，达到“榨干CUDA性能”的目的。我们选取Bandwidth作为测量标准（因为Bandwidth侧重于测量memory-bound kernels，而GFLOP/s侧重于测量compute-bound kernels）。我们最终目标是实现最大的Data Bandwidth。测试环境为G80 GPU，384-bit memory interface, 900 MHz DDR，Bandwidth峰值384 * 1800 / 8 = 86.4 GB/s。</p>
 <p>对于基本概念，放上一张图供参考：</p>
 <p><a href="/images/2013/04/base.png"><img src="/images/2013/04/base.png" alt=""></a></p>
-<h3 id="reduction-1-interleaved-addressing">Reduction #1: Interleaved Addressing</h3>
+<h3 id="Reduction_#1:_Interleaved_Addressing">Reduction #1: Interleaved Addressing</h3>
 <p>Interleaved Addressing的核心思想在于交错寻址，即典型的树状模型。示意图如下：</p>
 <p><a href="/images/2013/04/Interleaved_Addressing.png"><img src="/images/2013/04/Interleaved_Addressing.png" alt=""></a></p>
 <a id="more"></a>
 
 
-<pre><code>/* This reduction interleaves which threads are active by using the modulo
+<pre><code><span class="comment">/* This reduction interleaves which threads are active by using the modulo
    operator.  This operator is very expensive on GPUs, and the interleaved
    inactivity means that no whole warps are active, which is also very
    inefficient 
-*/
-template &lt;class T&gt;
-__global__ void
-reduce0(T *g_idata, T *g_odata, unsigned int n)
+*/</span>
+<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
+__global__ <span class="keyword">void</span>
+reduce0(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)
 {
     T *sdata = SharedMemory&lt;T&gt;();
 
-    // load shared mem
-    unsigned int tid = threadIdx.x;
-    unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
+    <span class="comment">// load shared mem</span>
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> tid = threadIdx.x;
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = blockIdx.x*blockDim.x + threadIdx.x;
 
-    sdata[tid] = (i &lt; n) ? g_idata[i] : 0;
+    sdata[tid] = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
     __syncthreads();
 
-    // do reduction in shared mem
-    for (unsigned int s=1; s &lt; blockDim.x; s *= 2)
+    <span class="comment">// do reduction in shared mem</span>
+    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> s=<span class="number">1</span>; s &lt; blockDim.x; s *= <span class="number">2</span>)
     {
-        // modulo arithmetic is slow!
-        if ((tid % (2*s)) == 0)
+        <span class="comment">// modulo arithmetic is slow!</span>
+        <span class="keyword">if</span> ((tid % (<span class="number">2</span>*s)) == <span class="number">0</span>)
         {
             sdata[tid] += sdata[tid + s];
         }
@@ -151,61 +151,61 @@ reduce0(T *g_idata, T *g_odata, unsigned int n)
         __syncthreads();
     }
 
-    // write result for this block to global mem
-    if (tid == 0) g_odata[blockIdx.x] = sdata[0];
+    <span class="comment">// write result for this block to global mem</span>
+    <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p><strong>存在的问题：</strong></p>
-<p>上述代码中for循环内部，容易出现线程束的分化（Warp Divergence），即同一个Warp中的线程需要执行不同的逻辑分支（详见<a href="http://people.maths.ox.ac.uk/gilesm/cuda/lecs/lec3-2x2.pdf" target="_blank">这里</a>），这是非常低效的，而且 <code>&amp;</code> 运算也是非常慢的。测试结果如下(4M element)：</p>
-<pre><code>:::BASH    
-                                    Time (2^22 ints)      Bandwidth
---------------------------------------------------------------------------
+<p>上述代码中for循环内部，容易出现线程束的分化（Warp Divergence），即同一个Warp中的线程需要执行不同的逻辑分支（详见<a href="http://people.maths.ox.ac.uk/gilesm/cuda/lecs/lec3-2x2.pdf" target="_blank" rel="external">这里</a>），这是非常低效的，而且 <code>&amp;</code> 运算也是非常慢的。测试结果如下(4M element)：</p>
+<pre><code><span class="attribute">:::BASH</span>    
+<span class="header">                                    Time (2^22 ints)      Bandwidth
+--------------------------------------------------------------------------</span>
 Kernel 1
 (interleaved addressing with        8.054 ms              2.083 GB/s
 divergent branching)
 </code></pre><p>注意：Block Size = 128 threads for all tests.</p>
-<h3 id="reduction-2-interleaved-addressing">Reduction #2: Interleaved Addressing</h3>
+<h3 id="Reduction_#2:_Interleaved_Addressing">Reduction #2: Interleaved Addressing</h3>
 <p>为了尽量减少1中的线程束的分化，我们这一步将分化的分支替换为跨步寻址（strided index）：</p>
 <pre><code>/* This version uses contiguous threads, but its interleaved
    addressing results in many shared memory bank conflicts.
-*/
+<span class="variable">*/</span>
 template &lt;class T&gt;
-__global__ void
-reduce1(T *g_idata, T *g_odata, unsigned int n)
+__global_<span class="number">_</span> void
+reduce1(T <span class="variable">*g_idata</span>, T <span class="variable">*g_odata</span>, unsigned <span class="keyword">int</span> n)
 {
-    T *sdata = SharedMemory&lt;T&gt;();
+    T <span class="variable">*sdata</span> = SharedMemory&lt;T&gt;();
 
-    // load shared mem
-    unsigned int tid = threadIdx.x;
-    unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
+    <span class="regexp">//</span> load shared mem
+    unsigned <span class="keyword">int</span> tid = threadIdx.<span class="keyword">x</span>;
+    unsigned <span class="keyword">int</span> i = blockIdx.<span class="keyword">x</span><span class="variable">*blockDim</span>.<span class="keyword">x</span> + threadIdx.<span class="keyword">x</span>;
 
-    sdata[tid] = (i &lt; n) ? g_idata[i] : 0;
+    sdata[tid] = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
     __syncthreads();
 
-    // do reduction in shared mem
-    for (unsigned int s=1; s &lt; blockDim.x; s *= 2)
+    <span class="regexp">//</span> <span class="keyword">do</span> reduction in shared mem
+    <span class="keyword">for</span> (unsigned <span class="keyword">int</span> <span class="keyword">s</span>=<span class="number">1</span>; <span class="keyword">s</span> &lt; blockDim.<span class="keyword">x</span>; <span class="keyword">s</span> <span class="variable">*=</span> <span class="number">2</span>)
     {
-        int index = 2 * s * tid;
+        <span class="keyword">int</span> <span class="keyword">index</span> = <span class="number">2</span> * <span class="keyword">s</span> * tid;
 
-        if (index &lt; blockDim.x)
+        <span class="keyword">if</span> (<span class="keyword">index</span> &lt; blockDim.<span class="keyword">x</span>)
         {
-            sdata[index] += sdata[index + s];
+            sdata[<span class="keyword">index</span>] += sdata[<span class="keyword">index</span> + <span class="keyword">s</span>];
         }
 
         __syncthreads();
     }
 
-    // write result for this block to global mem
-    if (tid == 0) g_odata[blockIdx.x] = sdata[0];
+    // <span class="keyword">write</span> result <span class="keyword">for</span> this block to global mem
+    <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.<span class="keyword">x</span>] = sdata[<span class="number">0</span>];
 }
 </code></pre><p>示意图如下（注意下图与上图中Thread ID的区别）：</p>
 <p><a href="/images/2013/04/Interleaved_Addressing2.png"><img src="/images/2013/04/Interleaved_Addressing2.png" alt=""></a></p>
 <p>这里我们遇到一个新的问题，即Shared Memory Bank Conflicts。为了达到高带宽，Shared Memory被划分成许多大小相同的内存块，叫做Banks。Banks可以同步访问，即不同的地址对不同的Banks可以同时读写。但是，如果两个内存请求的地址落到同一个Bank上，将会导致Bank Conflicts，严重影响并行程序的性能。</p>
 <p>运行结果如下(4M element)：</p>
-<pre><code>:::BASH    
-                                Time(2^22 ints)   Bandwidth    Step Speedup   Culmulative
-                                                                              Speedup
------------------------------------------------------------------------------------------
+<pre><code><span class="attribute">:::BASH</span>    
+<span class="code">                                Time(2^22 ints)   Bandwidth    Step Speedup   Culmulative</span>
+<span class="header">                                                                              Speedup
+-----------------------------------------------------------------------------------------</span>
 Kernel 1
 (interleaved addressing with    8.054 ms          2.083 GB/s 
 divergent branching)
@@ -213,29 +213,29 @@ divergent branching)
 Kernel 2
 (interleaved addressing with    3.456 ms          4.854 GB/s   2.33x          2.33x
 bank conflicts)
-</code></pre><h3 id="reduction-3-sequential-addressing">Reduction #3: Sequential Addressing</h3>
+</code></pre><h3 id="Reduction_#3:_Sequential_Addressing">Reduction #3: Sequential Addressing</h3>
 <p>我们知道，CUDA中对数据的连续读取效率要比其它方式高。因此我们这一步优化主要是将取址方式变为连续的。我们只需要将2中跨步寻址（strided index）替换为基于threadID的逆向for循环即可。</p>
-<pre><code>/*
+<pre><code><span class="comment">/*
     This version uses sequential addressing -- no divergence or bank conflicts.
-*/
-template &lt;class T&gt;
-__global__ void
-reduce2(T *g_idata, T *g_odata, unsigned int n)
+*/</span>
+<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
+__global__ <span class="keyword">void</span>
+reduce2(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)
 {
     T *sdata = SharedMemory&lt;T&gt;();
 
-    // load shared mem
-    unsigned int tid = threadIdx.x;
-    unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
+    <span class="comment">// load shared mem</span>
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> tid = threadIdx.x;
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = blockIdx.x*blockDim.x + threadIdx.x;
 
-    sdata[tid] = (i &lt; n) ? g_idata[i] : 0;
+    sdata[tid] = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
     __syncthreads();
 
-    // do reduction in shared mem
-    for (unsigned int s=blockDim.x/2; s&gt;0; s&gt;&gt;=1)
+    <span class="comment">// do reduction in shared mem</span>
+    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">0</span>; s&gt;&gt;=<span class="number">1</span>)
     {
-        if (tid &lt; s)
+        <span class="keyword">if</span> (tid &lt; s)
         {
             sdata[tid] += sdata[tid + s];
         }
@@ -243,17 +243,17 @@ reduce2(T *g_idata, T *g_odata, unsigned int n)
         __syncthreads();
     }
 
-    // write result for this block to global mem
-    if (tid == 0) g_odata[blockIdx.x] = sdata[0];
+    <span class="comment">// write result for this block to global mem</span>
+    <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p>示意图如下：</p>
 <p><a href="/images/2013/04/Sequential_Addressing.png"><img src="/images/2013/04/Sequential_Addressing.png" alt=""></a></p>
 <p>但新的问题又出现了，我们发现在for循环中，因为 <code>if (tid &lt; s)</code> 的缘故，在第一次循环的时候有一半的线程都处于闲置状态！如果我们能全部利用的话，相信性能还会提升很多。这也是我们以后要进行优化的地方，避免线程闲置。</p>
 <p>本次运行结果如下(4M element)：</p>
-<pre><code>:::BASH    
-                                Time(2^22 ints)   Bandwidth    Step Speedup   Culmulative 
-                                                                              Speedup
------------------------------------------------------------------------------------------
+<pre><code><span class="attribute">:::BASH</span>    
+<span class="code">                                Time(2^22 ints)   Bandwidth    Step Speedup   Culmulative </span>
+<span class="header">                                                                              Speedup
+-----------------------------------------------------------------------------------------</span>
 Kernel 1
 (interleaved addressing with    8.054 ms          2.083 GB/s 
 divergent branching)
@@ -264,36 +264,36 @@ bank conflicts)
 
 Kernel 3
 (sequential addressing)         1.722 ms          9.741 GB/s   2.01x          4.68x
-</code></pre><h3 id="reduction-4-first-add-during-load">Reduction #4: First Add During Load</h3>
+</code></pre><h3 id="Reduction_#4:_First_Add_During_Load">Reduction #4: First Add During Load</h3>
 <p>在以前的所有版本中，我们都是事先将global的数据读入共享内存 <code>sdata[tid] = (i &lt; n) ? g_idata[i] : 0;</code> ，我们可不可以在这一步进行优化呢？当然，我们这一步优化的目的是在将数据读入到共享内存时同时进行第一次(第一层)规约。</p>
 <pre><code>:::C
-/*
+<span class="comment">/*
     This version uses n/2 threads --
     it performs the first level of reduction when reading from global memory.
-*/
-template &lt;class T&gt;
-__global__ void
-reduce3(T *g_idata, T *g_odata, unsigned int n)
+*/</span>
+<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
+__global__ <span class="keyword">void</span>
+reduce3(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)
 {
     T *sdata = SharedMemory&lt;T&gt;();
 
-    // perform first level of reduction,
-    // reading from global memory, writing to shared memory
-    unsigned int tid = threadIdx.x;
-    unsigned int i = blockIdx.x*(blockDim.x*2) + threadIdx.x;
+    <span class="comment">// perform first level of reduction,</span>
+    <span class="comment">// reading from global memory, writing to shared memory</span>
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> tid = threadIdx.x;
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = blockIdx.x*(blockDim.x*<span class="number">2</span>) + threadIdx.x;
 
-    T mySum = (i &lt; n) ? g_idata[i] : 0;
+    T mySum = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
-    if (i + blockDim.x &lt; n)
+    <span class="keyword">if</span> (i + blockDim.x &lt; n)
         mySum += g_idata[i+blockDim.x];
 
     sdata[tid] = mySum;
     __syncthreads();
 
-    // do reduction in shared mem
-    for (unsigned int s=blockDim.x/2; s&gt;0; s&gt;&gt;=1)
+    <span class="comment">// do reduction in shared mem</span>
+    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">0</span>; s&gt;&gt;=<span class="number">1</span>)
     {
-        if (tid &lt; s)
+        <span class="keyword">if</span> (tid &lt; s)
         {
             sdata[tid] = mySum = mySum + sdata[tid + s];
         }
@@ -301,14 +301,14 @@ reduce3(T *g_idata, T *g_odata, unsigned int n)
         __syncthreads();
     }
 
-    // write result for this block to global mem
-    if (tid == 0) g_odata[blockIdx.x] = sdata[0];
+    <span class="comment">// write result for this block to global mem</span>
+    <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p>本次运行结果如下(4M element)：</p>
-<pre><code>:::BASH    
-                                Time(2^22 ints)   Bandwidth    Step Speedup   Culmulative 
-                                                                              Speedup
------------------------------------------------------------------------------------------
+<pre><code><span class="attribute">:::BASH</span>    
+<span class="code">                                Time(2^22 ints)   Bandwidth    Step Speedup   Culmulative </span>
+<span class="header">                                                                              Speedup
+-----------------------------------------------------------------------------------------</span>
 Kernel 1
 (interleaved addressing with    8.054 ms          2.083 GB/s 
 divergent branching)
@@ -323,41 +323,41 @@ Kernel 3
 Kernel 4
 (first add during               0.965 ms         17.377 GB/s   1.78x          8.34x
 global load)
-</code></pre><h3 id="reduction-5-unroll-the-loop">Reduction #5: Unroll The Loop</h3>
+</code></pre><h3 id="Reduction_#5:_Unroll_The_Loop">Reduction #5: Unroll The Loop</h3>
 <p>这时我们的数据带宽已经达到了17 GB/s，而我们清楚Reduction的算术强度（arithmetic intensity）很低，因此系统的瓶颈可能是由于Parallel Slowdown，即系统对于指令、调度的花费超过了实际数据处理的花费。在本例中即address arithmetic and loop overhead。</p>
 <p>我们的解决办法是将for循环展开（Unroll the loop）。我们知道，在Reduce的过程中，活动的线程数是越来越少的，当活动的线程数少于32个时，我们将只有一个线程束（Warp）。在单个Warp中，指令的执行遵循SIMD（Single Instruction Multiple Data）模式，也就是说在活动线程数少于32个时，我么不需要进行同步控制，即我们不需要 <code>if (tid &lt; s)</code> 。</p>
 <pre><code>:::C
-/*
+<span class="comment">/*
     This version unrolls the last warp to avoid synchronization where it
-    isn&#39;t needed.
+    isn't needed.
 
     Note, this kernel needs a minimum of 64*sizeof(T) bytes of shared memory.
     In other words if blockSize &lt;= 32, allocate 64*sizeof(T) bytes.
     If blockSize &gt; 32, allocate blockSize*sizeof(T) bytes.
-*/
-template &lt;class T, unsigned int blockSize&gt;
-__global__ void
-reduce4(T *g_idata, T *g_odata, unsigned int n)
+*/</span>
+<span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">unsigned</span> <span class="keyword">int</span> blockSize&gt;
+__global__ <span class="keyword">void</span>
+reduce4(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)
 {
     T *sdata = SharedMemory&lt;T&gt;();
 
-    // perform first level of reduction,
-    // reading from global memory, writing to shared memory
-    unsigned int tid = threadIdx.x;
-    unsigned int i = blockIdx.x*(blockDim.x*2) + threadIdx.x;
+    <span class="comment">// perform first level of reduction,</span>
+    <span class="comment">// reading from global memory, writing to shared memory</span>
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> tid = threadIdx.x;
+    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = blockIdx.x*(blockDim.x*<span class="number">2</span>) + threadIdx.x;
 
-    T mySum = (i &lt; n) ? g_idata[i] : 0;
+    T mySum = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
-    if (i + blockSize &lt; n)
+    <span class="keyword">if</span> (i + blockSize &lt; n)
         mySum += g_idata[i+blockSize];
 
     sdata[tid] = mySum;
     __syncthreads();
 
-    // do reduction in shared mem
-    for (unsigned int s=blockDim.x/2; s&gt;32; s&gt;&gt;=1)
+    <span class="comment">// do reduction in shared mem</span>
+    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">32</span>; s&gt;&gt;=<span class="number">1</span>)
     {
-        if (tid &lt; s)
+        <span class="keyword">if</span> (tid &lt; s)
         {
             sdata[tid] = mySum = mySum + sdata[tid + s];
         }
@@ -365,53 +365,53 @@ reduce4(T *g_idata, T *g_odata, unsigned int n)
         __syncthreads();
     }
 
-    if (tid &lt; 32)
+    <span class="keyword">if</span> (tid &lt; <span class="number">32</span>)
     {
-        // now that we are using warp-synchronous programming (below)
-        // we need to declare our shared memory volatile so that the compiler
-        // doesn&#39;t reorder stores to it and induce incorrect behavior.
-        volatile T *smem = sdata;
+        <span class="comment">// now that we are using warp-synchronous programming (below)</span>
+        <span class="comment">// we need to declare our shared memory volatile so that the compiler</span>
+        <span class="comment">// doesn't reorder stores to it and induce incorrect behavior.</span>
+        <span class="keyword">volatile</span> T *smem = sdata;
 
-        if (blockSize &gt;=  64)
+        <span class="keyword">if</span> (blockSize &gt;=  <span class="number">64</span>)
         {
-            smem[tid] = mySum = mySum + smem[tid + 32];
+            smem[tid] = mySum = mySum + smem[tid + <span class="number">32</span>];
         }
 
-        if (blockSize &gt;=  32)
+        <span class="keyword">if</span> (blockSize &gt;=  <span class="number">32</span>)
         {
-            smem[tid] = mySum = mySum + smem[tid + 16];
+            smem[tid] = mySum = mySum + smem[tid + <span class="number">16</span>];
         }
 
-        if (blockSize &gt;=  16)
+        <span class="keyword">if</span> (blockSize &gt;=  <span class="number">16</span>)
         {
-            smem[tid] = mySum = mySum + smem[tid +  8];
+            smem[tid] = mySum = mySum + smem[tid +  <span class="number">8</span>];
         }
 
-        if (blockSize &gt;=   8)
+        <span class="keyword">if</span> (blockSize &gt;=   <span class="number">8</span>)
         {
-            smem[tid] = mySum = mySum + smem[tid +  4];
+            smem[tid] = mySum = mySum + smem[tid +  <span class="number">4</span>];
         }
 
-        if (blockSize &gt;=   4)
+        <span class="keyword">if</span> (blockSize &gt;=   <span class="number">4</span>)
         {
-            smem[tid] = mySum = mySum + smem[tid +  2];
+            smem[tid] = mySum = mySum + smem[tid +  <span class="number">2</span>];
         }
 
-        if (blockSize &gt;=   2)
+        <span class="keyword">if</span> (blockSize &gt;=   <span class="number">2</span>)
         {
-            smem[tid] = mySum = mySum + smem[tid +  1];
+            smem[tid] = mySum = mySum + smem[tid +  <span class="number">1</span>];
         }
     }
 
-    // write result for this block to global mem
-    if (tid == 0) g_odata[blockIdx.x] = sdata[0];
+    <span class="comment">// write result for this block to global mem</span>
+    <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p>注意，这在所有的warps中都省去了无用过的过程，不只是最后一个warp。如果不进行循环展开，则所有的warps都会执行for中的每一次循环和每一次if判断。</p>
 <p>本次运行结果如下(4M element)：</p>
-<pre><code>:::BASH    
-                                Time(2^22 ints)   Bandwidth    Step Speedup   Culmulative 
-                                                                              Speedup
------------------------------------------------------------------------------------------
+<pre><code><span class="attribute">:::BASH</span>    
+<span class="code">                                Time(2^22 ints)   Bandwidth    Step Speedup   Culmulative </span>
+<span class="header">                                                                              Speedup
+-----------------------------------------------------------------------------------------</span>
 Kernel 1
 (interleaved addressing with    8.054 ms          2.083 GB/s 
 divergent branching)
@@ -430,7 +430,7 @@ global load)
 Kernel 5
 (unroll last warp)              0.536 ms         31.289 GB/s   1.8x          15.01x
 </code></pre><p>今天我们暂时先分析到这里，SDK的示例中还有第六种和第七种优化方案，分别是Completely Unrolled和Multiple Adds / Thread，最后性能提升达30+x，我们以后有机会再仔细进行分析。</p>
-<p>为了阅读方便，文末附上CUDA SDK中关于Reduction的算法说明作为参考，本文的内容全部摘录于此。地址：<a href="http://docs.nvidia.com/cuda/samples/6_Advanced/reduction/doc/reduction.pdf" target="_blank">点击</a></p>
+<p>为了阅读方便，文末附上CUDA SDK中关于Reduction的算法说明作为参考，本文的内容全部摘录于此。地址：<a href="http://docs.nvidia.com/cuda/samples/6_Advanced/reduction/doc/reduction.pdf" target="_blank" rel="external">点击</a></p>
 
       
     </div>
@@ -551,7 +551,7 @@ Kernel 5
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -581,7 +581,7 @@ Kernel 5
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

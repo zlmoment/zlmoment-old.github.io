@@ -92,8 +92,8 @@
       
         <p>This tutorial will show you how to connect to EMR masternode via SSH. Then you can install your own software packages, change configurations, or submit your job manually. </p>
 <p>Amazon EMR is a flow job. When you submit a job to EMR, it will start a new cluster and then execute your job. When the job is done, the cluster will be shutdown and terminated automically. In this case, you can only use the software provided by Amazon unless you setup some bootstraps to execute some scripts by S3. However, this is a simpler way to keep the cluster and you can SSH login to the masternode and do whatever you want :)</p>
-<h3 id="creat-the-cluster">Creat the cluster</h3>
-<p>First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the &quot;Auto-terminate&quot; option to No so that the cluster will wait when no job is running.</p>
+<h3 id="Creat_the_cluster">Creat the cluster</h3>
+<p>First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the “Auto-terminate” option to No so that the cluster will wait when no job is running.</p>
 
       
     </div>
@@ -131,15 +131,15 @@
     <div class="entry">
       
         <p>Here is a brief introduction to Maven, and some basic commands.</p>
-<h2 id="creating-project">Creating Project</h2>
+<h2 id="Creating_Project">Creating Project</h2>
 <p>Command:</p>
-<pre><code>mvn archetype:generate
+<pre><code><span class="tag">mvn</span> <span class="tag">archetype</span><span class="pseudo">:generate</span>
 </code></pre><p>In the interactive mode, here are some examples to show what they mean:</p>
-<pre><code>groupId: com.hackecho.hadoop
-artifactId: WordCount
-version: 1.0
-package: com.hackecho.hadoop.example
-</code></pre><p>You&#39;ll get following project structure:</p>
+<pre><code><span class="label">groupId:</span> <span class="keyword">com</span><span class="preprocessor">.hackecho</span><span class="preprocessor">.hadoop</span>
+<span class="label">artifactId:</span> WordCount
+<span class="label">version:</span> <span class="number">1.0</span>
+<span class="label">package:</span> <span class="keyword">com</span><span class="preprocessor">.hackecho</span><span class="preprocessor">.hadoop</span><span class="preprocessor">.example</span>
+</code></pre><p>You’ll get following project structure:</p>
 
       
     </div>
@@ -186,8 +186,8 @@ package: com.hackecho.hadoop.example
 <li>Start the cluster</li>
 <li>How to add a new datanode</li>
 </ol>
-<h2 id="1-fedora-20-installation">1. Fedora 20 installation</h2>
-<p>If your machine is x32, you need to download the installation image for x32, which is ‘i386 DVD’. The image can be got from <a href="http://fedoraproject.org/en_GB/get-fedora-all" target="_blank">this link</a>.</p>
+<h2 id="1-_Fedora_20_installation">1. Fedora 20 installation</h2>
+<p>If your machine is x32, you need to download the installation image for x32, which is ‘i386 DVD’. The image can be got from <a href="http://fedoraproject.org/en_GB/get-fedora-all" target="_blank" rel="external">this link</a>.</p>
 <p>During the installation, let us create a admin user <code>‘hadoop’</code>.</p>
 
       
@@ -225,10 +225,10 @@ package: com.hackecho.hadoop.example
     </header>
     <div class="entry">
       
-        <p>This post is about my project of Big Data course. Also, you can view the online version via this link: <a href="https://drive.google.com/file/d/0B1e8KyDeJL60LVhwbzl2cDMyMEE/edit?usp=sharing" target="_blank">Online version</a></p>
-<h2 id="basic-concept">Basic Concept</h2>
+        <p>This post is about my project of Big Data course. Also, you can view the online version via this link: <a href="https://drive.google.com/file/d/0B1e8KyDeJL60LVhwbzl2cDMyMEE/edit?usp=sharing" target="_blank" rel="external">Online version</a></p>
+<h2 id="Basic_Concept">Basic Concept</h2>
 <p>We use real-time big data analysis technologies to evaluate tweets about some brands and products. We will judge the emotion of tweets and decide if the tweet expresses positive, negative or no emotion about a specific brand or product. The company or merchant can observe the trend of customers’ emotion towards its brand or products, understand customers’ online behavior or re- action, based on which they can make better decisions and provide better services. This project will help companies find out what their customers feel and adjust their marketing strategies timely.</p>
-<h2 id="smarter-planet-information">Smarter Planet Information</h2>
+<h2 id="Smarter_Planet_Information">Smarter Planet Information</h2>
 <p>When a company release its new products, the managers of this company must want to know what are people’s opinions about their products, or how their customers feel when they use their products. In this way, they can get people’s online reaction quickly and make better decisions onwards. Nowadays, thanks to the development of social network, it becomes true.</p>
 <p>When customers use a product, they probably have some feelings, such as happy or hate. In old days, they could just communicate with people around them. However, today, they can post their feelings on social network, and instantly his fiends around the world can see it. Then maybe some of his friends will re-post it and more people will see it. The social network changes the way information spread and lead us to a new era of information.</p>
 
@@ -268,7 +268,7 @@ package: com.hackecho.hadoop.example
     <div class="entry">
       
         <p>Parallel Reduction是NVIDIA-CUDA自带的例子，也几乎是所有CUDA学习者的的必看算法。在这个算法的优化中，Mark Harris为我们实现了7种不同的优化版本，将Bandwidth几乎提高到了峰值。相信我们通过仔细研读这个过程，一定能对CUDA程序的优化有更加深刻的认识。下面我们来一一细看这几种优化方案，<strong>数据和思想均摘录自官方SDK中Samples的算法说明</strong>。</p>
-<h3 id="parallel-reduction">Parallel Reduction</h3>
+<h3 id="Parallel_Reduction">Parallel Reduction</h3>
 <p>Parallel Reduction可以理解为将一个数组中的所有数相加求和的过程并行化。一般来讲，我们并行化的思路是基于“树”的二元规约，如下图：</p>
 <p><a href="/images/2013/04/parallel_reduction_tree_based.png"><img src="/images/2013/04/parallel_reduction_tree_based.png" alt=""></a></p>
 <!--more-->
@@ -278,7 +278,7 @@ package: com.hackecho.hadoop.example
 <p>我们的目标就是基于这个算法进行优化，达到“榨干CUDA性能”的目的。我们选取Bandwidth作为测量标准（因为Bandwidth侧重于测量memory-bound kernels，而GFLOP/s侧重于测量compute-bound kernels）。我们最终目标是实现最大的Data Bandwidth。测试环境为G80 GPU，384-bit memory interface, 900 MHz DDR，Bandwidth峰值384 * 1800 / 8 = 86.4 GB/s。</p>
 <p>对于基本概念，放上一张图供参考：</p>
 <p><a href="/images/2013/04/base.png"><img src="/images/2013/04/base.png" alt=""></a></p>
-<h3 id="reduction-1-interleaved-addressing">Reduction #1: Interleaved Addressing</h3>
+<h3 id="Reduction_#1:_Interleaved_Addressing">Reduction #1: Interleaved Addressing</h3>
 <p>Interleaved Addressing的核心思想在于交错寻址，即典型的树状模型。示意图如下：</p>
 <p><a href="/images/2013/04/Interleaved_Addressing.png"><img src="/images/2013/04/Interleaved_Addressing.png" alt=""></a></p>
 
@@ -318,19 +318,19 @@ package: com.hackecho.hadoop.example
     <div class="entry">
       
         <p>有两门课的作业要用到MPI，“高性能计算环境”和“并行与分布式系统”，所以简单了解了一下MPI的基础知识。MPI并不是并行程序设计的唯一方法，但却是一种行之有效的方法。而且MPI已在几乎所有主流的并行机上得到实现，具有很高的可移植性，适用范围非常广泛。这是一篇学习笔记，因此不会面面俱到。</p>
-<h3 id="-mpi">什么是MPI</h3>
+<h3 id="什么是MPI">什么是MPI</h3>
 <p>MPI是Massage Passing Interface的简写，是消息传递函数库的标准规范，由MPI论坛开发，支持Fortran和C，主要用于进程（Process）间通信。</p>
 <p>在MPI中，数据被显式由从一个进程发送给另一个进程，一个称为发送方，一个称为接收方。</p>
-<h3 id="hello-world">Hello World</h3>
+<h3 id="Hello_World">Hello World</h3>
 <p>让我们从一个最简单的MPI Hello World程序开始。</p>
-<pre><code>#include &quot;mpi.h&quot;
-#include &lt;stdio.h&gt;
-int main( int argc, char *argv[] )
+<pre><code><span class="preprocessor">#include "mpi.h"</span>
+<span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[] )
 {
     MPI_Init( &amp;argc, &amp;argv );
-    printf( &quot;Hello, world!\n&quot; );
+    printf( <span class="string">"Hello, world!\n"</span> );
     MPI_Finalize();
-    return 0;
+    <span class="keyword">return</span> <span class="number">0</span>;
 }
 </code></pre><p>Notes:</p>
 <ol>
@@ -377,11 +377,11 @@ int main( int argc, char *argv[] )
       
         <p>2009年9月，进入大学的第一天，开始了我正式的软件工程的学习。为什么是正式的呢，因为之前虽然也写过代码，但完全是出于兴趣，想到什么就学什么，毫无章法。后来来到了北交大，进入了据说还不错的软件学院，有了一群志同道合的朋友，一位位用心良苦的老师，踏上了一个“程序员“的冒险旅程。现在，我在美国密苏里大学读计算机硕士，回首自己走过来的这四年，错过了很多，也明白了很多，收获了很多，对软件和计算机渐渐有了自己的认识，更重要的是，发现了自己越来越多的缺陷与不足。有些当年认为用处不大而忽略掉的东西，却成了现在最最重要的东西。有时会后悔地埋怨自己当时不努力，欠下了太多的债，只能后来慢慢偿还。</p>
 <p>如果能够给我一次机会与四年前的我通话，我有太多的东西想对他说。然而，也许几年后再次回首，我会有另一番不同的思绪，但此时此景，我能想到这些，至少现在是对的，我不想后悔，把这些写下来，算是一种慰藉吧。</p>
-<h3 id="-">多出去走走，开阔眼界</h3>
+<h3 id="多出去走走，开阔眼界">多出去走走，开阔眼界</h3>
 <p>“世界就像一本书，不旅行的人，只读过这本书里的一页。”</p>
 <p>世界之大，无奇不有，不管你是否要做一个技术男，你都应该出去走走，去看更多的风景，去见更多的人，去体会更多的风情。不要做井底之蛙，这个世界到处都是精彩的事物，而有些东西如果不去亲自体会是永远无法得到的。没有人规定程序员就必须整天埋在代码中，上天赋予了程序员自由的职业特性，就一定要利用好它。程序本身就是一种美，你要时刻保持一颗欣赏美、涉猎美的心灵，才能更好地去发现和创造。眼界开阔了，心灵才不会收拘束。真的，这个世界太美好，去发现感动到哭的美。</p>
 <p>你要做一个旅行家里代码写得最好的人！</p>
-<h3 id="-">不要沉迷社交网络，线下的生活更加丰富</h3>
+<h3 id="不要沉迷社交网络，线下的生活更加丰富">不要沉迷社交网络，线下的生活更加丰富</h3>
 <p>碎片化的信息正在侵袭着我们的生活，社交网络的发明让我们能够在网上互动和交流。但你要问自己，这些真的对你有用处吗？当你和周围的朋友们沉迷于人人网微博消耗时间时，是否意识时间正在疯狂地消逝，等关闭网页的瞬间，你是否感觉到孤独感重新来袭。</p>
 <p>最近刚看了《黑镜》第二季，第一集中男主人公沉迷于社交网络，有一天车祸不幸去世后，有人制作了一个机器人，根据他生前在社交网络上的言行，让他继续虚拟地活下去。当然结局你应该猜到了，是的，这个人没有情感，有些东西是永远无法从社交网络上模拟的。</p>
 
@@ -422,21 +422,21 @@ int main( int argc, char *argv[] )
       
         <p>GCC，糊里糊涂地用了好长时间，每次也都是简简单单的 <code>gcc test.cpp</code> 这样简单的命令，偶尔会用一下 <code>-o</code>。说实话C和C++写的确实也不多，大一的时候还处于懵懂时期，跟着老师用VC6，后来面向对象编程之后，几乎工作都在IDE下完成，对这类命令行下的编译指令接触更是甚少。如今才体会到什么叫书到用时方恨少，不得不回过头来再打基础，认真学习。</p>
 <p>鉴于这不是一篇Tutorial，只是我的一篇笔记，所以并不会涵盖所有内容。</p>
-<h3 id="-">基础</h3>
+<h3 id="基础">基础</h3>
 <p>gcc 命令只能编译 C++ 源文件，而不能自动和 C++ 程序使用的库连接。因此，通常使用 g++ 命令来完成 C++ 程序的编译和连接，该程序会自动调用 gcc 实现编译。</p>
 <p>一般来讲，编译过程分为四个阶段：预处理(也称预编译，Preprocessing)、编译(Compilation)、汇编 (Assembly)和连接(Linking)。下面举几个例子，关于参数的详细解释在文后会有。</p>
 <p><strong>预编译</strong></p>
-<pre><code>:::Bash
+<pre><code><span class="attribute">:::Bash</span>
 gcc -E test.c -o test.i 或 gcc -E test.c
 </code></pre><p>预编译之后的文件还是代码文件，比如将会将 <code>stdio.h</code> 文件中的内容插入到自己程序中。</p>
 <p><strong>编译</strong></p>
-<pre><code>:::Bash
+<pre><code><span class="attribute">:::Bash</span>
 gcc -S test.i -o test.s
 </code></pre><p><strong>汇编</strong></p>
-<pre><code>:::Bash
+<pre><code><span class="attribute">:::Bash</span>
 gcc -c test.s -o test.o
 </code></pre><p><strong>连接</strong></p>
-<pre><code>:::Bash
+<pre><code><span class="attribute">:::Bash</span>
 gcc test.o -o test
 </code></pre>
       
@@ -475,27 +475,27 @@ gcc test.o -o test
     <div class="entry">
       
         <p>这是一篇方法总结和作业笔记，已备需要的时候查阅。本文将介绍C++ Boost库 <code>Boost.Thread</code> ，用于开发独立于平台的多线程应用程序。</p>
-<h3 id="-">线程创建</h3>
+<h3 id="线程创建">线程创建</h3>
 <p>相关类为 <code>boost::thread</code> ，定义在 <code>boost/thread.hpp</code> 中，用于创建一个新线程。</p>
 <pre><code>:::CPP
-#include &lt;boost/thread.hpp&gt; 
-#include &lt;iostream&gt; 
+<span class="preprocessor">#include &lt;boost/thread.hpp&gt; </span>
+<span class="preprocessor">#include &lt;iostream&gt; </span>
 
-void wait(int seconds) 
+<span class="keyword">void</span> wait(<span class="keyword">int</span> seconds) 
 { 
     boost::this_thread::sleep(boost::posix_time::seconds(seconds)); 
 } 
 
-void thread() 
+<span class="keyword">void</span> thread() 
 { 
-    for (int i = 0; i &lt; 5; ++i) 
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) 
     { 
-        wait(1); 
-        std::cout &lt;&lt; i &lt;&lt; std::endl; 
+        wait(<span class="number">1</span>); 
+        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="built_in">std</span>::endl; 
     } 
 } 
 
-int main() 
+<span class="keyword">int</span> main() 
 { 
     boost::thread t(thread); 
     t.join(); 
@@ -538,10 +538,10 @@ int main()
     </header>
     <div class="entry">
       
-        <h3 id="initializing-a-semaphore-set">Initializing a Semaphore Set</h3>
+        <h3 id="Initializing_a_Semaphore_Set">Initializing a Semaphore Set</h3>
 <p>The function <code>semget()</code> initializes or gains access to a semaphore.</p>
-<pre><code>:::C
-int semget(key_t key, int nsems, int semflg);
+<pre><code><span class="attribute">:::C</span>
+int semget(key<span class="emphasis">_t key, int nsems, int semflg);</span>
 </code></pre><ul>
 <li><p>The <code>key</code> argument is a access value associated with the semaphore ID.</p>
 </li>
@@ -552,54 +552,44 @@ int semget(key_t key, int nsems, int semflg);
 </ul>
 <p>When the call succeeds, it returns the semaphore ID (semid).</p>
 <pre><code>:::C
-#include &lt;sys/types.h&gt; 
-#include &lt;sys/ipc.h&gt; 
-#include &lt;sys/sem.h&gt; 
+<span class="comment">#include &lt;sys/types.h&gt; </span>
+<span class="comment">#include &lt;sys/ipc.h&gt; </span>
+<span class="comment">#include &lt;sys/sem.h&gt; </span>
 
-... 
+<span class="keyword">...</span> 
 key_t key; /* key to pass to semget() */ 
 int semflg; /* semflg to pass tosemget() */ 
 int nsems; /* nsems to pass to semget() */ 
-int semid; /* return value from semget() */ 
+int semid; /* <span class="keyword">return</span> value from semget() */ 
 
-... 
+<span class="keyword">...</span> 
 
-key = 123456; 
-nsems = 1;
-semflg = IPC_CREAT | 0666; // Flag to create with rw permissions
+key = <span class="number">123456</span>; 
+nsems = <span class="number">1</span>;
+semflg = IPC_CREAT | <span class="number">0666</span>; // Flag to create with rw permissions
 // Create the semaphore
-// The return value is the semaphore set identifier
-if ((semid = semget(key, nsems, semflg)) == -1) {
-    perror(&quot;semget: semget failed&quot;); 
-     exit(1); 
+// The <span class="keyword">return</span> value is the semaphore set identifier
+<span class="keyword">if</span> ((semid = semget(key, nsems, semflg)) == -<span class="number">1</span>) {
+    perror(<span class="string">"semget: semget failed"</span>); 
+     exit(<span class="number">1</span>); 
 } 
-else 
-   ...
-</code></pre><h3 id="controlling-semaphores">Controlling Semaphores</h3>
+<span class="keyword">else</span> 
+   <span class="keyword">...</span>
+</code></pre><h3 id="Controlling_Semaphores">Controlling Semaphores</h3>
 <p><code>semctl()</code> changes permissions and other characteristics of a semaphore set. It is prototyped as follows:</p>
-<pre><code>:::C
+<pre><code><span class="attribute">:::C</span>
 int semctl(int semid, int semnum, int cmd, union semun arg);
 </code></pre><p>It must be called with a valid semaphore ID, semid. The <code>semnum</code> value selects a semaphore within an array by its index. The <code>cmd</code> argument is one of the following control flags:</p>
-<p>GETVAL
--- Return the value of a single semaphore.</p>
-<p>SETVAL
--- Set the value of a single semaphore. In this case, arg is taken as arg.val, an int.</p>
-<p>GETPID
--- Return the PID of the process that performed the last operation on the semaphore or array.</p>
-<p>GETNCNT
--- Return the number of processes waiting for the value of a semaphore to increase.</p>
-<p>GETZCNT
--- Return the number of processes waiting for the value of a particular semaphore to reach zero.</p>
-<p>GETALL
--- Return the values for all semaphores in a set. In this case, arg is taken as arg.array, a pointer to an array of unsigned shorts (see below).</p>
-<p>SETALL
--- Set values for all semaphores in a set. In this case, arg is taken as arg.array, a pointer to an array of unsigned shorts.</p>
-<p>IPC_STAT
--- Return the status information from the control structure for the semaphore set and place it in the data structure pointed to by arg.buf, a pointer to a buffer of type semid_ds.</p>
-<p>IPC_SET
--- Set the effective user and group identification and permissions. In this case, arg is taken as arg.buf.</p>
-<p>IPC_RMID
--- Remove the specified semaphore set.</p>
+<p>GETVAL<br>— Return the value of a single semaphore.</p>
+<p>SETVAL<br>— Set the value of a single semaphore. In this case, arg is taken as arg.val, an int.</p>
+<p>GETPID<br>— Return the PID of the process that performed the last operation on the semaphore or array.</p>
+<p>GETNCNT<br>— Return the number of processes waiting for the value of a semaphore to increase.</p>
+<p>GETZCNT<br>— Return the number of processes waiting for the value of a particular semaphore to reach zero.</p>
+<p>GETALL<br>— Return the values for all semaphores in a set. In this case, arg is taken as arg.array, a pointer to an array of unsigned shorts (see below).</p>
+<p>SETALL<br>— Set values for all semaphores in a set. In this case, arg is taken as arg.array, a pointer to an array of unsigned shorts.</p>
+<p>IPC_STAT<br>— Return the status information from the control structure for the semaphore set and place it in the data structure pointed to by arg.buf, a pointer to a buffer of type semid_ds.</p>
+<p>IPC_SET<br>— Set the effective user and group identification and permissions. In this case, arg is taken as arg.buf.</p>
+<p>IPC_RMID<br>— Remove the specified semaphore set.</p>
 <p>The fourth argument <code>union semun</code> arg is optional, depending upon the operation requested. If required it is of type union semun, which must be explicitly declared by the application program as:</p>
 <pre><code>:::C
 union semun {
@@ -609,9 +599,9 @@ union semun {
 } arg;
 
 :::C
-#include &lt;sys/types.h&gt; 
-#include &lt;sys/ipc.h&gt;
-#include &lt;sys/sem.h&gt; 
+<span class="comment">#include &lt;sys/types.h&gt; </span>
+<span class="comment">#include &lt;sys/ipc.h&gt;</span>
+<span class="comment">#include &lt;sys/sem.h&gt; </span>
 
 // Initialize the semaphore
 union semun {
@@ -623,58 +613,58 @@ union semun {
 int semnum = ....;
 int cmd = GETALL;   /* get value */
 
-... 
-if (semctl(semid, semnum, cmd, arg) &lt; 0) { 
-    perror(&quot;semctl: semctl failed&quot;); 
-    exit(1); 
+<span class="keyword">...</span> 
+<span class="keyword">if</span> (semctl(semid, semnum, cmd, arg) &lt; <span class="number">0</span>) { 
+    perror(<span class="string">"semctl: semctl failed"</span>); 
+    exit(<span class="number">1</span>); 
 }
-else
-    ...
-</code></pre><h3 id="semaphore-operations">Semaphore Operations</h3>
+<span class="keyword">else</span>
+    <span class="keyword">...</span>
+</code></pre><h3 id="Semaphore_Operations">Semaphore Operations</h3>
 <p><code>semop()</code> performs operations on a semaphore set.</p>
-<pre><code>:::C
-int semop(int semid, struct sembuf *sops, size_t nsops);
+<pre><code><span class="attribute">:::C</span>
+int semop(int semid, struct sembuf <span class="strong">*sops, size_t nsops);</span>
 </code></pre><p>The <code>sops</code> argument is a pointer to an array of structures, each containing the following information about a semaphore operation:</p>
-<pre><code>:::C
+<pre><code><span class="attribute">:::C</span>
 The semaphore number
 The operation to be performed
 Control flags, if any.
 </code></pre><p>The <code>sembuf</code> structure specifies a semaphore operation, as defined in <code>sys/sem.h</code>.</p>
-<pre><code>:::C
+<pre><code><span class="attribute">:::C</span>
 struct sembuf {
-    ushort_t    sem_num;        /* semaphore number */
-    short       sem_op;         /* semaphore operation */
-    short       sem_flg;        /* operation flags */
+<span class="code">    ushort_t    sem_num;        /* semaphore number */</span>
+<span class="code">    short       sem_op;         /* semaphore operation */</span>
+<span class="code">    short       sem_flg;        /* operation flags */</span>
 };
 </code></pre><p>The operation to be performed is determined as follows:</p>
 <pre><code>:::C
 A positive integer increments the semaphore value by that amount.
-A negative integer decrements the semaphore value by that amount. An attempt to set a semaphore to a value less than zero fails or blocks, depending on whether IPC_NOWAIT is in effect.
-A value of zero means to wait for the semaphore value to reach zero.
+A negative integer decrements the semaphore value by that amount. An attempt to set a semaphore to a value less than zero fails or blocks, depending on whether IPC_NOWAIT is <span class="keyword">in</span> effect.
+A value of zero means to wait <span class="keyword">for</span> the semaphore value to reach zero.
 
 
 :::C
-#include &lt;sys/types.h&gt; 
-#include &lt;sys/ipc.h&gt; 
-#include &lt;sys/sem.h&gt; 
+<span class="comment">#include &lt;sys/types.h&gt; </span>
+<span class="comment">#include &lt;sys/ipc.h&gt; </span>
+<span class="comment">#include &lt;sys/sem.h&gt; </span>
 
-... 
+<span class="keyword">...</span> 
 int i; 
 int nsops; /* number of operations to do */ 
 int semid; /* semid of semaphore set */ 
 struct sembuf *sops; /* ptr to operations to perform */ 
 
-... 
+<span class="keyword">...</span> 
 // semop performs the operations on the semaphore:
-if ((semid = semop(semid, sops, nsops)) == -1) 
+<span class="keyword">if</span> ((semid = semop(semid, sops, nsops)) == -<span class="number">1</span>) 
 { 
-    perror(&quot;semop: semop failed&quot;); 
-    exit(1);
+    perror(<span class="string">"semop: semop failed"</span>); 
+    exit(<span class="number">1</span>);
 } 
-else 
-    (void) fprintf(stderr, &quot;semop: returned %d\n&quot;, i); 
-    ...
-</code></pre><h3 id="-">补充</h3>
+<span class="keyword">else</span> 
+    (void) fprintf(stderr, <span class="string">"semop: returned %d\n"</span>, i); 
+    <span class="keyword">...</span>
+</code></pre><h3 id="补充">补充</h3>
 <p>以一个停车场的运作为例。简单起见，假设停车场只有三个车位，一开始三个车位都是空的。这时如果同时来了五辆车，看门人允许其中三辆直接进入，然后放下车拦，剩下的车则必须在入口等待，此后来的车也都不得不在入口处等待。这时，有一辆车离开停车场，看门人得知后，打开车拦，放入外面的一辆进去，如果又离开两辆，则又可以放入两辆，如此往复。</p>
 <p>在这个停车场系统中，车位是公共资源，每辆车好比一个线程，看门人起的就是信号量的作用。</p>
 <p>抽象的来讲，信号量的特性如下：信号量是一个非负整数（车位数），所有通过它的线程/进程（车辆）都会将该整数减一（通过它当然是为了使用资源），当该整数值为零时，所有试图通过它的线程都将处于等待状态。在信号量上我们定义两种操作： Wait（等待） 和 Release（释放）。当一个线程调用Wait操作时，它要么得到资源然后将信号量减一，要么一直等下去（指放入阻塞队列），直到信号量大于等于一时。Release（释放）实际上是在信号量上执行加操作，对应于车辆离开停车场，该操作之所以叫做“释放”是因为释放了由信号量守护的资源。</p>
@@ -792,7 +782,7 @@ else
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -822,7 +812,7 @@ else
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

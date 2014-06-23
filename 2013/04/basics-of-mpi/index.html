@@ -13,10 +13,10 @@ MPI是Massage Passing Interface的简写，是消息传递函数库的标准规�
 Hello World
 让我们从一个最简单的MPI Hello World程序开始。
 #include &quot;mpi.h&quot;
-#include &lt;stdio.h&gt;
+#include &amp;lt;stdio.h&amp;gt;
 int main( int argc, char *argv[] )
 {
-    MPI_Init( &amp;argc, &amp;argv );
+    MPI_Init( &amp;amp;argc, &amp;amp;argv );
     printf( &quot;Hello, world!\n&quot; );
     MPI_Finalize();
     return 0;
@@ -111,19 +111,19 @@ MPI函数返回出错代码或 MPI_SUCCESS .">
     <div class="entry">
       
         <p>有两门课的作业要用到MPI，“高性能计算环境”和“并行与分布式系统”，所以简单了解了一下MPI的基础知识。MPI并不是并行程序设计的唯一方法，但却是一种行之有效的方法。而且MPI已在几乎所有主流的并行机上得到实现，具有很高的可移植性，适用范围非常广泛。这是一篇学习笔记，因此不会面面俱到。</p>
-<h3 id="-mpi">什么是MPI</h3>
+<h3 id="什么是MPI">什么是MPI</h3>
 <p>MPI是Massage Passing Interface的简写，是消息传递函数库的标准规范，由MPI论坛开发，支持Fortran和C，主要用于进程（Process）间通信。</p>
 <p>在MPI中，数据被显式由从一个进程发送给另一个进程，一个称为发送方，一个称为接收方。</p>
-<h3 id="hello-world">Hello World</h3>
+<h3 id="Hello_World">Hello World</h3>
 <p>让我们从一个最简单的MPI Hello World程序开始。</p>
-<pre><code>#include &quot;mpi.h&quot;
-#include &lt;stdio.h&gt;
-int main( int argc, char *argv[] )
+<pre><code><span class="preprocessor">#include "mpi.h"</span>
+<span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[] )
 {
     MPI_Init( &amp;argc, &amp;argv );
-    printf( &quot;Hello, world!\n&quot; );
+    printf( <span class="string">"Hello, world!\n"</span> );
     MPI_Finalize();
-    return 0;
+    <span class="keyword">return</span> <span class="number">0</span>;
 }
 </code></pre><p>Notes:</p>
 <ol>
@@ -135,23 +135,23 @@ int main( int argc, char *argv[] )
 <a id="more"></a>
 
 <p>编译并运行我们的程序（关于编译和运行本文后面有详细介绍）：</p>
-<pre><code>$ mpicc -o hello hello.c
-$ mpirun -np 4 hello
-Hello World!
-Hello World!
-Hello World!
-Hello World!
-</code></pre><h3 id="mpi-">MPI程序基础结构</h3>
-<h4 id="-">执行流程</h4>
+<pre><code>$ <span class="function_or_atom">mpicc</span> -<span class="function_or_atom">o</span> <span class="function_or_atom">hello</span> <span class="function_or_atom">hello</span>.<span class="function_or_atom">c</span>
+$ <span class="function_or_atom">mpirun</span> -<span class="function_or_atom">np</span> <span class="number">4</span> <span class="function_or_atom">hello</span>
+<span class="variable">Hello</span> <span class="variable">World</span><span class="exclamation_mark">!</span>
+<span class="variable">Hello</span> <span class="variable">World</span><span class="exclamation_mark">!</span>
+<span class="variable">Hello</span> <span class="variable">World</span><span class="exclamation_mark">!</span>
+<span class="variable">Hello</span> <span class="variable">World</span><span class="exclamation_mark">!</span>
+</code></pre><h3 id="MPI程序基础结构">MPI程序基础结构</h3>
+<h4 id="执行流程">执行流程</h4>
 <p>MPI程序的结构如下图所示：</p>
 <p><a href="/images/2013/04/mpi_structure.png"><img src="/images/2013/04/mpi_structure.png" alt=""></a></p>
 <p><strong>MPI初始化</strong></p>
-<pre><code>:::BASH
-int MPI_Init(int *argc, char **argv)
+<pre><code><span class="attribute">:::BASH</span>
+int MPI<span class="emphasis">_Init(int *argc, char **argv)</span>
 </code></pre><p>MPI_Init 是MPI程序的第一个调用，它完成MPI程序的所有初始化工作，启动MPI环境，标志并行代码的开始。</p>
 <p><strong>MPI结束</strong></p>
-<pre><code>:::BASH
-int MPI_Finalize(void)
+<pre><code><span class="attribute">:::BASH</span>
+int MPI<span class="emphasis">_Finalize(void)</span>
 </code></pre><p>MPI_Finalize 是MPI程序的最后一个调用，它结束MPI程序的运行，标志并行代码的结束，结束除主进程外其它进程。其之后串行代码仍可在主进程(rank = 0)上继续运行。</p>
 <p>在写MPI程序时，我们常需要知道以下两个问题的答案：</p>
 <ul>
@@ -163,35 +163,35 @@ int MPI_Finalize(void)
 <p>MPI提供了下列函数来回答这些问题：</p>
 <p><strong>MPI_Comm_size</strong></p>
 <p>MPI用 <code>MPI_Comm_size</code> 获得进程个数 p</p>
-<pre><code>:::C
-int MPI_Comm_size(MPI_Comm comm, int *size);
+<pre><code><span class="attribute">:::C</span>
+int MPI<span class="emphasis">_Comm_</span>size(MPI<span class="emphasis">_Comm comm, int *size);</span>
 </code></pre><p><strong>MPI_Comm_rank</strong></p>
 <p>MPI用 <code>MPI_Comm_rank</code> 获得进程的一个叫rank的值，该rank值为 0 到 p-1 间的整数，相当于进程的ID。</p>
-<pre><code>:::C
-int MPI_Comm_rank(MPI_Comm comm, int *rank);
+<pre><code><span class="attribute">:::C</span>
+int MPI<span class="emphasis">_Comm_</span>rank(MPI<span class="emphasis">_Comm comm, int *rank);</span>
 </code></pre><p>下面我们用改进版的Hello World来看一下其用法：</p>
 <pre><code>:::C
-#include &lt;stdio.h&gt;
-#include &quot;mpi.h&quot;
-int main( int argc, char *argv[] )
+<span class="comment">#include &lt;stdio.h&gt;</span>
+<span class="comment">#include "mpi.h"</span>
+<span class="keyword">int</span> main( <span class="keyword">int</span> argc, char <span class="variable">*argv</span>[] )
 {
-    int rank, size;
+    <span class="keyword">int</span> rank, size;
     MPI_Init( &amp;argc, &amp;argv );
     MPI_Comm_rank( MPI_COMM_WORLD, &amp;rank );
     MPI_Comm_size( MPI_COMM_WORLD, &amp;size );
-    printf(&quot;I am %d of %d\n&quot;, rank, size );
+    <span class="keyword">printf</span>(<span class="string">"I am <span class="variable">%d</span> of <span class="variable">%d</span>\n"</span>, rank, size );
     MPI_Finalize();
-    return 0;
+    <span class="keyword">return</span> <span class="number">0</span>;
 }
 </code></pre><p>运行结果：</p>
-<pre><code>:::BASH
+<pre><code><span class="attribute">:::BASH</span>
 $ mpicc –o hello hello.c
 $ mpirun -np 4 hello
 I am 0 of 4
 I am 1 of 4
 I am 2 of 4
 I am 3 of 4
-</code></pre><h4 id="-">消息发送和接受</h4>
+</code></pre><h4 id="消息发送和接受">消息发送和接受</h4>
 <p>MPI消息的发送和接收模型如下：</p>
 <p><a href="/images/2013/04/mpi_msg.png"><img src="/images/2013/04/mpi_msg.png" alt=""></a></p>
 <p>消息由一个进程发送给另一进程。在这个过程中，我们需要明确一下问题：</p>
@@ -205,32 +205,32 @@ I am 3 of 4
 </ul>
 <p>让我们通过一个程序来学习消息的发送与接收。</p>
 <pre><code>:::C
-#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-#include &quot;mpi.h&quot;
+<span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<span class="preprocessor">#include &lt;string.h&gt;</span>
+<span class="preprocessor">#include "mpi.h"</span>
 
-int main(int argc,char *argv[])
+<span class="keyword">int</span> main(<span class="keyword">int</span> argc,<span class="keyword">char</span> *argv[])
 {
-    int numprocs, myid, source; 
+    <span class="keyword">int</span> numprocs, myid, source; 
     MPI_Status status;
-    char message[100];
+    <span class="keyword">char</span> message[<span class="number">100</span>];
     MPI_Init(&amp;argc, &amp;argv); 
     MPI_Comm_rank(MPI_COMM_WORLD, &amp;myid); 
     MPI_Comm_size(MPI_COMM_WORLD, &amp;numprocs);
-    if(myid!=0)
+    <span class="keyword">if</span>(myid!=<span class="number">0</span>)
     {
-        sprintf(message, &quot;Greetings from process %d!&quot;,myid);
-        MPI_Send(message,strlen(message)+1, MPI_CHAR, 0, 99, MPI_COMM_WORLD);
+        <span class="built_in">sprintf</span>(message, <span class="string">"Greetings from process %d!"</span>,myid);
+        MPI_Send(message,<span class="built_in">strlen</span>(message)+<span class="number">1</span>, MPI_CHAR, <span class="number">0</span>, <span class="number">99</span>, MPI_COMM_WORLD);
     } 
-    else 
-    {   /* myid == 0 */
-        for (source = 1; source &lt; numprocs; source++) {
-            MPI_Recv(message, 100, MPI_CHAR, source, 99, MPI_COMM_WORLD, &amp;status);
-            printf(&quot;%s\n&quot;, message);
+    <span class="keyword">else</span> 
+    {   <span class="comment">/* myid == 0 */</span>
+        <span class="keyword">for</span> (source = <span class="number">1</span>; source &lt; numprocs; source++) {
+            MPI_Recv(message, <span class="number">100</span>, MPI_CHAR, source, <span class="number">99</span>, MPI_COMM_WORLD, &amp;status);
+            <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, message);
         }
     }
     MPI_Finalize();
-    return 0;
+    <span class="keyword">return</span> <span class="number">0</span>;
 }
 </code></pre><p>说明：</p>
 <p><strong>通信空间: MPI_COMM_WORLD</strong></p>
@@ -244,10 +244,10 @@ int main(int argc,char *argv[])
 </li>
 </ol>
 <p><strong>发送消息(阻塞)</strong></p>
-<pre><code>:::C
-int MPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm);
+<pre><code><span class="attribute">:::C</span>
+int MPI<span class="emphasis">_Send(void* buf, int count, MPI_</span>Datatype datatype, int dest, int tag, MPI<span class="emphasis">_Comm comm);</span>
 </code></pre><p>其中，</p>
-<pre><code>:::BASH
+<pre><code><span class="attribute">:::BASH</span>
 IN buf      :发送缓冲区的起始地址
 IN count    :要发送信息的元素个数
 IN datatype :发送信息的数据类型
@@ -256,10 +256,10 @@ IN tag      :消息标签
 IN comm     :通信空间
 </code></pre><p>当此函数返回时，数据已经到达系统，buffer可以重新使用，但此时信息不一定已经被目标进程完成接收。</p>
 <p><strong>接受消息(阻塞)</strong></p>
-<pre><code>:::C
-int MPI_Recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status);
+<pre><code><span class="attribute">:::C</span>
+int MPI<span class="emphasis">_Recv(void* buf, int count, MPI_</span>Datatype datatype, int source, int tag, MPI<span class="emphasis">_Comm comm, MPI_</span>Status <span class="strong">*status);</span>
 </code></pre><p>其中，</p>
-<pre><code>:::BASH
+<pre><code><span class="attribute">:::BASH</span>
 OUT buf     :接收缓冲区的起始地址
 IN count    :要接收信息的元素个数
 IN datatype :接收信息的数据类型
@@ -270,68 +270,68 @@ OUT status  :status对象，包含实际接收到的消息的有关信息
 </code></pre><p>当此函数返回时，数据已经被目标进程从系统接收完成，buffer可以重新使用。</p>
 <p><strong>消息匹配</strong></p>
 <p>MPI消息包括 <code>信封</code> 和 <code>数据</code> 两个部分， <code>信封</code> 指发送或接收消息的对象及相关信息，而 <code>数据</code> 是这个消息将要传递的内容。</p>
-<pre><code>:::BASH
-MPI_Send(buf, count, datatype, dest, tag, comm)
+<pre><code><span class="attribute">:::BASH</span>
+MPI<span class="emphasis">_Send(buf, count, datatype, dest, tag, comm)
           |     |        |       |    |     |
           ----- 数据 -----        --- 信封 ---
 
-MPI_Recv(buf, count, datatype, source, tag, comm, *status)
+</span>MPI<span class="emphasis">_Recv(buf, count, datatype, source, tag, comm, *status)
           |     |        |       |    |      |
-          ----- 数据 -----        --- 信封 ----
+          ----- 数据 -----        --- 信封 ----</span>
 </code></pre><p>接收buffer必须至少可以容纳count个由datatype参数指明类型的数据。如果接收buf太小，将导致溢出、出错。</p>
 <p>接收方的Source可以为 <code>MPI_ANY_SOURCE</code> ，代表可以接收任意处理器来的数据(任意消息来源)；Tag可以为 <code>MPI_ANY_TAG</code> ，代表可以匹配任意tag值的消息(任意tag消息）。在阻塞式消息传送中不允许Source==Dest，否则会导致死锁。</p>
 <p>至此，我们可以看出，上例中信息流的方向如下图所示：</p>
 <p><a href="/images/2013/04/mpi_msgroute.png"><img src="/images/2013/04/mpi_msgroute.png" alt=""></a></p>
-<h4 id="-">错误处理</h4>
+<h4 id="错误处理">错误处理</h4>
 <p>通常情况下，一个错误会导致所有的进程崩溃，为了避免，用户可以让子程序在出错时返回错误代码(在C++中可以抛出异常)，或者自定义错误处理函数等。</p>
-<h4 id="-">更多信息</h4>
+<h4 id="更多信息">更多信息</h4>
 <p>我们可以使用接收函数中的 <code>status</code> 来接收更多信息。</p>
 <pre><code>:::C
 int recvd_tag, recvd_from, recvd_count;
 MPI_Status status;
-MPI_Recv(..., MPI_ANY_SOURCE, MPI_ANY_TAG, ..., &amp;status )
+MPI_Recv(<span class="keyword">...</span>, MPI_ANY_SOURCE, MPI_ANY_TAG, <span class="keyword">...</span>, &amp;status )
 recvd_tag  = status.MPI_TAG;
 recvd_from = status.MPI_SOURCE;
 MPI_Get_count( &amp;status, datatype, &amp;recvd_count ); //返回实际接收到消息的长度
-</code></pre><h4 id="-">编译和运行</h4>
+</code></pre><h4 id="编译和运行">编译和运行</h4>
 <p>我们可以用 <code>mpicc</code> 编译并连接用C语言编写的MPI程序，或者使用 <code>mpiCC</code> 编译并连接用C++语言编写的MPI程序。用 <code>mpicc</code> 编译时，就像用一般的C编译器一样，可以使用一般的编译选项，用法与原来的编译器相同。编译完成后，我们可以使用 <code>mpirun –np N [program]</code> 运行程序，其中 <code>N</code> 为同时运行的进程数， <code>[program]</code> 为可执行程序的文件名。</p>
 <p>除此之外，还有一些其它的运行方式，即从文件中读取配置。</p>
-<pre><code>:::BASH
+<pre><code><span class="attribute">:::BASH</span>
 mpirun –p4pg [pgfile] [program]
 </code></pre><p>其中， <code>[pgfile]</code> 为配置文件，其格式为:</p>
-<pre><code>:::BASH
+<pre><code><span class="attribute">:::BASH</span>
 &lt;机器名&gt; &lt;进程数&gt; &lt;程序名&gt; 
 &lt;机器名&gt; &lt;进程数&gt; &lt;程序名&gt; 
 &lt;机器名&gt; &lt;进程数&gt; &lt;程序名&gt;
 </code></pre><p>或者</p>
-<pre><code>:::BASH
+<pre><code><span class="attribute">:::BASH</span>
 mpirun –machinefile [machinefile] -np [N] [program]
 </code></pre><p>其中，<code>[machinefile]</code> 为配置文件，其格式为:</p>
-<pre><code>:::BASH
+<pre><code><span class="attribute">:::BASH</span>
 &lt;机器名&gt; 
 &lt;机器名&gt; 
 &lt;机器名&gt;
-</code></pre><h3 id="-">避免死锁</h3>
+</code></pre><h3 id="避免死锁">避免死锁</h3>
 <p>为了避免死锁，尽量保持发送和接受成对出现。</p>
 <p>不安全的通信调用：</p>
-<pre><code>:::BASH
-  Process 0      Process 1
-----------------------------
-   Send(1)        Send(0)
-   Recv(1)        Recv(0)
+<pre><code><span class="attribute">:::BASH</span>
+<span class="header">  Process 0      Process 1
+----------------------------</span>
+<span class="code">   Send(1)        Send(0)</span>
+<span class="code">   Recv(1)        Recv(0)</span>
 </code></pre><p>安全的通信调用：</p>
-<pre><code>:::BASH
-  Process 0      Process 1
-----------------------------
-   Send(1)        Recv(0)
-   Recv(1)        Send(0)
+<pre><code><span class="attribute">:::BASH</span>
+<span class="header">  Process 0      Process 1
+----------------------------</span>
+<span class="code">   Send(1)        Recv(0)</span>
+<span class="code">   Recv(1)        Send(0)</span>
 </code></pre><p>或者使用非阻塞调用：</p>
-<pre><code>:::BASH
-  Process 0      Process 1
-----------------------------
-   Isend(1)       Isend(0)
-   Irecv(1)       Irecv(0)
-   Waitall        Waitall
+<pre><code><span class="attribute">:::BASH</span>
+<span class="header">  Process 0      Process 1
+----------------------------</span>
+<span class="code">   Isend(1)       Isend(0)</span>
+<span class="code">   Irecv(1)       Irecv(0)</span>
+<span class="code">   Waitall        Waitall</span>
 </code></pre><p>除此之外，还有很多知识点没有介绍，如果以后有机会，我会进行更深一步的探讨。</p>
 
       
@@ -453,7 +453,7 @@ mpirun –machinefile [machinefile] -np [N] [program]
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -483,7 +483,7 @@ mpirun –machinefile [machinefile] -np [N] [program]
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

@@ -12,7 +12,7 @@
 我们把原服务器格式化重新安装了Ubuntu 11.04。之前想安装Windows Server 2003，不过又想正好借机实践一下近期学的Linux知识，于是果断换了Ubuntu系统。考虑到使用方便问题，没有用Server版，桌面版够用。
 安装的过程还算顺利，服务器配置很强大，跑个Ubuntu还是很顺利的。然后就遇到了第一个问题，也是我们今天遇到的最坑爹，最苦恼，最没有办法的问题。。
 由于是内网部署，我们配好静态IP后，竟然发现不能访问！可以ping通，但访问时一直都是Forbidden状态。我们上网查各种方法来试图解决，都无法打通内网和外网这个桥梁。唯一能访问的知识同域内的几个网站，比如特思论坛。更痛苦的是无法连接上交大的开源镜像，导致Ubuntu无法配置PHP服务器环境。。。
-其实问题很简单，管理员的内外网端口映射已经做好，但防火墙配置出现问题，把我们的所有请求都拦截了...也就是说，我们需要联系管理员配置下网络防火墙即可。。。
+其实问题很简单，管理员的内外网端口映射已经做好，但防火墙配置出现问题，把我们的所有请求都拦截了…也就是说，我们需要联系管理员配置下网络防火墙即可。。。
 接着我们配置好了PHP运行环境，将我们的项目进行部署。这里的问题都是关于ThinkPHP的了，大牛可以直接略过。">
   
   
@@ -104,16 +104,16 @@
 <p>我们把原服务器格式化重新安装了Ubuntu 11.04。之前想安装Windows Server 2003，不过又想正好借机实践一下近期学的Linux知识，于是果断换了Ubuntu系统。考虑到使用方便问题，没有用Server版，桌面版够用。</p>
 <p>安装的过程还算顺利，服务器配置很强大，跑个Ubuntu还是很顺利的。然后就遇到了第一个问题，也是我们今天遇到的最坑爹，最苦恼，最没有办法的问题。。</p>
 <p>由于是内网部署，我们配好静态IP后，竟然发现不能访问！可以ping通，但访问时一直都是Forbidden状态。我们上网查各种方法来试图解决，都无法打通内网和外网这个桥梁。唯一能访问的知识同域内的几个网站，比如特思论坛。更痛苦的是无法连接上交大的开源镜像，导致Ubuntu无法配置PHP服务器环境。。。</p>
-<p>其实问题很简单，管理员的内外网端口映射已经做好，但防火墙配置出现问题，把我们的所有请求都拦截了...也就是说，我们需要联系管理员配置下网络防火墙即可。。。</p>
+<p>其实问题很简单，管理员的内外网端口映射已经做好，但防火墙配置出现问题，把我们的所有请求都拦截了…也就是说，我们需要联系管理员配置下网络防火墙即可。。。</p>
 <p>接着我们配置好了PHP运行环境，将我们的项目进行部署。这里的问题都是关于ThinkPHP的了，大牛可以直接略过。</p>
 <a id="more"></a>
 
 <p><strong>乱码问题</strong></p>
-<p>嗯，不用多说，MySQL编码的问题...</p>
+<p>嗯，不用多说，MySQL编码的问题…</p>
 <p><strong>权限问题</strong></p>
 <p>ThinkPHP的Runtime文件夹需要755的权限，直接从Windows环境下拷过去的项目一定要重新配置下权限。</p>
 <p><strong>找不到Public模块</strong></p>
-<p>我们用.htaccess配置了URLRewrite，把index.php隐去了，但奇怪的是诸如<a href="http://localhost/Public/...的地址全部都显示为“无法找到Public模块。”Public是个共用文件夹，我们把一些图片，CSS和JS放在里面，但ThinkPHP却去加载Public" target="_blank">http://localhost/Public/...的地址全部都显示为“无法找到Public模块。”Public是个共用文件夹，我们把一些图片，CSS和JS放在里面，但ThinkPHP却去加载Public</a> Action，导致无法找到模块。</p>
+<p>我们用.htaccess配置了URLRewrite，把index.php隐去了，但奇怪的是诸如<a href="http://localhost/Public/...的地址全部都显示为“无法找到Public模块。”Public是个共用文件夹，我们把一些图片，CSS和JS放在里面，但ThinkPHP却去加载Public" target="_blank" rel="external">http://localhost/Public/...的地址全部都显示为“无法找到Public模块。”Public是个共用文件夹，我们把一些图片，CSS和JS放在里面，但ThinkPHP却去加载Public</a> Action，导致无法找到模块。</p>
 <p>起初以为是.htaccess的问题，安秦把重写规则改了好多遍依旧不能解决问题，ThinkPHP的URLMODE试了一遍也不行。我隐约记得以前写过一个ThinkPHP项目中遇到过同样的问题，但后来怎么解决的却始终想不起来。正当问题进入“白热化”阶段，我们准备写一个PublicAction来捕捉所有请求的时候，终于。。。</p>
 <p>问题是，在Windows下面URL是不区分大小写的，但在Linux下面，大家应该都清楚吧，case sensitive！</p>
 <p>好了，问题解决了。</p>
@@ -233,7 +233,7 @@
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -263,7 +263,7 @@
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

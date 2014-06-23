@@ -9,7 +9,7 @@
   <meta name="description" content="This tutorial will show you how to connect to EMR masternode via SSH. Then you can install your own software packages, change configurations, or submit your job manually. 
 Amazon EMR is a flow job. When you submit a job to EMR, it will start a new cluster and then execute your job. When the job is done, the cluster will be shutdown and terminated automically. In this case, you can only use the software provided by Amazon unless you setup some bootstraps to execute some scripts by S3. However, this is a simpler way to keep the cluster and you can SSH login to the masternode and do whatever you want :)
 Creat the cluster
-First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the &quot;Auto-terminate&quot; option to No so that the cluster will wait when no job is running.">
+First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the “Auto-terminate” option to No so that the cluster will wait when no job is running.">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -96,25 +96,25 @@ First, when you create the cluster, you need to change a configuration. Under th
       
         <p>This tutorial will show you how to connect to EMR masternode via SSH. Then you can install your own software packages, change configurations, or submit your job manually. </p>
 <p>Amazon EMR is a flow job. When you submit a job to EMR, it will start a new cluster and then execute your job. When the job is done, the cluster will be shutdown and terminated automically. In this case, you can only use the software provided by Amazon unless you setup some bootstraps to execute some scripts by S3. However, this is a simpler way to keep the cluster and you can SSH login to the masternode and do whatever you want :)</p>
-<h3 id="creat-the-cluster">Creat the cluster</h3>
-<p>First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the &quot;Auto-terminate&quot; option to No so that the cluster will wait when no job is running.</p>
+<h3 id="Creat_the_cluster">Creat the cluster</h3>
+<p>First, when you create the cluster, you need to change a configuration. Under the Steps section, you should change the “Auto-terminate” option to No so that the cluster will wait when no job is running.</p>
 <a id="more"></a>
 
 <p><img src="/images/2014/05/emr-1.png" alt="emr-1"></p>
 <p>And also, you should select your key pair file in the configurations, in this case it is EMR.pem.</p>
 <p>For this cluster, I use Hadoop 2.2.0 and add Pig Hive and HBase. It contains three m1-large nodes in total.</p>
-<h3 id="connect-to-the-masternode">Connect to the masternode</h3>
-<p>Then click the &quot;Start the cluster&quot; button to start the cluster. After several minutes, when the status of the cluster becomes &quot;waiting&quot;, you can continue to the next step. </p>
+<h3 id="Connect_to_the_masternode">Connect to the masternode</h3>
+<p>Then click the “Start the cluster” button to start the cluster. After several minutes, when the status of the cluster becomes “waiting”, you can continue to the next step. </p>
 <p>Note: make sure you have downloaded the key pair, which is .pem file.</p>
 <p>In the overview of the cluster, you can see a Master Public DNS address, which is the address you need to connect to the masternode.</p>
 <p><img src="/images/2014/05/emr-2.png" alt="emr-2"></p>
 <p>Assuem your pem file is EMR.pem, you can use the following command to connect to the masternode:</p>
-<pre><code>ssh hadoop@ec2-54-187-3-164.us-west-2.compute.amazonaws.com -i EMR.pem
-</code></pre><p>Notice that the username you use is &#39;hadoop&#39;.</p>
+<pre><code>ssh hadoop@ec2-<span class="number">54</span>-<span class="number">187</span>-<span class="number">3</span>-<span class="number">164.</span>us-west-<span class="number">2.</span>compute<span class="preprocessor">.amazonaws</span><span class="preprocessor">.com</span> -i EMR<span class="preprocessor">.pem</span>
+</code></pre><p>Notice that the username you use is ‘hadoop’.</p>
 <p>Now you have connected to the masternode.</p>
 <p><img src="/images/2014/05/emr-3.png" alt="emr-3"></p>
 <p>As you can see, the mahout is installed in this version.</p>
-<h3 id="important-notes">Important Notes</h3>
+<h3 id="Important_Notes">Important Notes</h3>
 <p>You <strong>MUST</strong> terminate the cluster manually when you not use it, or you will be charged whenever the cluster is waiting. You can clone the cluster next time.</p>
 
       
@@ -236,7 +236,7 @@ First, when you create the cluster, you need to change a configuration. Under th
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -266,7 +266,7 @@ First, when you create the cluster, you need to change a configuration. Under th
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

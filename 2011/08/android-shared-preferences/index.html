@@ -131,18 +131,18 @@ Shared Preferences 类似于winform中做一些小型配置的ini文件，用来
 <p>在每安装一个Android 应用程序时，data/data目录下都会产生一个对应的包文件夹，如果应用程序中使用了 Preferences 则会在该应用程序文件夹下产生一个shared_prefs文件夹保存我们的数据。</p>
 <p><strong>示例：</strong></p>
 <p>读取配置的方法：</p>
-<pre><code>//读取当前的配置信息
-private SharedPreferences config;
-config = getSharedPreferences(&quot;CONFIG&quot;,ConfigActivity.MODE_WORLD_WRITEABLE);
-minRecordTime = config.getInt(&quot;minRecordTime&quot;, 1000);
-minRecordDistance = config.getInt(&quot;minRecordDistance&quot;, 1);
-isGetMyLocAtStartAuto = config.getBoolean(&quot;isGetMyLocAtStartAuto&quot;, true);
+<pre><code><span class="comment">//读取当前的配置信息</span>
+<span class="keyword">private</span> SharedPreferences config;
+config = getSharedPreferences(<span class="string">"CONFIG"</span>,ConfigActivity.MODE_WORLD_WRITEABLE);
+minRecordTime = config.getInt(<span class="string">"minRecordTime"</span>, <span class="number">1000</span>);
+minRecordDistance = config.getInt(<span class="string">"minRecordDistance"</span>, <span class="number">1</span>);
+isGetMyLocAtStartAuto = config.getBoolean(<span class="string">"isGetMyLocAtStartAuto"</span>, <span class="keyword">true</span>);
 </code></pre><p>编辑配置的方法:</p>
 <pre><code>//写入sharepreference
-SharedPreferences config = getSharedPreferences(&quot;CONFIG&quot;,ConfigActivity.MODE_WORLD_WRITEABLE);
-SharedPreferences.Editor editor = config.edit();
-editor.putInt(&quot;minRecordTime&quot;, minRecordTime);
-editor.commit();
+SharedPreferences config = getSharedPreferences(<span class="string">"CONFIG"</span>,ConfigActivity<span class="preprocessor">.MODE</span>_WORLD_WRITEABLE)<span class="comment">;</span>
+SharedPreferences<span class="preprocessor">.Editor</span> editor = config<span class="preprocessor">.edit</span>()<span class="comment">;</span>
+editor<span class="preprocessor">.putInt</span>(<span class="string">"minRecordTime"</span>, minRecordTime)<span class="comment">;</span>
+editor<span class="preprocessor">.commit</span>()<span class="comment">;</span>
 </code></pre><p>示例比较简略，但很典型，摘自我自己的应用BJTUer（暂定名）。</p>
 
       
@@ -264,7 +264,7 @@ editor.commit();
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -294,7 +294,7 @@ editor.commit();
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   

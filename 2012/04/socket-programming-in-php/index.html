@@ -106,7 +106,7 @@ Socket基础知识
     <div class="entry">
       
         <p>关于PHP socket的资料网上着实不多，或者讲的都不是很全面。为了更好地用PHP来处理socket，天堂皓月博客特地来简单总结一下其用法，尽量会做到深入浅出：）</p>
-<h3 id="-">文章结构：</h3>
+<h3 id="文章结构：">文章结构：</h3>
 <ul>
 <li>Socket基础知识</li>
 </ul>
@@ -121,7 +121,7 @@ Socket基础知识
 </ul>
 <p>通过这三部分你将会体验到Socket的魅力，并了解怎样去编写一个服务器，怎样通过Sockets连接到服务器，服务器怎样处理信息并将信息发送给相应的客户端。</p>
 <p>不管你信不信，只要你用过PHP，就一定用过Sockets。HTTP服务器就是一个Socket服务器，浏览器就是客户端，也就是最简单的C/S模式。</p>
-<h3 id="socket-">Socket基础知识</h3>
+<h3 id="Socket基础知识">Socket基础知识</h3>
 <p>我们可以把Socket当做是一种数据结构，客户端和服务器间通过这种数据结构来交换数据。服务器开始监听连接，当客户端想要连接服务器时，会通过服务器监听的端口开启一个会话，服务器收到客户端的请求后，建立连接完毕，然后继续监听下一次连接。</p>
 <p>要产生一个Socket，你我们需要三个变量：一个协议（protocol）、一个socket类型（socket type）和一个公共协议类型（common protocol type）。下面将会详细介绍各个部分的具体内容。</p>
 <p><strong>协议</strong></p>
@@ -163,20 +163,20 @@ Socket基础知识
 <p>在PHP中我们使用socket_create()函数来产生一个Socket。socket_create()函数运行成功返回一个包含Socket的资源类型，如果没有成功则返回false。</p>
 <p>1 resource socket_create(int protocol, int socketType, int commonProtocol);</p>
 <p>PHP提供了很多操作Socket的函数。现在我们来看一个例子，了解PHP是如何产生、接受和监听一个socket。</p>
-<pre><code>:::PHP
+<pre><code><span class="attribute">:::PHP</span>
 &lt;?php
 $commonProtocol = getprotobyname(“tcp”);
-$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
-socket_bind($socket, ‘localhost’, 1337);
-socket_listen($socket);
+$socket = socket<span class="emphasis">_create(AF_</span>INET, SOCK<span class="emphasis">_STREAM, $commonProtocol);
+socket_</span>bind($socket, ‘localhost’, 1337);
+socket<span class="emphasis">_listen($socket);
 // More socket functionality to come
-?&gt;
+?&gt;</span>
 </code></pre><p>我们来详细解释一下上面这个程序（基于行号）：</p>
 <p>第二行：使用公共协议名字来获取一个协议类型。在这里使用的是TCP公共协议，如果你想使用UDP或者ICMP协议，就应该把getprotobyname()函数的参数改为“udp”或“icmp”。我们也可以不使用getprotobyname()函数而是直接指定SOL_TCP或SOL_UDP。</p>
 <p>第三行：产生一个Socket并且返回一个Socket资源的实例。</p>
 <p>第四行：有了一个Socket资源的实例以后，就必须把Socket绑定到一个IP地址和某一端口上。在这里绑定socket到本地计算机（127.0.0.1）的1337端口。</p>
 <p>第五行：然后就需要监听所有进来的socket连接。</p>
-<p>这时，我们就需要了解一下PHP中Socket函数的使用方法了。官方手册的介绍非常不错（<a href="http://www.php.net/manual/en/ref.sockets.php" target="_blank">猛戳这个链接</a>），下面只是简单列举几个最常用的。</p>
+<p>这时，我们就需要了解一下PHP中Socket函数的使用方法了。官方手册的介绍非常不错（<a href="http://www.php.net/manual/en/ref.sockets.php" target="_blank" rel="external">猛戳这个链接</a>），下面只是简单列举几个最常用的。</p>
 <ul>
 <li>socket_accept() 接受一个Socket连接</li>
 </ul>
@@ -250,21 +250,21 @@ socket_listen($socket);
 <li>socket_write() 写数据到socket缓存</li>
 </ul>
 <p>关于PHP Socket的基础知识就介绍到这里，还有不明白的可查看官方手册。下面介绍编写一个Socket服务器。</p>
-<h3 id="-">编写服务器</h3>
+<h3 id="编写服务器">编写服务器</h3>
 <p>现在我们把第一个例子完善，使其能够监听一个指定的Socket并处理用户的连接。</p>
 <pre><code>:::PHP
-&lt;?php
-$commonProtocol = getprotobyname(&quot;tcp&quot;);
-$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
-socket_bind($socket, &#39;localhost&#39;, 1337);
-socket_listen($socket);
-// Accept any incoming connections to the server
-$connection = socket_accept($socket);
-if($connection)
+<span class="php"><span class="preprocessor">&lt;?php</span>
+<span class="variable">$commonProtocol</span> = getprotobyname(<span class="string">"tcp"</span>);
+<span class="variable">$socket</span> = socket_create(AF_INET, SOCK_STREAM, <span class="variable">$commonProtocol</span>);
+socket_bind(<span class="variable">$socket</span>, <span class="string">'localhost'</span>, <span class="number">1337</span>);
+socket_listen(<span class="variable">$socket</span>);
+<span class="comment">// Accept any incoming connections to the server</span>
+<span class="variable">$connection</span> = socket_accept(<span class="variable">$socket</span>);
+<span class="keyword">if</span>(<span class="variable">$connection</span>)
 {
-   socket_write($connection, &quot;You have connected to the socket...\n\r&quot;);
+   socket_write(<span class="variable">$connection</span>, <span class="string">"You have connected to the socket...\n\r"</span>);
 }
-?&gt;
+<span class="preprocessor">?&gt;</span></span>
 </code></pre><p>注意这不是一个Web页面，如果你尝试使用Web浏览器来运行这个脚本，那么很有可能它会超过PHP运行30秒的限时。当然你可以使用下面的代码来设置一个无限的运行时间</p>
 <blockquote>
 <p>set_time_limit(0);</p>
@@ -287,76 +287,76 @@ if($connection)
 <pre><code>:::PHP
 &lt;?php
 // Set up our socket 
-$commonProtocol = getprotobyname(&quot;tcp&quot;);
-$socket = socket_create(AF_INET, SOCK_STREAM, $commonProtocol);
-socket_bind($socket, &#39;localhost&#39;, 1337);
-socket_listen($socket);
+<span class="variable">$commonProtocol</span> = getprotobyname(<span class="string">"tcp"</span>);
+<span class="variable">$socket</span> = socket_create(AF_INET, SOCK_STREAM, <span class="variable">$commonProtocol</span>);
+socket_<span class="built_in">bind</span>(<span class="variable">$socket</span>, <span class="string">'localhost'</span>, <span class="number">1337</span>);
+socket_listen(<span class="variable">$socket</span>);
 // Initialize the buffer 
-$buffer = &quot;NO DATA&quot;;
-while(true)
+<span class="variable">$buffer</span> = <span class="string">"NO DATA"</span>;
+<span class="keyword">while</span>(<span class="literal">true</span>)
 {
-    // Accept any connections coming in on this socket
-    $connection = socket_accept($socket);
-    printf(&quot;Socket connected\r\n&quot;);
-    // Check to see if there is anything in the buffer
-    if($buffer != &quot;&quot;)
+    // Accept any connections coming <span class="keyword">in</span> on this socket
+    <span class="variable">$connection</span> = socket_accept(<span class="variable">$socket</span>);
+    <span class="built_in">printf</span>(<span class="string">"Socket connected\r\n"</span>);
+    // Check to see <span class="keyword">if</span> there is anything <span class="keyword">in</span> the buffer
+    <span class="keyword">if</span>(<span class="variable">$buffer</span> != <span class="string">""</span>)
     {
-        printf(&quot;Something is in the buffer...sending data...\r\n&quot;);
-        socket_write($connection, $buffer . &quot;\r\n&quot;);
-        printf(&quot;Wrote to socket\r\n&quot;);
+        <span class="built_in">printf</span>(<span class="string">"Something is in the buffer...sending data...\r\n"</span>);
+        socket_write(<span class="variable">$connection</span>, <span class="variable">$buffer</span> . <span class="string">"\r\n"</span>);
+        <span class="built_in">printf</span>(<span class="string">"Wrote to socket\r\n"</span>);
     }
-    else
+    <span class="keyword">else</span>
     {
-        printf(&quot;No Data in the buffer\r\n&quot;);
+        <span class="built_in">printf</span>(<span class="string">"No Data in the buffer\r\n"</span>);
     }
     // Get the input
-    while($data = socket_read($connection, 1024, PHP_NORMAL_READ))
+    <span class="keyword">while</span>(<span class="variable">$data</span> = socket_<span class="built_in">read</span>(<span class="variable">$connection</span>, <span class="number">1024</span>, PHP_NORMAL_READ))
     {
-        $buffer = $data;
-        socket_write($connection, &quot;Information Received\r\n&quot;);
-        printf(&quot;Buffer: &quot; . $buffer . &quot;\r\n&quot;);
+        <span class="variable">$buffer</span> = <span class="variable">$data</span>;
+        socket_write(<span class="variable">$connection</span>, <span class="string">"Information Received\r\n"</span>);
+        <span class="built_in">printf</span>(<span class="string">"Buffer: "</span> . <span class="variable">$buffer</span> . <span class="string">"\r\n"</span>);
     }
-    socket_close($connection);
-    printf(&quot;Closed the socket\r\n\r\n&quot;);
+    socket_close(<span class="variable">$connection</span>);
+    <span class="built_in">printf</span>(<span class="string">"Closed the socket\r\n\r\n"</span>);
 }
 ?&gt;
 </code></pre><p>这段程序初始化一个socket并且打开一个缓冲区收发数据。然后服务器开始等待连接，此时一旦产生一个连接，服务器将打印“Socket connected”。然后服务器检查缓冲区，如果缓冲区里有数据，服务器就把这些数据发送到连接的计算机客户端。然后服务器等待接收信息，并把接收到的信息保存，然后让连接的客户端知道信息接收成功后，服务器将关闭连接。连接关闭后，服务器将开始下一次处理连接的循环。</p>
-<h3 id="-">编写客户端</h3>
+<h3 id="编写客户端">编写客户端</h3>
 <p>解决上面提到的第二个问题还是比较容易的。我们需要一个连接到服务器的页面来处理数据并发送到服务器。</p>
 <p>我们来看下面的代码：</p>
 <pre><code>:::PHP
-&lt;?php
-// Create the socket and connect 
-$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-$connection = socket_connect($socket,’localhost’, 1337);
-while($buffer = socket_read($socket, 1024, PHP_NORMAL_READ))
+<span class="php"><span class="preprocessor">&lt;?php</span>
+<span class="comment">// Create the socket and connect </span>
+<span class="variable">$socket</span> = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+<span class="variable">$connection</span> = socket_connect(<span class="variable">$socket</span>,’localhost’, <span class="number">1337</span>);
+<span class="keyword">while</span>(<span class="variable">$buffer</span> = socket_read(<span class="variable">$socket</span>, <span class="number">1024</span>, PHP_NORMAL_READ))
 {
-    if($buffer == “NO DATA”)
+    <span class="keyword">if</span>(<span class="variable">$buffer</span> == “NO DATA”)
     {
-        echo(“&lt;p&gt;NO DATA&lt;/p&gt;”);
-        break;
+        <span class="keyword">echo</span>(“&lt;p&gt;NO DATA&lt;/p&gt;”);
+        <span class="keyword">break</span>;
     }
-    else
+    <span class="keyword">else</span>
     {
-        // Do something with the data in the buffer 
-        echo(“&lt;p&gt;Buffer Data: “ . $buffer . “&lt;/p&gt;”);
+        <span class="comment">// Do something with the data in the buffer </span>
+        <span class="keyword">echo</span>(“&lt;p&gt;Buffer Data: “ . <span class="variable">$buffer</span> . “&lt;/p&gt;”);
     }
 }
-echo(“&lt;p&gt;Writing to Socket&lt;/p&gt;”);
-// Write some test data to our socket
-if(!socket_write($socket, “SOME DATA\r\n”))
+<span class="keyword">echo</span>(“&lt;p&gt;Writing to Socket&lt;/p&gt;”);
+<span class="comment">// Write some test data to our socket</span>
+<span class="keyword">if</span>(!socket_write(<span class="variable">$socket</span>, “SOME DATA\r\n”))
 {
-    echo(“&lt;p&gt;Write failed&lt;/p&gt;”);
+    <span class="keyword">echo</span>(“&lt;p&gt;Write failed&lt;/p&gt;”);
 }
-// Read any response from the socket
-while($buffer = socket_read($socket, 1024, PHP_NORMAL_READ))
+<span class="comment">// Read any response from the socket</span>
+<span class="keyword">while</span>(<span class="variable">$buffer</span> = socket_read(<span class="variable">$socket</span>, <span class="number">1024</span>, PHP_NORMAL_READ))
 {
-    echo(“&lt;p&gt;Data sent was: SOME DATA&lt;br&gt; Response was:” . $buffer . “&lt;/p&gt;”);
+    <span class="keyword">echo</span>(“&lt;p&gt;Data sent was: SOME DATA&lt;br&gt; Response was:” . <span class="variable">$buffer</span> . “&lt;/p&gt;”);
 }
-echo(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
-?&gt;
+<span class="keyword">echo</span>(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
+<span class="preprocessor">?&gt;</span></span>
 </code></pre><p>这个例子的客户端连接到服务器后，客户端读取数据。如果这是客户端第一次连接服务器，服务器将发送“NO DATA”给客户端。如果客户端收到“NO DATA”说明其连接成功，客户端发送它的数据到服务器并等待服务器响应。一旦客户端接收到服务器的响应，客户端将把响应内容输出到屏幕上。</p>
-<h3 id="-">总结</h3>
+<h3 id="总结">总结</h3>
 <p>如果还想深入了解PHP Socket，建议阅读更多的第三方资料或到PHP官方查询官方文档。今天就介绍到这里，如果有错误欢迎指正。</p>
 <p>参考资料：《PHP Game Programming》</p>
 
@@ -479,7 +479,7 @@ echo(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
   
     <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
   
-    <li><a href="/tags/MVC, PHP/">MVC, PHP</a><small>1</small></li>
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
   
     <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
   
@@ -509,7 +509,7 @@ echo(“&lt;p&gt;Done Reading from Socket&lt;/p&gt;”);
   
     <li><a href="/tags/movie/">movie</a><small>1</small></li>
   
-    <li><a href="/tags/open source/">open source</a><small>1</small></li>
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
   
     <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
   
