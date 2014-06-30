@@ -1,236 +1,203 @@
-<!doctype html>
-
-<html>
-  
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
     <title>Big Data Summer Course</title>
-    <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="/bigdata/css/bootstrap.min.css">
-    <script type="text/javascript" src="/bigdata/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/bigdata/js/bootstrap.min.js"></script>
-    <style type="text/css">
-      /*       * Style tweaks       * --------------------------------------------------       */
-      body {
-        padding-top: 70px;
-      }
-      footer {
-        padding-left: 15px;
-        padding-right: 15px;
-      }
-      /*       * Off Canvas       * --------------------------------------------------       */
-      @media screen and(max-width: 768px) {
-        .row-offcanvas {
-          position: relative;
-          -webkit-transition: all 0.25s ease-out;
-          -moz-transition: all 0.25s ease-out;
-          transition: all 0.25s ease-out;
-        }
-        .row-offcanvas-right .sidebar-offcanvas {
-          right: -50%;
-          /* 6 columns */
-        }
-        .row-offcanvas-left .sidebar-offcanvas {
-          left: -50%;
-          /* 6 columns */
-        }
-        .row-offcanvas-right.active {
-          right: 50%;
-          /* 6 columns */
-        }
-        .row-offcanvas-left.active {
-          left: 50%;
-          /* 6 columns */
-        }
-        .sidebar-offcanvas {
-          position: absolute;
-          top: 0;
-          width: 50%;
-          /* 6 columns */
-        }
-      }
-    </style>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bigdata/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href="/bigdata/css/simple-sidebar.css" rel="stylesheet">
+    <link href="/bigdata/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
   </head>
-  
+
   <body>
-    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/bigdata">Big Data</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active">
-              <a href="/bigdata">Home</a>
-            </li>
-            <li>
-              <a href="contact.html">Contact</a>
-            </li>
-            <li>
-              <a href="project.html">Project Ideas</a>
-            </li>
-            <li>
-              <a href="tutorials.html">Tutorials</a>
-            </li>
-            <li>
-              <a href="links.html">Links</a>
-            </li>
-          </ul>
-        </div>
-        <!-- /.nav-collapse -->
+  
+    <div id="wrapper">
+      
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand"><a href="#">Mizzou BigData</a></li>
+          <li><a href="lectures.html">Lectures</a></li>
+          <li><a href="resources.html" class="active">Resources</a></li>
+          <li><a href="project.html">Project Ideas</a></li>
+          <li><a href="tutorials.html">Tutorials</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="links.html">Links</a></li>
+        </ul>
       </div>
-      <!-- /.container -->
-    </div>
-    <!-- /.navbar -->
-    <div class="container">
-      <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-4 col-sm-9 col-md-3">
-          <p class="pull-right visible-xs">
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button></p>
-          <!--/row-->
-          <div class="well sidebar-nav">
-            <ul class="nav">
-              <li>
-                <a href="lectures.html">Lectures</a>
-              </li>
-              <li>
-                <a href="resources.html">Resources</a>
-              </li>
-              <li>
-                <a href="#">Anouncements</a>
-              </li>
-              <li>
-                <a href="#">Homework</a>
-              </li>
-            </ul>
+          
+      <!-- Page content -->
+      <div id="page-content-wrapper">
+        <div class="content-header">
+          <h1>
+            Resources and Labs
+          </h1>
+        </div>
+        <!-- Keep all page content within the page-content inset div! -->
+        <div class="page-content inset" style="padding: 10px 35px;">
+          <div class="row">
+            <p>These are some materials that may be useful for you. Followed by every topic, there are several labs.</p>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong>July 7 - Overview: Big Data Analytics, Big Data Platform, Career Path</strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <p>What is Big Data:&nbsp;<a href="http://goo.gl/kqiquW" target="_blank" rel="external">link</a></p>
+                <p>Linux Basics:&nbsp;<a href="http://goo.gl/FKW8Je" target="_blank" rel="external">link</a></p>
+                <p>Java Tutorial Videos from The New Boston:&nbsp;<a href="http://goo.gl/EvPbV" target="_blank" rel="external">link</a></p>
+                <p>Oracle Sun Java Tutorial:&nbsp;<a href="http://goo.gl/xeS59" target="_blank" rel="external">link</a></p>
+                <p>Java References:&nbsp;<a href="http://www.tutorialspoint.com/java/index.htm" target="_blank" rel="external">link</a></p>
+                <p>Big Data Landscape:&nbsp;<a href="http://goo.gl/pxdcQ" target="_blank" rel="external">link</a></p>
+                <br>
+                <h4>Labs</h4>
+                <p>Linux Basic Operations:&nbsp;<a href="http://goo.gl/W1sZsn" target="_blank" rel="external">link</a></p>
+                <p>Set up developing environment:&nbsp;<a href="http://goo.gl/KMmwwr" target="_blank" rel="external">link</a></p>
+                <p>Watch videos:&nbsp;<a href="http://goo.gl/iuixq" target="_blank" rel="external">BBC link</a> watch: <a href="http://goo.gl/0LiL1D" target="_blank" rel="external">link</a></p>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong>July 8-9 - Hadoop Overview, Hadoop Distributed File System (HDFS), BigInsights, Amazon Web services (AWS)</strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <p>Hadoop structure overview:&nbsp;<a href="http://goo.gl/TGlhsO" target="_blank" rel="external">link</a></p>
+                <p>Hadoop Distributed File System:&nbsp;<a href="http://goo.gl/JwNsRk" target="_blank" rel="external">link</a></p>
+                <p>HDFS command line:&nbsp;<a href="http://goo.gl/ZTIIE3" target="_blank" rel="external">link</a></p>
+                <p>HDFS Java API:&nbsp;<a href="http://goo.gl/6X2LjH" target="_blank" rel="external">link</a></p>
+                <p>AWS Introduction:&nbsp;<a href="http://goo.gl/iT5iqd" target="_blank" rel="external">link</a></p>
+                <p>How to use EMR:&nbsp;<a href="http://goo.gl/0SxwzY" target="_blank" rel="external">link</a></p>
+                <p>How to use EMR:&nbsp;<a href="http://goo.gl/Gy72tq" target="_blank" rel="external">WordCount</a>&nbsp;pricing:<a href="http://goo.gl/yYSS4a" target="_blank" rel="external">link</a></p>
+                <br>
+                <h4>Labs</h4>
+                <p>Create Elastic MapReduce cluster on AWS:&nbsp;<a href="http://goo.gl/31OeUr" target="_blank" rel="external">link</a></p>
+                <p>HDFS shell commands:&nbsp;<a href="http://goo.gl/Fl5zrY" target="_blank" rel="external">link</a></p>
+                <p>HDFS Java API:&nbsp;<a href="http://goo.gl/iZmAKs" target="_blank" rel="external">link</a></p>
+                <p>Running WordCount.jar on EMR using different datasets (data provided):&nbsp;<a href="http://goo.gl/jKOyk3" target="_blank" rel="external">link</a></p>
+                <p>Running Hadoop Examples:&nbsp;<a href="http://goo.gl/Ol00Yh" target="_blank" rel="external">link</a></p>
+                <p>Read Google File System paper:&nbsp;<a href="http://goo.gl/WeuPy4" target="_blank" rel="external">link</a></p>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong>July 10-11,14-15 -  MapReduce: basics, algorithm design, graph algorithms, data-intensive text processing, Amazon Elastic MapReduce (EMR)</strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <p>MapReduce Basics:&nbsp;<a href="http://goo.gl/N5Nl2c" target="_blank" rel="external">link</a></p>
+                <p>Walking through WordCount codes</p>
+                <p>Different WordCount Versions: WordCount with a combiner, etc:&nbsp;<a href="http://goo.gl/uu4P10" target="_blank" rel="external">link</a></p>
+                <p>How to debug Hadoop:&nbsp;<a href="http://goo.gl/WVLxZ" target="_blank" rel="external">link</a></p>
+                <p>MapReduce algorithm design:&nbsp;<a href="http://goo.gl/uu4P10" target="_blank" rel="external">link</a></p>
+                <p>Graph algorithms:&nbsp;<a href="http://goo.gl/uu4P10" target="_blank" rel="external">link</a></p>
+                <p>Custom data type:&nbsp;<a href="http://goo.gl/reWAk8" target="_blank" rel="external">link</a></p>
+                <p>Job Chaining (reading provided)</p>
+                <br>
+                <h4>Labs</h4>
+                <p>Read MapReduce Paper:&nbsp;<a href="http://goo.gl/n0agd" target="_blank" rel="external">link</a></p>
+                <p>Remove Duplicated Records:&nbsp;<a href="http://goo.gl/RbEBTZ" target="_blank" rel="external">link</a></p>
+                <p>Data Sorting:&nbsp;<a href="http://goo.gl/eTNaVJ" target="_blank" rel="external">link</a></p>
+                <p>Calculating PI Using MapReduce:&nbsp;<a href="http://goo.gl/My0BLP" target="_blank" rel="external">link</a></p>
+                <p>Matrix Multiplication</p>
+                <p>Implement different versions of WordCount, compare (data provided)</p>
+                <p>Inverted Indexing (data provided)</p>
+                <p>Page rank step by step (data provided)</p>
+                <p>LogProcess (data provided)</p>
+                <p>Top10Password (data provided)</p>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong>July 16-17 -  Pig basics and programming</strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <p>Pig Overview, installation, Latin:&nbsp;<a href="http://goo.gl/pRQlwi" target="_blank" rel="external">link</a></p>
+                <p>Pig all commands:&nbsp;<a href="http://goo.gl/nNRa7R" target="_blank" rel="external">link</a></p>
+                <p>Pig basic operations</p>
+                <p>-</p>
+                <p>Advanced Pig commands (like UDF)</p>
+                <br>
+                <h4>Labs</h4>
+                <p>Movie data analysis (data provided):&nbsp;<a href="http://goo.gl/1tF02n" target="_blank" rel="external">link</a></p>
+                <p>-</p>
+                <p>New York Stock Ticker Data (data provided)&nbsp;<a href="http://goo.gl/79vIf" target="_blank" rel="external">link</a></p>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong>July 18 -  Hive basics and programming</strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <p>Hive overview:&nbsp;<a href="http://goo.gl/Jxwgx" target="_blank" rel="external">link</a></p>
+                <p>Installation</p>
+                <p>Table</p>
+                <p>Loading data</p>
+                <p>Partitioning, bucketing, joins</p>
+                <br>
+                <h4>Labs</h4>
+                <p>Baseball statistics, find the player with highest runs for each year (data provided):&nbsp;<a href="http://goo.gl/CFkrhL" target="_blank" rel="external">link</a></p>
+                <p>Books dataset:&nbsp;<a href="http://goo.gl/1orhzl" target="_blank" rel="external">link</a></p>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong>July 21 -  HBASE basics and programming</strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <p>HBase Overview:&nbsp;<a href="http://goo.gl/VmU5iF" target="_blank" rel="external">link</a></p>
+                <p>Data model</p>
+                <p>Shell commands</p>
+                <h4>Labs</h4>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong>July 22-23 -  Mahout: machine learning and data mining algorithms and applications</strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <p>Mahout introduction</p>
+                <p>Installing Mahout manually (readings provided)</p>
+                <br>
+                <h4>Labs</h4>
+                <p>Running K-means (dataset Human Development Report: <a href="http://goo.gl/lyyz4" target="_blank" rel="external">link</a>): from Hadoop Cookbook</p>
+                <p>Visualizing K-means results (readings provided)</p>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong>July 24-25 -  Final project, presentation</strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <p>A lot of datasets:&nbsp;<a href="http://goo.gl/DJeGW" target="_blank" rel="external">link</a></p>
+                <p>Twitter sentiment analysis (batch data, mahout, etc)</p>
+                <p>Crime prediction (Sean)</p>
+                <p>Predicting demand for taxis:&nbsp;<a href="http://goo.gl/Rt3LyY" target="_blank" rel="external">link</a></p>
+                <p>Predict Closed Questions on Stack Overflow:&nbsp;<a href="http://goo.gl/6gl2E" target="_blank" rel="external">link</a></p>
+              </div>
+            </div>
+            <br>
+            <div class="panel panel-info">
+              <div class="panel-heading"><strong></strong></div>
+              <div class="panel-body">
+                <h4>Resources</h4>
+                <h4>Labs</h4>
+              </div>
+            </div>
+
           </div>
-          <ul class="list-group"></ul>
         </div>
-        <!--/span-->
-        <div class="sidebar-offcanvas col-xs-6 col-sm-3 col-md-9" role="navigation" id="sidebar">
-          <!--/.well -->
-          <h3>Useful websites</h3>
-          <p>Apache Hadoop Offical website:&nbsp;<a href="http://hadoop.apache.org/" target="_blank" rel="external">link</a></p>
-          <p>Yahoo! Hadoop Tutorial:&nbsp;<a href="https://developer.yahoo.com/hadoop/tutorial/index.html" target="_blank" rel="external">link</a></p>
-          <p>Big Data University:&nbsp;<a href="http://bigdatauniversity.com/" target="_blank" rel="external">link</a></p>
-          <p>Hadoop Tutorials:&nbsp;<a href="http://goo.gl/BekDDH" target="_blank" rel="external">link</a></p>
-
-          <h3>July 7 - Overview: Big Data Analytics, Big Data Platform, Career Path</h3>
-          <p>What is Big Data:&nbsp;<a href="http://goo.gl/kqiquW" target="_blank" rel="external">link</a></p>
-          <p>Linux Basics:&nbsp;<a href="http://goo.gl/FKW8Je" target="_blank" rel="external">link</a></p>
-          <p>Java Tutorial Videos from The New Boston:&nbsp;<a href="http://goo.gl/EvPbV" target="_blank" rel="external">link</a></p>
-          <p>Oracle Sun Java Tutorial:&nbsp;<a href="http://goo.gl/xeS59" target="_blank" rel="external">link</a></p>
-          <p>Java References:&nbsp;<a href="http://www.tutorialspoint.com/java/index.htm" target="_blank" rel="external">link</a></p>
-          <p>Big Data Landscape:&nbsp;<a href="http://goo.gl/pxdcQ" target="_blank" rel="external">link</a></p>
-          <br>
-          <p style="font-weight:900">Labs/hw</p>
-          <p>Linux Basic Operations:&nbsp;<a href="http://goo.gl/W1sZsn" target="_blank" rel="external">link</a></p>
-          <p>Set up developing environment:&nbsp;<a href="http://goo.gl/KMmwwr" target="_blank" rel="external">link</a></p>
-          <p>Watch videos:&nbsp;<a href="http://goo.gl/iuixq" target="_blank" rel="external">BBC link</a> watch: <a href="http://goo.gl/0LiL1D" target="_blank" rel="external">link</a></p>
-
-          <h3>July 8-9 - Hadoop Overview, Hadoop Distributed File System (HDFS), BigInsights, Amazon Web services (AWS)</h3>
-          <p>Hadoop structure overview:&nbsp;<a href="http://goo.gl/TGlhsO" target="_blank" rel="external">link</a></p>
-          <p>Hadoop Distributed File System:&nbsp;<a href="http://goo.gl/JwNsRk" target="_blank" rel="external">link</a></p>
-          <p>HDFS command line:&nbsp;<a href="http://goo.gl/ZTIIE3" target="_blank" rel="external">link</a></p>
-          <p>HDFS Java API:&nbsp;<a href="http://goo.gl/6X2LjH" target="_blank" rel="external">link</a></p>
-          <p>AWS Introduction:&nbsp;<a href="http://goo.gl/iT5iqd" target="_blank" rel="external">link</a></p>
-          <p>How to use EMR:&nbsp;<a href="http://goo.gl/0SxwzY" target="_blank" rel="external">link</a></p>
-          <p>How to use EMR:&nbsp;<a href="http://goo.gl/Gy72tq" target="_blank" rel="external">WordCount</a>&nbsp;pricing:<a href="http://goo.gl/yYSS4a" target="_blank" rel="external">link</a></p>
-          <br>
-          <p style="font-weight:900">Labs/hw</p>
-          <p>Create Elastic MapReduce cluster on AWS:&nbsp;<a href="http://goo.gl/31OeUr" target="_blank" rel="external">link</a></p>
-          <p>HDFS shell commands:&nbsp;<a href="http://goo.gl/Fl5zrY" target="_blank" rel="external">link</a></p>
-          <p>HDFS Java API:&nbsp;<a href="http://goo.gl/iZmAKs" target="_blank" rel="external">link</a></p>
-          <p>Running WordCount.jar on EMR using different datasets (data provided):&nbsp;<a href="http://goo.gl/jKOyk3" target="_blank" rel="external">link</a></p>
-          <p>Read Google File System paper:&nbsp;<a href="http://goo.gl/WeuPy4" target="_blank" rel="external">link</a></p>
-
-          <h3>July 10-11,14-15 -  MapReduce: basics, algorithm design, graph algorithms, data-intensive text processing, Amazon Elastic MapReduce (EMR)</h3>
-          <p>MapReduce Basics:&nbsp;<a href="http://goo.gl/N5Nl2c" target="_blank" rel="external">link</a></p>
-          <p>Walking through WordCount codes</p>
-          <p>Different WordCount Versions: WordCount with a combiner, etc:&nbsp;<a href="http://goo.gl/uu4P10" target="_blank" rel="external">link</a></p>
-          <p>-</p>
-          <p>How to debug Hadoop:&nbsp;<a href="http://goo.gl/WVLxZ" target="_blank" rel="external">link</a></p>
-          <p>MapReduce algorithm design:&nbsp;<a href="http://goo.gl/uu4P10" target="_blank" rel="external">link</a></p>
-          <p>Graph algorithms:&nbsp;<a href="http://goo.gl/uu4P10" target="_blank" rel="external">link</a></p>
-          <p>-</p>
-          <p>Custom data type:&nbsp;<a href="http://goo.gl/reWAk8" target="_blank" rel="external">link</a></p>
-          <p>Job Chaining (reading provided)</p>
-          <br>
-          <p>Labs/hw</p>
-          <p>Read MapReduce Paper:&nbsp;<a href="http://goo.gl/n0agd" target="_blank" rel="external">link</a></p>
-          <p>Calculating PI</p>
-          <p>Matrix Multiplication </p>
-          <p>Implement different versions of WordCount, compare (data provided)</p>
-          <p>-</p>
-          <p>Inverted Indexing (data provided)</p>
-          <p>-</p>
-          <p>Page rank step by step (data provided)</p>
-          <p>-</p>
-          <p>LogProcess (data provided)</p>
-          <p>Top10Password (data provided)</p>
-
-          <h3>July 16-17 -  Pig basics and programming</h3>
-          <p>Pig Overview, installation, Latin:&nbsp;<a href="http://goo.gl/pRQlwi" target="_blank" rel="external">link</a></p>
-          <p>Pig all commands:&nbsp;<a href="http://goo.gl/nNRa7R" target="_blank" rel="external">link</a></p>
-          <p>Pig basic operations</p>
-          <p>-</p>
-          <p>Advanced Pig commands (like UDF)</p>
-          <br>
-          <p>Labs/hw</p>
-          <p>Movie data analysis (data provided):&nbsp;<a href="http://goo.gl/1tF02n" target="_blank" rel="external">link</a></p>
-          <p>-</p>
-          <p>New York Stock Ticker Data (data provided)&nbsp;<a href="http://goo.gl/79vIf" target="_blank" rel="external">link</a></p>
-
-          <h3>July 18 -  Hive basics and programming</h3>
-          <p>Hive overview:&nbsp;<a href="http://goo.gl/Jxwgx" target="_blank" rel="external">link</a></p>
-          <p>Installation</p>
-          <p>Table</p>
-          <p>Loading data</p>
-          <p>Partitioning, bucketing, joins</p>
-          <br>
-          <p>Labs/hw</p>
-          <p>Baseball statistics, find the player with highest runs for each year (data provided):&nbsp;<a href="http://goo.gl/CFkrhL" target="_blank" rel="external">link</a></p>
-          <p>Books dataset:&nbsp;<a href="http://goo.gl/1orhzl" target="_blank" rel="external">link</a></p>
-
-          <h3>July 21 -  HBASE basics and programming</h3>
-          <p>HBase Overview:&nbsp;<a href="http://goo.gl/VmU5iF" target="_blank" rel="external">link</a></p>
-          <p>Data model</p>
-          <p>Shell commands</p>
-
-          <h3>July 22-23 -  Mahout: machine learning and data mining algorithms and applications</h3>
-          <p>Mahout introduction</p>
-          <p>Installing Mahout manually (readings provided)</p>
-          <br>
-          <p>Labs/hw</p>
-          <p>Running K-means (dataset Human Development Report: <a href="http://goo.gl/lyyz4" target="_blank" rel="external">link</a>): from Hadoop Cookbook</p>
-          <p>Visualizing K-means results (readings provided)</p>
-
-          <h3>July 24-25 -  Final project, presentation</h3>
-          <p>A lot of datasets:&nbsp;<a href="http://goo.gl/DJeGW" target="_blank" rel="external">link</a></p>
-          <p>Twitter sentiment analysis (batch data, mahout, etc)</p>
-          <p>Crime prediction (Sean)</p>
-          <p>Predicting demand for taxis:&nbsp;<a href="http://goo.gl/Rt3LyY" target="_blank" rel="external">link</a></p>
-          <p>Predict Closed Questions on Stack Overflow:&nbsp;<a href="http://goo.gl/6gl2E" target="_blank" rel="external">link</a></p>
-        </div>
-        <!--/span-->
       </div>
-      <!--/row-->
-      <hr>
-      <footer>
-        <p class="text-center">&copy; Mizzou 2014</p>
-        <p></p>
-      </footer>
+      
     </div>
-    <!--/.container-->
-    <script>
-      $(document).ready(function() {
-        $('[data-toggle=offcanvas]').click(function() {
-          $('.row-offcanvas').toggleClass('active');
-        });
-      });
-    </script>
+  
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -242,5 +209,4 @@
 
     </script>
   </body>
-
 </html>

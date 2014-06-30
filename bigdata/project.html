@@ -1,162 +1,108 @@
-<!doctype html>
-
-<html>
-  
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Project Ideas</title>
-    <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="/bigdata/css/bootstrap.min.css">
-    <script type="text/javascript" src="/bigdata/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/bigdata/js/bootstrap.min.js"></script>
-    <style type="text/css">
-      /*       * Style tweaks       * --------------------------------------------------       */
-      body {
-        padding-top: 70px;
-      }
-      footer {
-        padding-left: 15px;
-        padding-right: 15px;
-      }
-      /*       * Off Canvas       * --------------------------------------------------       */
-      @media screen and(max-width: 768px) {
-        .row-offcanvas {
-          position: relative;
-          -webkit-transition: all 0.25s ease-out;
-          -moz-transition: all 0.25s ease-out;
-          transition: all 0.25s ease-out;
-        }
-        .row-offcanvas-right .sidebar-offcanvas {
-          right: -50%;
-          /* 6 columns */
-        }
-        .row-offcanvas-left .sidebar-offcanvas {
-          left: -50%;
-          /* 6 columns */
-        }
-        .row-offcanvas-right.active {
-          right: 50%;
-          /* 6 columns */
-        }
-        .row-offcanvas-left.active {
-          left: 50%;
-          /* 6 columns */
-        }
-        .sidebar-offcanvas {
-          position: absolute;
-          top: 0;
-          width: 50%;
-          /* 6 columns */
-        }
-      }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Big Data Summer Course</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bigdata/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href="/bigdata/css/simple-sidebar.css" rel="stylesheet">
+    <link href="/bigdata/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
   </head>
-  
+
   <body>
-    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/bigdata">Big Data</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li>
-              <a href="/bigdata">Home</a>
-            </li>
-            <li>
-              <a href="contact.html">Contact</a>
-            </li>
-            <li class="active">
-              <a href="project.html">Project Ideas</a>
-            </li>
-            <li>
-              <a href="tutorials.html">Tutorials</a>
-            </li>
-            <li>
-              <a href="links.html">Links</a>
-            </li>
-          </ul>
-        </div>
-        <!-- /.nav-collapse -->
+  
+    <div id="wrapper">
+      
+      <!-- Sidebar -->
+      <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand"><a href="#">Mizzou BigData</a></li>
+          <li><a href="lectures.html">Lectures</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="project.html" class="active">Project Ideas</a></li>
+          <li><a href="tutorials.html">Tutorials</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="links.html">Links</a></li>
+        </ul>
       </div>
-      <!-- /.container -->
-    </div>
-    <!-- /.navbar -->
-    <div class="container">
-      <div class="row row-offcanvas row-offcanvas-right">
-        <!--/span-->
-        <div class="sidebar-offcanvas col-xs-6 col-sm-3 col-md-12" role="navigation" id="sidebar">
-          <!--/.well -->
-          <h4>1. HDFS Java API</h4>
-          <p>Use Java API to perform various file operations to HDFS, such as to access, read, write and delete.</p>
           
-          <h4>2. Calculating PI</h4>
-          <p>Use MapReduce algorithm to calculate PI.</p>
-
-          <h4>3. Matrix Multiplication</h4>
-          <p>Use MapReduce algorithm to perform matrix multiplication for large matrices.</p>
-
-          <h4>4. Different versions of WordCount</h4>
-          <p>As Jimmy's book says, use different kind of implementations to perform WordCount and compare the performances. Different implementations could be normal way, in-mapper-combiner, combiner, etc.</p>
-
-          <h4>5. Inveted Indexing</h4>
-          <p>It is actually about matrix operation. Use MapReduce algorithm to scan over text and build the inverted index.</p>
-
-          <h4>6. Page Rank</h4>
-          <p>A parallel Page Rank implementation using MapReduce algorithms. Data will be provided.</p>
-
-          <h4>7. LogProcess</h4>
-          <p>Use MaoReduce to analyze the logs. This project needs custom data types.</p>
-
-          <h4>8. Top 10 Password</h4>
-          <p>Find the most used 10 password in a dataset.</p>
-
-          <h4>9. Movie Data Analysis</h4>
-          <p>Mainly use Pig Latin to perform the analysis.</p>
-
-          <h4>10. New York Stock Ticker Data Analysis</h4>
-          <p>Mainly use advanced Pig Latin scripts like UDF.</p>
-
-          <h4>11. Baseball Statistics</h4>
-          <p>Designed for using Hive. Find the player with highest runs for each year.&nbsp;<a href="http://goo.gl/CFkrhL" target="_blank" rel="external">link</a></p>
-
-          <h4>12. Books Data Analysis</h4>
-          <p>Also designed for using Hive.&nbsp;<a href="http://goo.gl/1orhzl" target="_blank" rel="external">link</a></p>
-
-          <h4>13. K-means</h4>
-          <p>Running K-means (dataset Human Development Report: <a href="http://goo.gl/lyyz4" target="_blank" rel="external">link</a>): from Hadoop Cookbook. We can also use some tools to visualize the results as bonus.</p>
-
-          <h4>14. Twitter Sentiment Analysis</h4>
-          <p>Use Mahout to perform sentiment analysis on Twitter.</p>
-
-          <h4>15. Crime Prediction</h4>
-          <p>To predict crime based on historical data.</p>
-
-          <h4>16. Prediction Demand for Taxis</h4>
-          <p>Use historical data to predict demands for taxis.</p>
-
-          <h4>17. Predicting Closed Questions on StackOverFlow</h4>
-          <p>Use historical data to predict if a question on StackOverFlow will be closed. Designed for job chaining.</p>
+      <!-- Page content -->
+      <div id="page-content-wrapper">
+        <div class="content-header">
+          <h1>
+            Project Ideas
+          </h1>
         </div>
-        <!--/span-->
+        <!-- Keep all page content within the page-content inset div! -->
+        <div class="page-content inset" style="padding: 10px 35px;">
+          <div class="row">
+            <h4>1. HDFS Java API</h4>
+            <p>Use Java API to perform various file operations to HDFS, such as to access, read, write and delete.</p>
+            
+            <h4>2. Calculating PI</h4>
+            <p>Use MapReduce algorithm to calculate PI.</p>
+
+            <h4>3. Matrix Multiplication</h4>
+            <p>Use MapReduce algorithm to perform matrix multiplication for large matrices.</p>
+
+            <h4>4. Different versions of WordCount</h4>
+            <p>As Jimmy's book says, use different kind of implementations to perform WordCount and compare the performances. Different implementations could be normal way, in-mapper-combiner, combiner, etc.</p>
+
+            <h4>5. Inveted Indexing</h4>
+            <p>It is actually about matrix operation. Use MapReduce algorithm to scan over text and build the inverted index.</p>
+
+            <h4>6. Page Rank</h4>
+            <p>A parallel Page Rank implementation using MapReduce algorithms. Data will be provided.</p>
+
+            <h4>7. LogProcess</h4>
+            <p>Use MaoReduce to analyze the logs. This project needs custom data types.</p>
+
+            <h4>8. Top 10 Password</h4>
+            <p>Find the most used 10 password in a dataset.</p>
+
+            <h4>9. Movie Data Analysis</h4>
+            <p>Mainly use Pig Latin to perform the analysis.</p>
+
+            <h4>10. New York Stock Ticker Data Analysis</h4>
+            <p>Mainly use advanced Pig Latin scripts like UDF.</p>
+
+            <h4>11. Baseball Statistics</h4>
+            <p>Designed for using Hive. Find the player with highest runs for each year.&nbsp;<a href="http://goo.gl/CFkrhL" target="_blank" rel="external">link</a></p>
+
+            <h4>12. Books Data Analysis</h4>
+            <p>Also designed for using Hive.&nbsp;<a href="http://goo.gl/1orhzl" target="_blank" rel="external">link</a></p>
+
+            <h4>13. K-means</h4>
+            <p>Running K-means (dataset Human Development Report: <a href="http://goo.gl/lyyz4" target="_blank" rel="external">link</a>): from Hadoop Cookbook. We can also use some tools to visualize the results as bonus.</p>
+
+            <h4>14. Twitter Sentiment Analysis</h4>
+            <p>Use Mahout to perform sentiment analysis on Twitter.</p>
+
+            <h4>15. Crime Prediction</h4>
+            <p>To predict crime based on historical data.</p>
+
+            <h4>16. Prediction Demand for Taxis</h4>
+            <p>Use historical data to predict demands for taxis.</p>
+
+            <h4>17. Predicting Closed Questions on StackOverFlow</h4>
+            <p>Use historical data to predict if a question on StackOverFlow will be closed. Designed for job chaining.</p>
+            <br>
+          </div>
+        </div>
       </div>
-      <!--/row-->
-      <hr>
-      <footer>
-        <p class="text-center">&copy; Mizzou 2014</p>
-        <p></p>
-      </footer>
+      
     </div>
-    <!--/.container-->
-    <script>
-      $(document).ready(function() {
-        $('[data-toggle=offcanvas]').click(function() {
-          $('.row-offcanvas').toggleClass('active');
-        });
-      });
-    </script>
+  
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -168,5 +114,4 @@
 
     </script>
   </body>
-
 </html>
