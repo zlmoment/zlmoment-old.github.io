@@ -82,7 +82,8 @@
                 <p>Running Hadoop Examples:&nbsp;<a href="http://goo.gl/Ol00Yh" target="_blank" rel="external">link</a></p>
                 <p>July 9:</p>
                 <p>HDFS shell commands:&nbsp;<a href="http://goo.gl/Fl5zrY" target="_blank" rel="external">link</a></p>
-                <p>HDFS Java API:&nbsp;<a href="http://goo.gl/iZmAKs" target="_blank" rel="external">link</a>  Solution: <a href="http://goo.gl/930wKa" target="_blank" rel="external">link</a></p>
+                <p>HDFS Java API:&nbsp;<a href="http://goo.gl/iZmAKs" target="_blank" rel="external">link</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                  (Solution: <a href="http://goo.gl/930wKa" target="_blank" rel="external">link</a>)</p>
                 <p>Read Google File System paper:&nbsp;<a href="http://goo.gl/WeuPy4" target="_blank" rel="external">link</a></p>
               </div>
             </div>
@@ -102,8 +103,10 @@
                 <br>
                 <h4>Labs</h4>
                 <p>Read MapReduce Paper:&nbsp;<a href="http://goo.gl/n0agd" target="_blank" rel="external">link</a></p>
-                <p>Remove Duplicated Records:&nbsp;<a href="http://goo.gl/RbEBTZ" target="_blank" rel="external">link</a></p>
-                <p>Data Sorting:&nbsp;<a href="http://goo.gl/eTNaVJ" target="_blank" rel="external">link</a></p>
+                <p>Remove Duplicated Records:&nbsp;<a href="http://goo.gl/RbEBTZ" target="_blank" rel="external">link</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                  (Solution: <a href="javascript:getSolution();" target="_blank" rel="external">link</a>)</p>
+                <p>Data Sorting:&nbsp;<a href="http://goo.gl/eTNaVJ" target="_blank" rel="external">link</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                  (Solution: <a href="#">link</a>)</p>
                 <p>Calculating PI Using MapReduce:&nbsp;<a href="http://goo.gl/My0BLP" target="_blank" rel="external">link</a></p>
                 <p>Matrix Multiplication:&nbsp;<a href="http://goo.gl/dtTn6u" target="_blank" rel="external">link</a></p>
                 <p>Different Implementation of WordCount (data provided):&nbsp;<a href="http://goo.gl/v2B8Cz" target="_blank" rel="external">link</a></p>
@@ -208,6 +211,30 @@
       ga('create', 'UA-37227120-1', 'hackecho.com');
       ga('send', 'pageview');
 
+    </script>
+    <div class="modal fade myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">Ah oh...</h4>
+          </div>
+          <div class="modal-body">
+            <p>Work hard, solution will be provided at the end of class...</p>
+            <img src="http://media-cache-ec0.pinimg.com/474x/48/08/1e/48081e72a1d0c7af9b14b670494c2cde.jpg">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Got it</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+    <script>
+    function getSolution() {
+      $('.myModal').modal({
+        keyboard: false
+      })
+    }
     </script>
   </body>
 </html>
