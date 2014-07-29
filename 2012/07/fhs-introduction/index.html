@@ -93,6 +93,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -159,7 +161,7 @@
 <p>动态的程序数据等，见下文。</p>
 <h2 id="/usr目录结构">/usr目录结构</h2>
 <p>/usr通常是一个庞大的文件夹，其下的目录结构与根目录相似，但根目录中的文件多是系统级的文件，而/usr中是用户级的文件，一般与具体的系统无关。</p>
-<pre><code>usr最早是user的缩写，/usr的作用与现在的/home相同。而目前其通常被认为是 User System Resources 的缩写，其中通常是用户级的软件等，与存放系统级文件的根目录形成对比。
+<pre><code>usr最早是<span class="literal">user</span>的缩写，/usr的作用与现在的/home相同。而目前其通常被认为是 User System Resources 的缩写，其中通常是用户级的软件等，与存放系统级文件的根目录形成对比。
 </code></pre><p>应注意，程序的配置文件、动态的数据文件等都不会存放到/usr，所以除了安装、卸载软件外，一般无需修改/usr中的内容。说在系统正常运行时，/usr甚至可以被只读挂载。由于这一特性，/usr常被划分在单独的分区，甚至有时多台计算机可以共享一个/usr。</p>
 <p><strong>/usr/bin</strong></p>
 <p>多数日常应用程序存放的位置。如果/usr被放在单独的分区中，Linux的单用户模式不能访问/usr/bin，所以对系统至关重要的程序不应放在此文件夹中。</p>

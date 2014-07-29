@@ -80,6 +80,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -698,50 +700,50 @@ socket_listen(<span class="variable">$socket</span>);
 <span class="tag">&lt;<span class="title">script</span> <span class="attribute">language</span>=<span class="value">"javascript"</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span>&gt;</span><span class="javascript">
     <span class="keyword">var</span> wsUri = <span class="string">"ws://echo.websocket.org/"</span>;
     <span class="keyword">var</span> output;
-    <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">()</span> {</span>
-        output = document.getElementById(<span class="string">"output"</span>);
+    <span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">()</span> </span>{
+        output = <span class="built_in">document</span>.getElementById(<span class="string">"output"</span>);
         testWebSocket();
     }
-    <span class="function"><span class="keyword">function</span> <span class="title">testWebSocket</span><span class="params">()</span> {</span>
+    <span class="function"><span class="keyword">function</span> <span class="title">testWebSocket</span><span class="params">()</span> </span>{
         websocket = <span class="keyword">new</span> WebSocket(wsUri);
-        websocket.onopen = <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> {</span>
+        websocket.onopen = <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> </span>{
             onOpen(evt)
         };
-        websocket.onclose = <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> {</span>
+        websocket.onclose = <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> </span>{
             onClose(evt)
         };
-        websocket.onmessage = <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> {</span>
+        websocket.onmessage = <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> </span>{
             onMessage(evt)
         };
-        websocket.onerror = <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> {</span>
+        websocket.onerror = <span class="function"><span class="keyword">function</span><span class="params">(evt)</span> </span>{
             onError(evt)
         };
     }
-    <span class="function"><span class="keyword">function</span> <span class="title">onOpen</span><span class="params">(evt)</span> {</span>
+    <span class="function"><span class="keyword">function</span> <span class="title">onOpen</span><span class="params">(evt)</span> </span>{
         writeToScreen(<span class="string">"CONNECTED"</span>);
         doSend(<span class="string">"WebSocket rocks"</span>);
     }
-    <span class="function"><span class="keyword">function</span> <span class="title">onClose</span><span class="params">(evt)</span> {</span>
+    <span class="function"><span class="keyword">function</span> <span class="title">onClose</span><span class="params">(evt)</span> </span>{
         writeToScreen(<span class="string">"DISCONNECTED"</span>);
     }
-    <span class="function"><span class="keyword">function</span> <span class="title">onMessage</span><span class="params">(evt)</span> {</span>
+    <span class="function"><span class="keyword">function</span> <span class="title">onMessage</span><span class="params">(evt)</span> </span>{
         writeToScreen(<span class="string">'&lt;span style="color: blue;"&gt;RESPONSE: '</span> + evt.data + <span class="string">'&lt;/span&gt;'</span>);
         websocket.close();
     }
-    <span class="function"><span class="keyword">function</span> <span class="title">onError</span><span class="params">(evt)</span> {</span>
+    <span class="function"><span class="keyword">function</span> <span class="title">onError</span><span class="params">(evt)</span> </span>{
         writeToScreen(<span class="string">'&lt;span style="color: red;"&gt;ERROR:&lt;/span&gt; '</span> + evt.data);
     }
-    <span class="function"><span class="keyword">function</span> <span class="title">doSend</span><span class="params">(message)</span> {</span>
+    <span class="function"><span class="keyword">function</span> <span class="title">doSend</span><span class="params">(message)</span> </span>{
         writeToScreen(<span class="string">"SENT: "</span> + message);
         websocket.send(message);
     }
-    <span class="function"><span class="keyword">function</span> <span class="title">writeToScreen</span><span class="params">(message)</span> {</span>
-        <span class="keyword">var</span> pre = document.createElement(<span class="string">"p"</span>);
+    <span class="function"><span class="keyword">function</span> <span class="title">writeToScreen</span><span class="params">(message)</span> </span>{
+        <span class="keyword">var</span> pre = <span class="built_in">document</span>.createElement(<span class="string">"p"</span>);
         pre.style.wordWrap = <span class="string">"break-word"</span>;
         pre.innerHTML = message;
         output.appendChild(pre);
     }
-    window.addEventListener(<span class="string">"load"</span>, init, <span class="literal">false</span>);
+    <span class="built_in">window</span>.addEventListener(<span class="string">"load"</span>, init, <span class="literal">false</span>);
 </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 <span class="tag">&lt;<span class="title">h2</span>&gt;</span>
     WebSocket Test
@@ -777,7 +779,7 @@ ob_implicit_flush();
             <span class="keyword">if</span>(<span class="variable">$bytes</span>==<span class="number">0</span>){ disconnect(<span class="variable">$socket</span>); }
             <span class="keyword">else</span>{
                 <span class="variable">$user</span> = getuserbysocket(<span class="variable">$socket</span>);
-                <span class="keyword">if</span>(!<span class="variable">$user</span>-&gt;handshake){ dohandshake(<span class="variable">$user</span>,<span class="variable">$buffer</span>); }
+                <span class="keyword">if</span>(!<span class="variable">$user</span><span class="variable">-&gt;handshake</span>){ dohandshake(<span class="variable">$user</span>,<span class="variable">$buffer</span>); }
                 <span class="keyword">else</span>{ process(<span class="variable">$user</span>,<span class="variable">$buffer</span>); }
             }
         }
@@ -785,19 +787,19 @@ ob_implicit_flush();
 }
 
 <span class="comment">//---------------------------------------------------------------</span>
-<span class="function"><span class="keyword">function</span> <span class="title">process</span><span class="params">(<span class="variable">$user</span>,<span class="variable">$msg</span>)</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">process</span><span class="params">(<span class="variable">$user</span>,<span class="variable">$msg</span>)</span></span>{
     <span class="variable">$action</span> = unwrap(<span class="variable">$msg</span>);
     say(<span class="string">"&lt; "</span>.<span class="variable">$action</span>);
-    send(<span class="variable">$user</span>-&gt;socket,<span class="string">"lzy "</span>.<span class="variable">$action</span>);
+    send(<span class="variable">$user</span><span class="variable">-&gt;socket</span>,<span class="string">"lzy "</span>.<span class="variable">$action</span>);
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">send</span><span class="params">(<span class="variable">$client</span>,<span class="variable">$msg</span>)</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">send</span><span class="params">(<span class="variable">$client</span>,<span class="variable">$msg</span>)</span></span>{
     say(<span class="string">"&gt; "</span>.<span class="variable">$msg</span>);
     <span class="variable">$msg</span> = wrap(<span class="variable">$msg</span>);
     socket_write(<span class="variable">$client</span>,<span class="variable">$msg</span>,strlen(<span class="variable">$msg</span>));
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">WebSocket</span><span class="params">(<span class="variable">$address</span>,<span class="variable">$port</span>)</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">WebSocket</span><span class="params">(<span class="variable">$address</span>,<span class="variable">$port</span>)</span></span>{
     <span class="variable">$master</span>=socket_create(AF_INET, SOCK_STREAM, SOL_TCP)     <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">"socket_create() failed"</span>);
     socket_set_option(<span class="variable">$master</span>, SOL_SOCKET, SO_REUSEADDR, <span class="number">1</span>)  <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">"socket_option() failed"</span>);
     socket_bind(<span class="variable">$master</span>, <span class="variable">$address</span>, <span class="variable">$port</span>)                    <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">"socket_bind() failed"</span>);
@@ -808,22 +810,22 @@ ob_implicit_flush();
     <span class="keyword">return</span> <span class="variable">$master</span>;
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">connect</span><span class="params">(<span class="variable">$socket</span>)</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">connect</span><span class="params">(<span class="variable">$socket</span>)</span></span>{
     <span class="keyword">global</span> <span class="variable">$sockets</span>,<span class="variable">$users</span>;
     <span class="variable">$user</span> = <span class="keyword">new</span> User();
-    <span class="variable">$user</span>-&gt;id = uniqid();
-    <span class="variable">$user</span>-&gt;socket = <span class="variable">$socket</span>;
+    <span class="variable">$user</span><span class="variable">-&gt;id</span> = uniqid();
+    <span class="variable">$user</span><span class="variable">-&gt;socket</span> = <span class="variable">$socket</span>;
     array_push(<span class="variable">$users</span>,<span class="variable">$user</span>);
     array_push(<span class="variable">$sockets</span>,<span class="variable">$socket</span>);
     console(<span class="variable">$socket</span>.<span class="string">" CONNECTED!"</span>);
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">disconnect</span><span class="params">(<span class="variable">$socket</span>)</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">disconnect</span><span class="params">(<span class="variable">$socket</span>)</span></span>{
     <span class="keyword">global</span> <span class="variable">$sockets</span>,<span class="variable">$users</span>;
     <span class="variable">$found</span>=<span class="keyword">null</span>;
     <span class="variable">$n</span>=count(<span class="variable">$users</span>);
     <span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>;<span class="variable">$i</span>&lt;<span class="variable">$n</span>;<span class="variable">$i</span>++){
-        <span class="keyword">if</span>(<span class="variable">$users</span>[<span class="variable">$i</span>]-&gt;socket==<span class="variable">$socket</span>){ <span class="variable">$found</span>=<span class="variable">$i</span>; <span class="keyword">break</span>; }
+        <span class="keyword">if</span>(<span class="variable">$users</span>[<span class="variable">$i</span>]<span class="variable">-&gt;socket</span>==<span class="variable">$socket</span>){ <span class="variable">$found</span>=<span class="variable">$i</span>; <span class="keyword">break</span>; }
     }
     <span class="keyword">if</span>(!is_null(<span class="variable">$found</span>)){ array_splice(<span class="variable">$users</span>,<span class="variable">$found</span>,<span class="number">1</span>); }
     <span class="variable">$index</span> = array_search(<span class="variable">$socket</span>,<span class="variable">$sockets</span>);
@@ -832,7 +834,7 @@ ob_implicit_flush();
     <span class="keyword">if</span>(<span class="variable">$index</span>&gt;=<span class="number">0</span>){ array_splice(<span class="variable">$sockets</span>,<span class="variable">$index</span>,<span class="number">1</span>); }
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">dohandshake</span><span class="params">(<span class="variable">$user</span>,<span class="variable">$buffer</span>)</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">dohandshake</span><span class="params">(<span class="variable">$user</span>,<span class="variable">$buffer</span>)</span></span>{
     console(<span class="string">"\nRequesting handshake..."</span>);
     console(<span class="variable">$buffer</span>);
     <span class="keyword">list</span>(<span class="variable">$resource</span>,<span class="variable">$host</span>,<span class="variable">$origin</span>,<span class="variable">$strkey1</span>,<span class="variable">$strkey2</span>,<span class="variable">$data</span>) = getheaders(<span class="variable">$buffer</span>);
@@ -849,7 +851,7 @@ ob_implicit_flush();
     <span class="variable">$spaces</span>= strlen(preg_replace(<span class="variable">$pattern</span>, <span class="variable">$replacement</span>, <span class="variable">$strkey2</span>));
 
     <span class="keyword">if</span> (<span class="variable">$spaces</span>== || <span class="variable">$spaces</span>== || <span class="variable">$numkey</span>% <span class="variable">$spaces</span>!= || <span class="variable">$numkey</span>% <span class="variable">$spaces</span>!= <span class="number">0</span>) {
-        socket_close(<span class="variable">$user</span>-&gt;socket);
+        socket_close(<span class="variable">$user</span><span class="variable">-&gt;socket</span>);
         console(<span class="string">'failed'</span>);
         <span class="keyword">return</span> <span class="keyword">false</span>;
     }
@@ -868,14 +870,14 @@ ob_implicit_flush();
     <span class="string">"\r\n"</span> .
     <span class="variable">$hash_data</span>;
 
-    socket_write(<span class="variable">$user</span>-&gt;socket,<span class="variable">$upgrade</span>.chr(<span class="number">0</span>),strlen(<span class="variable">$upgrade</span>.chr(<span class="number">0</span>)));
-    <span class="variable">$user</span>-&gt;handshake=<span class="keyword">true</span>;
+    socket_write(<span class="variable">$user</span><span class="variable">-&gt;socket</span>,<span class="variable">$upgrade</span>.chr(<span class="number">0</span>),strlen(<span class="variable">$upgrade</span>.chr(<span class="number">0</span>)));
+    <span class="variable">$user</span><span class="variable">-&gt;handshake</span>=<span class="keyword">true</span>;
     console(<span class="variable">$upgrade</span>);
     console(<span class="string">"Done handshaking..."</span>);
     <span class="keyword">return</span> <span class="keyword">true</span>;
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">getheaders</span><span class="params">(<span class="variable">$req</span>)</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">getheaders</span><span class="params">(<span class="variable">$req</span>)</span></span>{
     <span class="variable">$r</span>=<span class="variable">$h</span>=<span class="variable">$o</span>=<span class="keyword">null</span>;
     <span class="keyword">if</span>(preg_match(<span class="string">"/GET (.*) HTTP/"</span>   ,<span class="variable">$req</span>,<span class="variable">$match</span>)){ <span class="variable">$r</span>=<span class="variable">$match</span>[<span class="number">1</span>]; }
     <span class="keyword">if</span>(preg_match(<span class="string">"/Host: (.*)\r\n/"</span>  ,<span class="variable">$req</span>,<span class="variable">$match</span>)){ <span class="variable">$h</span>=<span class="variable">$match</span>[<span class="number">1</span>]; }
@@ -886,21 +888,21 @@ ob_implicit_flush();
     <span class="keyword">return</span> <span class="keyword">array</span>(<span class="variable">$r</span>,<span class="variable">$h</span>,<span class="variable">$o</span>,<span class="variable">$key1</span>,<span class="variable">$key2</span>,<span class="variable">$data</span>);
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">getuserbysocket</span><span class="params">(<span class="variable">$socket</span>)</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">getuserbysocket</span><span class="params">(<span class="variable">$socket</span>)</span></span>{
     <span class="keyword">global</span> <span class="variable">$users</span>;
     <span class="variable">$found</span>=<span class="keyword">null</span>;
     <span class="keyword">foreach</span>(<span class="variable">$users</span> <span class="keyword">as</span> <span class="variable">$user</span>){
-        <span class="keyword">if</span>(<span class="variable">$user</span>-&gt;socket==<span class="variable">$socket</span>){ <span class="variable">$found</span>=<span class="variable">$user</span>; <span class="keyword">break</span>; }
+        <span class="keyword">if</span>(<span class="variable">$user</span><span class="variable">-&gt;socket</span>==<span class="variable">$socket</span>){ <span class="variable">$found</span>=<span class="variable">$user</span>; <span class="keyword">break</span>; }
     }
     <span class="keyword">return</span> <span class="variable">$found</span>;
 }
 
-<span class="function"><span class="keyword">function</span>     <span class="title">say</span><span class="params">(<span class="variable">$msg</span>=<span class="string">""</span>)</span>{</span> <span class="keyword">echo</span> <span class="variable">$msg</span>.<span class="string">"\n"</span>; }
-<span class="function"><span class="keyword">function</span>    <span class="title">wrap</span><span class="params">(<span class="variable">$msg</span>=<span class="string">""</span>)</span>{</span> <span class="keyword">return</span> chr(<span class="number">0</span>).<span class="variable">$msg</span>.chr(<span class="number">255</span>); }
-<span class="function"><span class="keyword">function</span>  <span class="title">unwrap</span><span class="params">(<span class="variable">$msg</span>=<span class="string">""</span>)</span>{</span> <span class="keyword">return</span> substr(<span class="variable">$msg</span>,<span class="number">1</span>,strlen(<span class="variable">$msg</span>)-<span class="number">2</span>); }
-<span class="function"><span class="keyword">function</span> <span class="title">console</span><span class="params">(<span class="variable">$msg</span>=<span class="string">""</span>)</span>{</span> <span class="keyword">global</span> <span class="variable">$debug</span>; <span class="keyword">if</span>(<span class="variable">$debug</span>){ <span class="keyword">echo</span> <span class="variable">$msg</span>.<span class="string">"\n"</span>; } }
+<span class="function"><span class="keyword">function</span>     <span class="title">say</span><span class="params">(<span class="variable">$msg</span>=<span class="string">""</span>)</span></span>{ <span class="keyword">echo</span> <span class="variable">$msg</span>.<span class="string">"\n"</span>; }
+<span class="function"><span class="keyword">function</span>    <span class="title">wrap</span><span class="params">(<span class="variable">$msg</span>=<span class="string">""</span>)</span></span>{ <span class="keyword">return</span> chr(<span class="number">0</span>).<span class="variable">$msg</span>.chr(<span class="number">255</span>); }
+<span class="function"><span class="keyword">function</span>  <span class="title">unwrap</span><span class="params">(<span class="variable">$msg</span>=<span class="string">""</span>)</span></span>{ <span class="keyword">return</span> substr(<span class="variable">$msg</span>,<span class="number">1</span>,strlen(<span class="variable">$msg</span>)-<span class="number">2</span>); }
+<span class="function"><span class="keyword">function</span> <span class="title">console</span><span class="params">(<span class="variable">$msg</span>=<span class="string">""</span>)</span></span>{ <span class="keyword">global</span> <span class="variable">$debug</span>; <span class="keyword">if</span>(<span class="variable">$debug</span>){ <span class="keyword">echo</span> <span class="variable">$msg</span>.<span class="string">"\n"</span>; } }
 
-<span class="class"><span class="keyword">class</span> <span class="title">User</span>{</span>
+<span class="class"><span class="keyword">class</span> <span class="title">User</span></span>{
     <span class="keyword">var</span> <span class="variable">$id</span>;
     <span class="keyword">var</span> <span class="variable">$socket</span>;
     <span class="keyword">var</span> <span class="variable">$handshake</span>;
@@ -914,28 +916,28 @@ ob_implicit_flush();
 <span class="tag">&lt;<span class="title">title</span>&gt;</span>WebSocket<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">style</span>&gt;</span><span class="css">
-<span class="tag">html</span>,<span class="tag">body</span><span class="rules">{<span class="rule"><span class="attribute">font</span>:<span class="value">normal <span class="number">0.9</span>em arial,helvetica</span></span>;<span class="rule">}</span></span>
-<span class="id">#log</span> <span class="rules">{<span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">440</span>px</span></span>; <span class="rule"><span class="attribute">height</span>:<span class="value"><span class="number">200</span>px</span></span>; <span class="rule"><span class="attribute">border</span>:<span class="value"><span class="number">1</span>px solid <span class="hexcolor">#7F9DB9</span></span></span>; <span class="rule"><span class="attribute">overflow</span>:<span class="value">auto</span></span>;<span class="rule">}</span></span>
-<span class="id">#msg</span> <span class="rules">{<span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">330</span>px</span></span>;<span class="rule">}</span></span>
+<span class="tag">html</span>,<span class="tag">body</span><span class="rules">{<span class="rule"><span class="attribute">font</span>:<span class="value">normal <span class="number">0.9em</span> arial,helvetica</span></span>;<span class="rule">}</span></span>
+<span class="id">#log</span> <span class="rules">{<span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">440px</span></span></span>; <span class="rule"><span class="attribute">height</span>:<span class="value"><span class="number">200px</span></span></span>; <span class="rule"><span class="attribute">border</span>:<span class="value"><span class="number">1px</span> solid <span class="hexcolor">#7F9DB9</span></span></span>; <span class="rule"><span class="attribute">overflow</span>:<span class="value">auto</span></span>;<span class="rule">}</span></span>
+<span class="id">#msg</span> <span class="rules">{<span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">330px</span></span></span>;<span class="rule">}</span></span>
 </span><span class="tag">&lt;/<span class="title">style</span>&gt;</span>
 
 <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
 <span class="keyword">var</span> socket;
 
-<span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">()</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">init</span><span class="params">()</span></span>{
     <span class="keyword">var</span> host = <span class="string">"ws://localhost:12345/websocket/server.php"</span>;
     <span class="keyword">try</span>{
         socket = <span class="keyword">new</span> WebSocket(host);
         log(<span class="string">'WebSocket - status '</span>+socket.readyState);
-        socket.onopen    = <span class="function"><span class="keyword">function</span><span class="params">(msg)</span>{</span> log(<span class="string">"Welcome - status "</span>+<span class="keyword">this</span>.readyState); };
-        socket.onmessage = <span class="function"><span class="keyword">function</span><span class="params">(msg)</span>{</span> log(<span class="string">"Received: "</span>+msg.data); };
-        socket.onclose   = <span class="function"><span class="keyword">function</span><span class="params">(msg)</span>{</span> log(<span class="string">"Disconnected - status "</span>+<span class="keyword">this</span>.readyState); };
+        socket.onopen    = <span class="function"><span class="keyword">function</span><span class="params">(msg)</span></span>{ log(<span class="string">"Welcome - status "</span>+<span class="keyword">this</span>.readyState); };
+        socket.onmessage = <span class="function"><span class="keyword">function</span><span class="params">(msg)</span></span>{ log(<span class="string">"Received: "</span>+msg.data); };
+        socket.onclose   = <span class="function"><span class="keyword">function</span><span class="params">(msg)</span></span>{ log(<span class="string">"Disconnected - status "</span>+<span class="keyword">this</span>.readyState); };
     }
     <span class="keyword">catch</span>(ex){ log(ex); }
     $(<span class="string">"msg"</span>).focus();
 }
 
-<span class="function"><span class="keyword">function</span> <span class="title">send</span><span class="params">()</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">send</span><span class="params">()</span></span>{
     <span class="keyword">var</span> txt,msg;
     txt = $(<span class="string">"msg"</span>);
     msg = txt.value;
@@ -944,16 +946,16 @@ ob_implicit_flush();
     txt.focus();
     <span class="keyword">try</span>{ socket.send(msg); log(<span class="string">'Sent: '</span>+msg); } <span class="keyword">catch</span>(ex){ log(ex); }
 }
-<span class="function"><span class="keyword">function</span> <span class="title">quit</span><span class="params">()</span>{</span>
+<span class="function"><span class="keyword">function</span> <span class="title">quit</span><span class="params">()</span></span>{
     log(<span class="string">"Goodbye!"</span>);
     socket.close();
     socket=<span class="literal">null</span>;
 }
 
 <span class="comment">// Utilities</span>
-<span class="function"><span class="keyword">function</span> <span class="title">$</span><span class="params">(id)</span>{</span> <span class="keyword">return</span> document.getElementById(id); }
-<span class="function"><span class="keyword">function</span> <span class="title">log</span><span class="params">(msg)</span>{</span> $(<span class="string">"log"</span>).innerHTML+=<span class="string">"&lt;br&gt;"</span>+msg; }
-<span class="function"><span class="keyword">function</span> <span class="title">onkey</span><span class="params">(event)</span>{</span> <span class="keyword">if</span>(event.keyCode==<span class="number">13</span>){ send(); } }
+<span class="function"><span class="keyword">function</span> <span class="title">$</span><span class="params">(id)</span></span>{ <span class="keyword">return</span> <span class="built_in">document</span>.getElementById(id); }
+<span class="function"><span class="keyword">function</span> <span class="title">log</span><span class="params">(msg)</span></span>{ $(<span class="string">"log"</span>).innerHTML+=<span class="string">"&lt;br&gt;"</span>+msg; }
+<span class="function"><span class="keyword">function</span> <span class="title">onkey</span><span class="params">(event)</span></span>{ <span class="keyword">if</span>(event.keyCode==<span class="number">13</span>){ send(); } }
 </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
 
 <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
@@ -1105,12 +1107,12 @@ ob_implicit_flush();
         <p>下载了一个Python改写的C语言100例，结果原作者使用的编码都是GBK，而我现在使用的Sublime Text 2和Textmate等都不支持GBK编码，导致打开全是乱码。网上也没有找到相应的转换工具，只好另辟蹊径。</p>
 <p>关键时刻还是 Terminal 给力，介绍一条shell命令：iconv</p>
 <p>就不细细介绍了，看下面的例子，就都懂了：</p>
-<pre><code>iconv --list <span class="preprocessor"># 显示可识别的编码名称</span>
-iconv --list &gt;./infomation<span class="preprocessor">.log</span> <span class="preprocessor"># 显示可识别的编码名称，将信息存入infomation.log文件中</span>
-iconv -f GB2312 -t UTF-<span class="number">8</span> a<span class="preprocessor">.html</span> &gt; b<span class="preprocessor">.html</span> <span class="preprocessor"># 转换GB2312编码的文件a.html为UTF-8编码，存入b.html</span>
-iconv -f GB2312 -t BIG5 a<span class="preprocessor">.html</span> &gt; b<span class="preprocessor">.html</span> <span class="preprocessor"># 转换GB2312编码的文件a.html为BIG5编码，存入b.html</span>
+<pre><code>iconv --list <span class="comment"># 显示可识别的编码名称</span>
+iconv --list &gt;./infomation.log <span class="comment"># 显示可识别的编码名称，将信息存入infomation.log文件中</span>
+<span class="input"><span class="prompt">iconv -f GB2312 -t UTF-8 a.html &gt;</span> b.html <span class="comment"># 转换GB2312编码的文件a.html为UTF-8编码，存入b.html</span></span>
+<span class="input"><span class="prompt">iconv -f GB2312 -t BIG5 a.html &gt;</span> b.html <span class="comment"># 转换GB2312编码的文件a.html为BIG5编码，存入b.html</span></span>
 </code></pre><p>进入正题，我们先cd进入保存所有文件的文件夹，然后执行下列命令：</p>
-<pre><code>find <span class="subst">*</span><span class="built_in">.</span>py <span class="attribute">-exec</span> sh <span class="attribute">-c</span> <span class="string">"iconv -f GB18030 -t UTF8 {} &gt; {}.py"</span> <span class="subst">\</span>;  
+<pre><code><span class="keyword">find</span> *.<span class="keyword">py</span> -exec <span class="keyword">sh</span> -<span class="keyword">c</span> <span class="string">"iconv -f GB18030 -t UTF8 {} &gt; {}.py"</span> \;  
 </code></pre>
       
     </div>
@@ -1298,8 +1300,8 @@ iconv -f GB2312 -t BIG5 a<span class="preprocessor">.html</span> &gt; b<span cla
 <span class="class"><span class="keyword">define</span></span>(‘FTP_PASS’, ‘ftp密码’);
 </code></pre><p>当然我们更想从根本上解决问题，那么第二种个方法，就要从用户组下手了。</p>
 <p>针对有高级管理权限的用户，如服务器或 VPS 等管理员，只需将 PHP 和网站目录设置成同一个用户组即可。一般是 www 用户组跑 PHP，所以将网站所在目录内所有文件夹和文件设置成www用户组即可，输入命令：</p>
-<pre><code>chown <span class="attribute">-R</span> www /home/wwwroot  
-chgrp <span class="attribute">-R</span> www /home/wwwroot  
+<pre><code>chown -R www <span class="regexp">/home/</span>wwwroot  
+chgrp -R www <span class="regexp">/home/</span>wwwroot  
 </code></pre><p>记住将上述命令中的网站目录路径改为自己的路径即可。</p>
 
       

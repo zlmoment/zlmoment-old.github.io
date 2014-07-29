@@ -84,6 +84,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -119,8 +121,8 @@
 <span class="class"><span class="keyword">define</span></span>(‘FTP_PASS’, ‘ftp密码’);
 </code></pre><p>当然我们更想从根本上解决问题，那么第二种个方法，就要从用户组下手了。</p>
 <p>针对有高级管理权限的用户，如服务器或 VPS 等管理员，只需将 PHP 和网站目录设置成同一个用户组即可。一般是 www 用户组跑 PHP，所以将网站所在目录内所有文件夹和文件设置成www用户组即可，输入命令：</p>
-<pre><code>chown <span class="attribute">-R</span> www /home/wwwroot  
-chgrp <span class="attribute">-R</span> www /home/wwwroot  
+<pre><code>chown -R www <span class="regexp">/home/</span>wwwroot  
+chgrp -R www <span class="regexp">/home/</span>wwwroot  
 </code></pre><p>记住将上述命令中的网站目录路径改为自己的路径即可。</p>
 
       

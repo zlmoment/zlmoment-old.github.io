@@ -101,6 +101,8 @@ MPI函数返回出错代码或 MPI_SUCCESS .">
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -130,12 +132,12 @@ MPI函数返回出错代码或 MPI_SUCCESS .">
 <p>在MPI中，数据被显式由从一个进程发送给另一个进程，一个称为发送方，一个称为接收方。</p>
 <h3 id="Hello_World">Hello World</h3>
 <p>让我们从一个最简单的MPI Hello World程序开始。</p>
-<pre><code><span class="preprocessor">#include "mpi.h"</span>
-<span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<pre><code><span class="preprocessor">#<span class="keyword">include</span> "mpi.h"</span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;stdio.h&gt;</span>
 <span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[] )
 {
     MPI_Init( &amp;argc, &amp;argv );
-    printf( <span class="string">"Hello, world!\n"</span> );
+    <span class="built_in">printf</span>( <span class="string">"Hello, world!\n"</span> );
     MPI_Finalize();
     <span class="keyword">return</span> <span class="number">0</span>;
 }
@@ -185,15 +187,15 @@ int MPI<span class="emphasis">_Comm_</span>size(MPI<span class="emphasis">_Comm 
 int MPI<span class="emphasis">_Comm_</span>rank(MPI<span class="emphasis">_Comm comm, int *rank);</span>
 </code></pre><p>下面我们用改进版的Hello World来看一下其用法：</p>
 <pre><code>:::C
-<span class="comment">#include &lt;stdio.h&gt;</span>
-<span class="comment">#include "mpi.h"</span>
-<span class="keyword">int</span> main( <span class="keyword">int</span> argc, char <span class="variable">*argv</span>[] )
+<span class="preprocessor">#<span class="keyword">include</span> &lt;stdio.h&gt;</span>
+<span class="preprocessor">#<span class="keyword">include</span> "mpi.h"</span>
+<span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[] )
 {
     <span class="keyword">int</span> rank, size;
     MPI_Init( &amp;argc, &amp;argv );
     MPI_Comm_rank( MPI_COMM_WORLD, &amp;rank );
     MPI_Comm_size( MPI_COMM_WORLD, &amp;size );
-    <span class="keyword">printf</span>(<span class="string">"I am <span class="variable">%d</span> of <span class="variable">%d</span>\n"</span>, rank, size );
+    <span class="built_in">printf</span>(<span class="string">"I am %d of %d\n"</span>, rank, size );
     MPI_Finalize();
     <span class="keyword">return</span> <span class="number">0</span>;
 }
@@ -219,9 +221,9 @@ I am 3 of 4
 </ul>
 <p>让我们通过一个程序来学习消息的发送与接收。</p>
 <pre><code>:::C
-<span class="preprocessor">#include &lt;stdio.h&gt;</span>
-<span class="preprocessor">#include &lt;string.h&gt;</span>
-<span class="preprocessor">#include "mpi.h"</span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;stdio.h&gt;</span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;string.h&gt;</span>
+<span class="preprocessor">#<span class="keyword">include</span> "mpi.h"</span>
 
 <span class="keyword">int</span> main(<span class="keyword">int</span> argc,<span class="keyword">char</span> *argv[])
 {

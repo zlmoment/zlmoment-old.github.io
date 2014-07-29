@@ -85,6 +85,8 @@ First, when you create the cluster, you need to change a configuration. Under th
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -123,7 +125,7 @@ First, when you create the cluster, you need to change a configuration. Under th
 <p>In the overview of the cluster, you can see a Master Public DNS address, which is the address you need to connect to the masternode.</p>
 <p><img src="/images/2014/05/emr-2.png" alt="emr-2"></p>
 <p>Assuem your pem file is EMR.pem, you can use the following command to connect to the masternode:</p>
-<pre><code>ssh hadoop@ec2-<span class="number">54</span>-<span class="number">187</span>-<span class="number">3</span>-<span class="number">164.</span>us-west-<span class="number">2.</span>compute<span class="preprocessor">.amazonaws</span><span class="preprocessor">.com</span> -i EMR<span class="preprocessor">.pem</span>
+<pre><code><span class="title">ssh</span> hadoop<span class="variable">@ec2</span>-<span class="number">54</span>-<span class="number">187</span>-<span class="number">3</span>-<span class="number">164</span>.us-west-<span class="number">2</span>.compute.amazonaws.com -i EMR.pem
 </code></pre><p>Notice that the username you use is ‘hadoop’.</p>
 <p>Now you have connected to the masternode.</p>
 <p><img src="/images/2014/05/emr-3.png" alt="emr-3"></p>

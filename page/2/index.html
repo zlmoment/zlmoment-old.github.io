@@ -80,6 +80,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -120,23 +122,23 @@
 <p>Under the UNIX shell, make is a command generator. The makefile is a description file which creates a sequence of commands for execution by the UNIX shell.</p>
 <p>Generally, a program is built from one or more files and each of these files may have other files as prerequisites in turn. In a makefile, the prerequisites should be carefully stated. There are two important types of lines in a description file. A dependency line or rule line contains a colon, and a command line always starts <strong>with a tab</strong>.</p>
 <p>To the left of the colon on the dependency line is a target; to the right of the colon are the target’s prerequisites. If myprog has prerequisites a.c and b.c, we have</p>
-<pre><code> myprog :  a<span class="preprocessor">.c</span>  b<span class="preprocessor">.c</span>
+<pre><code> myprog :  a.<span class="built_in">c</span>  b.<span class="built_in">c</span>
 </code></pre><p>The command lines just tells make how to make the target. For example,</p>
-<pre><code> myprog : a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
-      gcc -o myprog a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
+<pre><code> myprog : a.<span class="built_in">c</span> b.<span class="built_in">c</span>
+      gcc -o myprog a.<span class="built_in">c</span> b.<span class="built_in">c</span>
 </code></pre><p>Then, type <code>make</code>, the UNIX prompt will excute the command as you typed.</p>
 <h3 id="Generating_Multiple_Targets">Generating Multiple Targets</h3>
 <p>If we want to generate more than one programs, for example, let program prog01 depend on a.c and b.c, prog02 depend on m.c and n.c, and prog03 depend on u.c, v.c and w.c. </p>
 <pre><code> all : prog01 prog02 prog03
 
- prog01 : a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
-      gcc -o prog01 a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
+ prog01 : a.<span class="built_in">c</span> b.<span class="built_in">c</span>
+      gcc -o prog01 a.<span class="built_in">c</span> b.<span class="built_in">c</span>
 
- prog02 : m<span class="preprocessor">.c</span> n<span class="preprocessor">.c</span>
-      gcc -o prog02 m<span class="preprocessor">.c</span> n<span class="preprocessor">.c</span>
+ prog02 : m.<span class="built_in">c</span> n.<span class="built_in">c</span>
+      gcc -o prog02 m.<span class="built_in">c</span> n.<span class="built_in">c</span>
 
- prog03 : u<span class="preprocessor">.c</span> v<span class="preprocessor">.c</span> w<span class="preprocessor">.c</span>
-      gcc -o prog03 u<span class="preprocessor">.c</span> v<span class="preprocessor">.c</span> w<span class="preprocessor">.c</span>
+ prog03 : u.<span class="built_in">c</span> v.<span class="built_in">c</span> w.<span class="built_in">c</span>
+      gcc -o prog03 u.<span class="built_in">c</span> v.<span class="built_in">c</span> w.<span class="built_in">c</span>
 </code></pre><p>Thus, if one of these three programs is not up-to-date, <code>all</code> will be generated which in turn causes all programs compiled. If the dependency line defining <code>all</code> is the first line of your Makefile, just type <code>make</code> will be the same as typing <code>make all</code>.</p>
 <h3 id="Macros">Macros</h3>
 <p>A macro definition is a line containing an equal sign (=). When make encounters a name that appears to the left of the equal sign, that name is replaced by the contents to the right of the equal sign. It is not necessary to delimit the text string with double quote (“) or single quote (‘). If they are used, they become part of the text string.</p>
@@ -167,25 +169,25 @@
       done
 </code></pre><p>Let’s see another example. Suppose you are provided with two files, MyThreads.h and MyThreads.o. The former is a header file that has to be included into your source files and the latter is a library of functions for you to use. In other words, your source files in which multithreaded capability is used depend on MyThreads.h and your executable depends on MyThreads.o.</p>
 <p>Suppose your assignment has the following files, prog01.c (the main function), and abc.c, def.c and xyz.c. All of these files contain access to multithread functions defined in MyThreads.h. You also designed some utility functions collected in files ut1.c and ut2.c. None of these two have access to the multithread capability. However, in your judgment, you believe any change made to ut1.c and ut2.c requires recompilation of abc.c and xyz.c. Therefore, on the source level, prog01.c, abc.c, def.c and xyz.c depend on MyThreads.h, and abc.c and xyz.c also depend on ut1.c and ut2.c. Suppose the final executable is to be called prog01.</p>
-<pre><code> CC = gcc -ansi
+<pre><code> <span class="type">CC</span> = gcc -ansi
 
- prog01 : prog01<span class="preprocessor">.o</span> abc<span class="preprocessor">.o</span> def<span class="preprocessor">.o</span> xyz<span class="preprocessor">.o</span> ut1<span class="preprocessor">.o</span> ut2<span class="preprocessor">.o</span> MyThreads<span class="preprocessor">.o</span>
-      ${CC} -o prog01 prog01<span class="preprocessor">.o</span> abc<span class="preprocessor">.o</span> def<span class="preprocessor">.o</span> xyz<span class="preprocessor">.o</span> ut1<span class="preprocessor">.o</span> ut2<span class="preprocessor">.o</span> MyThreads<span class="preprocessor">.o</span> -lthread
+ prog01 : prog01.o abc.o def.o xyz.o ut1.o ut2.o <span class="type">MyThreads</span>.o
+      ${<span class="type">CC</span>} -o prog01 prog01.o abc.o def.o xyz.o ut1.o ut2.o <span class="type">MyThreads</span>.o -lthread
 
- prog01<span class="preprocessor">.o</span> : prog01<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
-      ${CC} -c prog01<span class="preprocessor">.c</span>
+ prog01.o : prog01.<span class="built_in">c</span> <span class="type">MyThreads</span>.h
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> prog01.<span class="built_in">c</span>
 
- abc<span class="preprocessor">.o</span> : abc<span class="preprocessor">.c</span> c ut2<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
-      ${CC} -c abc<span class="preprocessor">.c</span>
- def<span class="preprocessor">.o</span> : def<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
-      ${CC} -c def<span class="preprocessor">.c</span>
- xyz<span class="preprocessor">.o</span> : xyz<span class="preprocessor">.c</span> ut1<span class="preprocessor">.c</span> ut2<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
-      ${CC} -c xyz<span class="preprocessor">.c</span>
+ abc.o : abc.<span class="built_in">c</span> <span class="built_in">c</span> ut2.<span class="built_in">c</span> <span class="type">MyThreads</span>.h
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> abc.<span class="built_in">c</span>
+ def.o : def.<span class="built_in">c</span> <span class="type">MyThreads</span>.h
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> def.<span class="built_in">c</span>
+ xyz.o : xyz.<span class="built_in">c</span> ut1.<span class="built_in">c</span> ut2.<span class="built_in">c</span> <span class="type">MyThreads</span>.h
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> xyz.<span class="built_in">c</span>
 
- ut1<span class="preprocessor">.o</span> : ut1<span class="preprocessor">.c</span>
-      ${CC} -c ut1<span class="preprocessor">.c</span>
- ut2<span class="preprocessor">.o</span> : ut2<span class="preprocessor">.c</span>
-      ${CC} -c ut2<span class="preprocessor">.c</span>
+ ut1.o : ut1.<span class="built_in">c</span>
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> ut1.<span class="built_in">c</span>
+ ut2.o : ut2.<span class="built_in">c</span>
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> ut2.<span class="built_in">c</span>
 </code></pre><p>Above is the basic concepts of Makefile. If you want to be more expert, try the offcial documents.</p>
 
       
@@ -260,9 +262,9 @@
 <h3 id="The_Pthreads_API">The Pthreads API</h3>
 <p>The Pthreads API contains around 100 subroutines. This article will focus on a subset of these.</p>
 <h3 id="Compiling_Threaded_Programs">Compiling Threaded Programs</h3>
-<pre><code>INTEL Linux:          icc <span class="attribute">-pthread</span>
-PGI Linux:            pgcc <span class="attribute">-lpthread</span>
-GNU Linux:            gcc <span class="attribute">-pthread</span>
+<pre><code><span class="title">INTEL</span> Linux:          icc -pthread
+PGI Linux:            pgcc -lpthread
+GNU Linux:            gcc -pthread
 </code></pre><h3 id="Threading_Management">Threading Management</h3>
 <p><strong> Creating and Terminating Threads </strong></p>
 <p>Initially, your <code>main()</code> program comprises a single, default thread. All other threads must be explicitly created by the programmer.</p>
@@ -294,28 +296,28 @@ GNU Linux:            gcc <span class="attribute">-pthread</span>
 </ul>
 <p>Pay attention, the pthread_exit() routine does not close files; any files opened inside the thread will remain open after the thread is terminated.</p>
 <p>Example:</p>
-<pre><code><span class="comment">#include &lt;pthread.h&gt; </span>
-<span class="comment">#include &lt;stdio.h&gt; </span>
-<span class="comment">#define NUM_THREADS  5 </span>
+<pre><code><span class="preprocessor">#<span class="keyword">include</span> &lt;pthread.h&gt; </span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;stdio.h&gt; </span>
+<span class="preprocessor">#<span class="keyword">define</span> NUM_THREADS  5 </span>
 
-void <span class="variable">*PrintHello</span>(void <span class="variable">*threadid</span>) 
+<span class="keyword">void</span> *PrintHello(<span class="keyword">void</span> *threadid) 
 { 
    <span class="keyword">int</span> tid; 
    tid = (<span class="keyword">int</span>)threadid; 
-   <span class="keyword">printf</span>(<span class="string">"Hello World! It's me, thread #<span class="variable">%d</span>!\n"</span>, tid); 
+   <span class="built_in">printf</span>(<span class="string">"Hello World! It's me, thread #%d!\n"</span>, tid); 
    pthread_exit(NULL); 
 } 
 
-<span class="keyword">int</span> main (<span class="keyword">int</span> argc, char <span class="variable">*argv</span>[]) 
+<span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[]) 
 { 
    pthread_t threads[NUM_THREADS]; 
    <span class="keyword">int</span> rc, t; 
    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++){ 
-      <span class="keyword">printf</span>(<span class="string">"In main: creating thread <span class="variable">%d</span>\n"</span>, t); 
-      rc = pthread_create(&amp;threads[t], NULL, PrintHello, (void <span class="variable">*)</span>t); 
+      <span class="built_in">printf</span>(<span class="string">"In main: creating thread %d\n"</span>, t); 
+      rc = pthread_create(&amp;threads[t], NULL, PrintHello, (<span class="keyword">void</span> *)t); 
       <span class="keyword">if</span> (rc){ 
-         <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_create() is <span class="variable">%d</span>\n"</span>, rc); 
-         <span class="keyword">exit</span>(-<span class="number">1</span>); 
+         <span class="built_in">printf</span>(<span class="string">"ERROR; return code from pthread_create() is %d\n"</span>, rc); 
+         <span class="built_in">exit</span>(-<span class="number">1</span>); 
       } 
    } 
    pthread_exit(NULL); 
@@ -341,71 +343,71 @@ int pthread<span class="emphasis">_join(pthread_</span>t target<span class="emph
 </ul>
 <p>Example:</p>
 <pre><code>:::C
-/<span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span>*
- * FILE: <span class="keyword">join</span>.c
- * DESCRIPTION:
- *   This example demonstrates how to <span class="string">"wait"</span> <span class="keyword">for</span> thread completions by using
- *   the Pthread <span class="keyword">join</span> routine.  Threads are explicitly created in a joinable
- *   <span class="keyword">state</span> <span class="keyword">for</span> portability reasons. Use of the pthread_exit status argument is
- *   also shown. Compare to detached.c
- * AUTHOR: <span class="number">8</span>/<span class="number">98</span> Blaise Barney
- * LAST REVISED:  <span class="number">01</span>/<span class="number">30</span>/09
- <span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span>/
+/<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+ <span class="keyword">*</span> FILE: join.c
+ <span class="keyword">*</span> DESCRIPTION:
+ <span class="keyword">*</span>   This example demonstrates how to <span class="string">"wait"</span> for thread completions by using
+ <span class="keyword">*</span>   the Pthread join routine.  Threads are explicitly created in a joinable
+ <span class="keyword">*</span>   state for portability reasons. Use of the pthread_exit status argument is
+ <span class="keyword">*</span>   also shown. Compare to detached.c
+ <span class="keyword">*</span> AUTHOR: 8/98 Blaise Barney
+ <span class="keyword">*</span> LAST REVISED:  01/30/09
+ <span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>/
 <span class="comment">#include &lt;pthread.h&gt;</span>
 <span class="comment">#include &lt;stdio.h&gt;</span>
 <span class="comment">#include &lt;stdlib.h&gt;</span>
 <span class="comment">#define NUM_THREADS    4</span>
 
-void <span class="variable">*BusyWork</span>(void <span class="variable">*t</span>)
+void <span class="keyword">*</span>BusyWork(void <span class="keyword">*</span>t)
 {
-    <span class="keyword">int</span> i;
+    int i;
     long tid;
-    double result=<span class="number">0</span>.<span class="number">0</span>;
+    double result=0.0;
     tid = (long)t;
-    <span class="keyword">printf</span>(<span class="string">"Thread <span class="variable">%ld</span> starting...\n"</span>,tid);
-    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">1000000</span>; i++)
+    printf(<span class="string">"Thread %ld starting...\n"</span>,tid);
+    for (i=0; i<span class="variable">&lt;1000000; i++)
     {
-        result = result + <span class="keyword">sin</span>(i) * tan(i);
+        result = result + sin(i) * tan(i);
     }
-    <span class="keyword">printf</span>(<span class="string">"Thread <span class="variable">%ld</span> done. Result = <span class="variable">%e</span>\n"</span>,tid, result);
-    pthread_exit((void<span class="variable">*)</span> t);
+    printf("Thread %ld done. Result = %e\n",tid, result);
+    pthread_exit((void*) t);
 }
 
-<span class="keyword">int</span> main (<span class="keyword">int</span> argc, char <span class="variable">*argv</span>[])
+int main (int argc, char *argv[])
 {
     pthread_t thread[NUM_THREADS];
     pthread_attr_t attr;
-    <span class="keyword">int</span> rc;
+    int rc;
     long t;
-    void <span class="variable">*status</span>;
+    void *status;
 
-    <span class="regexp">/* Initialize and set thread detached attribute */</span>
+    /* Initialize and set thread detached attribute */
     pthread_attr_init(&amp;attr);
     pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_JOINABLE);
 
-    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++) {
-        <span class="keyword">printf</span>(<span class="string">"Main: creating thread <span class="variable">%ld</span>\n"</span>, t);
-        rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (void <span class="variable">*)</span>t);
-        <span class="keyword">if</span> (rc) {
-            <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_create() is <span class="variable">%d</span>\n"</span>, rc);
-            <span class="keyword">exit</span>(-<span class="number">1</span>);
+    for(t=0; t&lt;NUM_THREADS; t++) {
+        printf("Main: creating thread %ld\n", t);
+        rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (void *)t);
+        if (rc) {
+            printf("ERROR; return code from pthread_create() is %d\n", rc);
+            exit(-1);
         }
     }
 
-    /* Free attribute <span class="keyword">and</span> <span class="keyword">wait</span> <span class="keyword">for</span> the other threads <span class="variable">*/</span>
+    /* Free attribute and wait for the other threads */
     pthread_attr_destroy(&amp;attr);
-    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++) {
+    for(t=0; t&lt;NUM_THREADS; t++) {
         rc = pthread_join(thread[t], &amp;status);
-        <span class="keyword">if</span> (rc) {
-            <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_join() is <span class="variable">%d</span>\n"</span>, rc);
-            <span class="keyword">exit</span>(-<span class="number">1</span>);
+        if (rc) {
+            printf("ERROR; return code from pthread_join() is %d\n", rc);
+            exit(-1);
         }
-        <span class="keyword">printf</span>(<span class="string">"Main: completed join with thread <span class="variable">%ld</span> having a status of <span class="variable">%ld</span>\n"</span>,t,(long)status);
+        printf("Main: completed join with thread %ld having a status of %ld\n",t,(long)status);
     }
 
-    <span class="keyword">printf</span>(<span class="string">"Main: program completed. Exiting.\n"</span>);
+    printf("Main: program completed. Exiting.\n");
     pthread_exit(NULL);
-}
+}</span>
 </code></pre>
       
     </div>
@@ -495,19 +497,19 @@ for i in xrange(1000): pass
         a, b = b, a + b 
         n = n + <span class="number">1</span> 
 </code></pre><p>简单地讲，yield 的作用就是把一个函数变成一个 generator，带有 yield 的函数不再是一个普通函数，Python 解释器会将其视为一个 generator，调用 fab(5) 不会执行 fab 函数，而是返回一个 iterable 对象！在 for 循环执行时，每次循环都会执行 fab 函数内部的代码，执行到 yield b 时，fab 函数就返回一个迭代值，下次迭代时，代码从 yield b 的下一条语句继续执行，而函数的本地变量看起来和上次中断执行前是完全一样的，于是函数继续执行，直到再次遇到 yield。<br>也可以手动调用 fab(5) 的 next() 方法（因为 fab(5) 是一个 generator 对象，该对象具有 next() 方法），这样我们就可以更清楚地看到 fab 的执行流程：</p>
-<pre><code><span class="symbol">:</span><span class="constant">::Python</span>
-&gt;&gt;&gt; f = fab(<span class="number">5</span>) 
-&gt;&gt;&gt; f.<span class="keyword">next</span>() 
-<span class="number">1</span> 
-&gt;&gt;&gt; f.<span class="keyword">next</span>() 
-<span class="number">1</span> 
-&gt;&gt;&gt; f.<span class="keyword">next</span>() 
-<span class="number">2</span> 
-&gt;&gt;&gt; f.<span class="keyword">next</span>() 
-<span class="number">3</span> 
-&gt;&gt;&gt; f.<span class="keyword">next</span>() 
-<span class="number">5</span> 
-&gt;&gt;&gt; f.<span class="keyword">next</span>() 
+<pre><code><span class="input"><span class="prompt">:::Python
+&gt;&gt;&gt;</span> f = fab(<span class="number">5</span>) </span>
+<span class="input"><span class="prompt">&gt;&gt;&gt;</span> f.next() </span>
+<span class="input"><span class="prompt">1 
+&gt;&gt;&gt;</span> f.next() </span>
+<span class="input"><span class="prompt">1 
+&gt;&gt;&gt;</span> f.next() </span>
+<span class="input"><span class="prompt">2 
+&gt;&gt;&gt;</span> f.next() </span>
+<span class="input"><span class="prompt">3 
+&gt;&gt;&gt;</span> f.next() </span>
+<span class="input"><span class="prompt">5 
+&gt;&gt;&gt;</span> f.next() </span>
 <span class="constant">Traceback</span> (most recent call last)<span class="symbol">:</span> 
  <span class="constant">File</span> <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;<span class="class"><span class="keyword">module</span>&gt; </span>
 <span class="constant">StopIteration</span> 

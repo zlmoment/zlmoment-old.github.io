@@ -80,6 +80,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -114,12 +116,12 @@
 <p>在MPI中，数据被显式由从一个进程发送给另一个进程，一个称为发送方，一个称为接收方。</p>
 <h3 id="Hello_World">Hello World</h3>
 <p>让我们从一个最简单的MPI Hello World程序开始。</p>
-<pre><code><span class="preprocessor">#include "mpi.h"</span>
-<span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<pre><code><span class="preprocessor">#<span class="keyword">include</span> "mpi.h"</span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;stdio.h&gt;</span>
 <span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[] )
 {
     MPI_Init( &amp;argc, &amp;argv );
-    printf( <span class="string">"Hello, world!\n"</span> );
+    <span class="built_in">printf</span>( <span class="string">"Hello, world!\n"</span> );
     MPI_Finalize();
     <span class="keyword">return</span> <span class="number">0</span>;
 }

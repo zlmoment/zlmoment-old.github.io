@@ -80,6 +80,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -111,12 +113,12 @@
         <p>下载了一个Python改写的C语言100例，结果原作者使用的编码都是GBK，而我现在使用的Sublime Text 2和Textmate等都不支持GBK编码，导致打开全是乱码。网上也没有找到相应的转换工具，只好另辟蹊径。</p>
 <p>关键时刻还是 Terminal 给力，介绍一条shell命令：iconv</p>
 <p>就不细细介绍了，看下面的例子，就都懂了：</p>
-<pre><code>iconv --list <span class="preprocessor"># 显示可识别的编码名称</span>
-iconv --list &gt;./infomation<span class="preprocessor">.log</span> <span class="preprocessor"># 显示可识别的编码名称，将信息存入infomation.log文件中</span>
-iconv -f GB2312 -t UTF-<span class="number">8</span> a<span class="preprocessor">.html</span> &gt; b<span class="preprocessor">.html</span> <span class="preprocessor"># 转换GB2312编码的文件a.html为UTF-8编码，存入b.html</span>
-iconv -f GB2312 -t BIG5 a<span class="preprocessor">.html</span> &gt; b<span class="preprocessor">.html</span> <span class="preprocessor"># 转换GB2312编码的文件a.html为BIG5编码，存入b.html</span>
+<pre><code>iconv --list <span class="comment"># 显示可识别的编码名称</span>
+iconv --list &gt;./infomation.log <span class="comment"># 显示可识别的编码名称，将信息存入infomation.log文件中</span>
+<span class="input"><span class="prompt">iconv -f GB2312 -t UTF-8 a.html &gt;</span> b.html <span class="comment"># 转换GB2312编码的文件a.html为UTF-8编码，存入b.html</span></span>
+<span class="input"><span class="prompt">iconv -f GB2312 -t BIG5 a.html &gt;</span> b.html <span class="comment"># 转换GB2312编码的文件a.html为BIG5编码，存入b.html</span></span>
 </code></pre><p>进入正题，我们先cd进入保存所有文件的文件夹，然后执行下列命令：</p>
-<pre><code>find <span class="subst">*</span><span class="built_in">.</span>py <span class="attribute">-exec</span> sh <span class="attribute">-c</span> <span class="string">"iconv -f GB18030 -t UTF8 {} &gt; {}.py"</span> <span class="subst">\</span>;  
+<pre><code><span class="keyword">find</span> *.<span class="keyword">py</span> -exec <span class="keyword">sh</span> -<span class="keyword">c</span> <span class="string">"iconv -f GB18030 -t UTF8 {} &gt; {}.py"</span> \;  
 </code></pre>
       
     </div>

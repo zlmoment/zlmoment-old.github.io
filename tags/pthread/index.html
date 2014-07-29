@@ -80,6 +80,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -149,9 +151,9 @@
 <h3 id="The_Pthreads_API">The Pthreads API</h3>
 <p>The Pthreads API contains around 100 subroutines. This article will focus on a subset of these.</p>
 <h3 id="Compiling_Threaded_Programs">Compiling Threaded Programs</h3>
-<pre><code>INTEL Linux:          icc <span class="attribute">-pthread</span>
-PGI Linux:            pgcc <span class="attribute">-lpthread</span>
-GNU Linux:            gcc <span class="attribute">-pthread</span>
+<pre><code><span class="title">INTEL</span> Linux:          icc -pthread
+PGI Linux:            pgcc -lpthread
+GNU Linux:            gcc -pthread
 </code></pre><h3 id="Threading_Management">Threading Management</h3>
 <p><strong> Creating and Terminating Threads </strong></p>
 <p>Initially, your <code>main()</code> program comprises a single, default thread. All other threads must be explicitly created by the programmer.</p>
@@ -183,28 +185,28 @@ GNU Linux:            gcc <span class="attribute">-pthread</span>
 </ul>
 <p>Pay attention, the pthread_exit() routine does not close files; any files opened inside the thread will remain open after the thread is terminated.</p>
 <p>Example:</p>
-<pre><code><span class="comment">#include &lt;pthread.h&gt; </span>
-<span class="comment">#include &lt;stdio.h&gt; </span>
-<span class="comment">#define NUM_THREADS  5 </span>
+<pre><code><span class="preprocessor">#<span class="keyword">include</span> &lt;pthread.h&gt; </span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;stdio.h&gt; </span>
+<span class="preprocessor">#<span class="keyword">define</span> NUM_THREADS  5 </span>
 
-void <span class="variable">*PrintHello</span>(void <span class="variable">*threadid</span>) 
+<span class="keyword">void</span> *PrintHello(<span class="keyword">void</span> *threadid) 
 { 
    <span class="keyword">int</span> tid; 
    tid = (<span class="keyword">int</span>)threadid; 
-   <span class="keyword">printf</span>(<span class="string">"Hello World! It's me, thread #<span class="variable">%d</span>!\n"</span>, tid); 
+   <span class="built_in">printf</span>(<span class="string">"Hello World! It's me, thread #%d!\n"</span>, tid); 
    pthread_exit(NULL); 
 } 
 
-<span class="keyword">int</span> main (<span class="keyword">int</span> argc, char <span class="variable">*argv</span>[]) 
+<span class="keyword">int</span> main (<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[]) 
 { 
    pthread_t threads[NUM_THREADS]; 
    <span class="keyword">int</span> rc, t; 
    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++){ 
-      <span class="keyword">printf</span>(<span class="string">"In main: creating thread <span class="variable">%d</span>\n"</span>, t); 
-      rc = pthread_create(&amp;threads[t], NULL, PrintHello, (void <span class="variable">*)</span>t); 
+      <span class="built_in">printf</span>(<span class="string">"In main: creating thread %d\n"</span>, t); 
+      rc = pthread_create(&amp;threads[t], NULL, PrintHello, (<span class="keyword">void</span> *)t); 
       <span class="keyword">if</span> (rc){ 
-         <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_create() is <span class="variable">%d</span>\n"</span>, rc); 
-         <span class="keyword">exit</span>(-<span class="number">1</span>); 
+         <span class="built_in">printf</span>(<span class="string">"ERROR; return code from pthread_create() is %d\n"</span>, rc); 
+         <span class="built_in">exit</span>(-<span class="number">1</span>); 
       } 
    } 
    pthread_exit(NULL); 
@@ -230,71 +232,71 @@ int pthread<span class="emphasis">_join(pthread_</span>t target<span class="emph
 </ul>
 <p>Example:</p>
 <pre><code>:::C
-/<span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span>*
- * FILE: <span class="keyword">join</span>.c
- * DESCRIPTION:
- *   This example demonstrates how to <span class="string">"wait"</span> <span class="keyword">for</span> thread completions by using
- *   the Pthread <span class="keyword">join</span> routine.  Threads are explicitly created in a joinable
- *   <span class="keyword">state</span> <span class="keyword">for</span> portability reasons. Use of the pthread_exit status argument is
- *   also shown. Compare to detached.c
- * AUTHOR: <span class="number">8</span>/<span class="number">98</span> Blaise Barney
- * LAST REVISED:  <span class="number">01</span>/<span class="number">30</span>/09
- <span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span><span class="variable">**</span>/
+/<span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>
+ <span class="keyword">*</span> FILE: join.c
+ <span class="keyword">*</span> DESCRIPTION:
+ <span class="keyword">*</span>   This example demonstrates how to <span class="string">"wait"</span> for thread completions by using
+ <span class="keyword">*</span>   the Pthread join routine.  Threads are explicitly created in a joinable
+ <span class="keyword">*</span>   state for portability reasons. Use of the pthread_exit status argument is
+ <span class="keyword">*</span>   also shown. Compare to detached.c
+ <span class="keyword">*</span> AUTHOR: 8/98 Blaise Barney
+ <span class="keyword">*</span> LAST REVISED:  01/30/09
+ <span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span><span class="keyword">*</span>/
 <span class="comment">#include &lt;pthread.h&gt;</span>
 <span class="comment">#include &lt;stdio.h&gt;</span>
 <span class="comment">#include &lt;stdlib.h&gt;</span>
 <span class="comment">#define NUM_THREADS    4</span>
 
-void <span class="variable">*BusyWork</span>(void <span class="variable">*t</span>)
+void <span class="keyword">*</span>BusyWork(void <span class="keyword">*</span>t)
 {
-    <span class="keyword">int</span> i;
+    int i;
     long tid;
-    double result=<span class="number">0</span>.<span class="number">0</span>;
+    double result=0.0;
     tid = (long)t;
-    <span class="keyword">printf</span>(<span class="string">"Thread <span class="variable">%ld</span> starting...\n"</span>,tid);
-    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">1000000</span>; i++)
+    printf(<span class="string">"Thread %ld starting...\n"</span>,tid);
+    for (i=0; i<span class="variable">&lt;1000000; i++)
     {
-        result = result + <span class="keyword">sin</span>(i) * tan(i);
+        result = result + sin(i) * tan(i);
     }
-    <span class="keyword">printf</span>(<span class="string">"Thread <span class="variable">%ld</span> done. Result = <span class="variable">%e</span>\n"</span>,tid, result);
-    pthread_exit((void<span class="variable">*)</span> t);
+    printf("Thread %ld done. Result = %e\n",tid, result);
+    pthread_exit((void*) t);
 }
 
-<span class="keyword">int</span> main (<span class="keyword">int</span> argc, char <span class="variable">*argv</span>[])
+int main (int argc, char *argv[])
 {
     pthread_t thread[NUM_THREADS];
     pthread_attr_t attr;
-    <span class="keyword">int</span> rc;
+    int rc;
     long t;
-    void <span class="variable">*status</span>;
+    void *status;
 
-    <span class="regexp">/* Initialize and set thread detached attribute */</span>
+    /* Initialize and set thread detached attribute */
     pthread_attr_init(&amp;attr);
     pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_JOINABLE);
 
-    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++) {
-        <span class="keyword">printf</span>(<span class="string">"Main: creating thread <span class="variable">%ld</span>\n"</span>, t);
-        rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (void <span class="variable">*)</span>t);
-        <span class="keyword">if</span> (rc) {
-            <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_create() is <span class="variable">%d</span>\n"</span>, rc);
-            <span class="keyword">exit</span>(-<span class="number">1</span>);
+    for(t=0; t&lt;NUM_THREADS; t++) {
+        printf("Main: creating thread %ld\n", t);
+        rc = pthread_create(&amp;thread[t], &amp;attr, BusyWork, (void *)t);
+        if (rc) {
+            printf("ERROR; return code from pthread_create() is %d\n", rc);
+            exit(-1);
         }
     }
 
-    /* Free attribute <span class="keyword">and</span> <span class="keyword">wait</span> <span class="keyword">for</span> the other threads <span class="variable">*/</span>
+    /* Free attribute and wait for the other threads */
     pthread_attr_destroy(&amp;attr);
-    <span class="keyword">for</span>(t=<span class="number">0</span>; t&lt;NUM_THREADS; t++) {
+    for(t=0; t&lt;NUM_THREADS; t++) {
         rc = pthread_join(thread[t], &amp;status);
-        <span class="keyword">if</span> (rc) {
-            <span class="keyword">printf</span>(<span class="string">"ERROR; return code from pthread_join() is <span class="variable">%d</span>\n"</span>, rc);
-            <span class="keyword">exit</span>(-<span class="number">1</span>);
+        if (rc) {
+            printf("ERROR; return code from pthread_join() is %d\n", rc);
+            exit(-1);
         }
-        <span class="keyword">printf</span>(<span class="string">"Main: completed join with thread <span class="variable">%ld</span> having a status of <span class="variable">%ld</span>\n"</span>,t,(long)status);
+        printf("Main: completed join with thread %ld having a status of %ld\n",t,(long)status);
     }
 
-    <span class="keyword">printf</span>(<span class="string">"Main: program completed. Exiting.\n"</span>);
+    printf("Main: program completed. Exiting.\n");
     pthread_exit(NULL);
-}
+}</span>
 </code></pre>
       
     </div>

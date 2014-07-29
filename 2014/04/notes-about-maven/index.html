@@ -91,6 +91,8 @@ You’ll get following project structure:">
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -119,10 +121,10 @@ You’ll get following project structure:">
 <p>Command:</p>
 <pre><code><span class="tag">mvn</span> <span class="tag">archetype</span><span class="pseudo">:generate</span>
 </code></pre><p>In the interactive mode, here are some examples to show what they mean:</p>
-<pre><code><span class="label">groupId:</span> <span class="keyword">com</span><span class="preprocessor">.hackecho</span><span class="preprocessor">.hadoop</span>
-<span class="label">artifactId:</span> WordCount
-<span class="label">version:</span> <span class="number">1.0</span>
-<span class="label">package:</span> <span class="keyword">com</span><span class="preprocessor">.hackecho</span><span class="preprocessor">.hadoop</span><span class="preprocessor">.example</span>
+<pre><code><span class="attribute">groupId</span>: <span class="string">com.hackecho.hadoop</span>
+<span class="attribute">artifactId</span>: <span class="string">WordCount</span>
+<span class="attribute">version</span>: <span class="string">1.0</span>
+<span class="attribute">package</span>: <span class="string">com.hackecho.hadoop.example</span>
 </code></pre><p>You’ll get following project structure:</p>
 <a id="more"></a>
 
@@ -144,63 +146,22 @@ You’ll get following project structure:">
                         <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">example</span>
                             <span class="comment">`</span><span class="literal">-</span><span class="literal">-</span> <span class="comment">AppTest</span><span class="string">.</span><span class="comment">java</span>
 </code></pre><p>or you can use un-interative mode directly:</p>
-<pre><code>mvn archetype:generate <span class="attribute">-DgroupId</span><span class="subst">=</span>com<span class="built_in">.</span>hackecho<span class="built_in">.</span>hadoop <span class="attribute">-DartifactId</span><span class="subst">=</span>WordCount <span class="attribute">-DinteractiveMode</span><span class="subst">=</span><span class="literal">false</span>
+<pre><code>mvn archetype:generate <span class="variable">-DgroupId=</span>com.hackecho.hadoop <span class="variable">-DartifactId=</span>WordCount <span class="variable">-DinteractiveMode=</span><span class="constant">false</span>
 </code></pre><h2 id="POM">POM</h2>
 <p>Project Object Model. Similar to <code>build.xml</code> in ant. </p>
 <p>POM reference: <a href="http://maven.apache.org/pom.html" target="_blank" rel="external">Link</a></p>
 <p>An example POM with Hadoop 2.2.0 included:</p>
-<figure class="highlight xml"><figcaption><span>pom.xml </span></figcaption><pre>
-<span class="pi">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-
-<span class="tag">&lt;<span class="title">project</span> <span class="attribute">xmlns</span>=<span class="value">"http://maven.apache.org/POM/4.0.0"</span> <span class="attribute">xmlns:xsi</span>=<span class="value">"http://www.w3.org/2001/XMLSchema-instance"</span>
-  <span class="attribute">xsi:schemaLocation</span>=<span class="value">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"</span>&gt;</span>
-
-	<span class="tag">&lt;<span class="title">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="title">modelVersion</span>&gt;</span>
-	<span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.myorg<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-	<span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>WordCount<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-	<span class="tag">&lt;<span class="title">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="title">packaging</span>&gt;</span>
-	<span class="tag">&lt;<span class="title">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-	
-	<span class="tag">&lt;<span class="title">name</span>&gt;</span>WordCount<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-	<span class="tag">&lt;<span class="title">url</span>&gt;</span>http://maven.apache.org<span class="tag">&lt;/<span class="title">url</span>&gt;</span>
-  
-	<span class="tag">&lt;<span class="title">properties</span>&gt;</span>
-		<span class="tag">&lt;<span class="title">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="title">project.build.sourceEncoding</span>&gt;</span>
-		<span class="tag">&lt;<span class="title">project.reporting.outputEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="title">project.reporting.outputEncoding</span>&gt;</span>
-	<span class="tag">&lt;/<span class="title">properties</span>&gt;</span>
-
-	<span class="tag">&lt;<span class="title">dependencies</span>&gt;</span>
-		<span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">version</span>&gt;</span>3.8.1<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="title">scope</span>&gt;</span>
-		<span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-
-		<span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>hadoop-common<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">version</span>&gt;</span>2.2.0<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-		<span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-
-		<span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>hadoop-mapreduce-client-common<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-			<span class="tag">&lt;<span class="title">version</span>&gt;</span>2.2.0<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-		<span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-	<span class="tag">&lt;/<span class="title">dependencies</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">project</span>&gt;</span>
-</pre></figure>
+<figure class="highlight xml"><figcaption><span>pom.xml </span></figcaption><pre><div class="line"></div><div class="line"><span class="pi">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;<span class="title">project</span> <span class="attribute">xmlns</span>=<span class="value">"http://maven.apache.org/POM/4.0.0"</span> <span class="attribute">xmlns:xsi</span>=<span class="value">"http://www.w3.org/2001/XMLSchema-instance"</span></span></div><div class="line">  <span class="attribute">xsi:schemaLocation</span>=<span class="value">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"</span>&gt;</div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="title">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="title">modelVersion</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.myorg<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>WordCount<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="title">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="title">packaging</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="title">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="title">version</span>&gt;</span></div><div class="line">	</div><div class="line">	<span class="tag">&lt;<span class="title">name</span>&gt;</span>WordCount<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="title">url</span>&gt;</span>http://maven.apache.org<span class="tag">&lt;/<span class="title">url</span>&gt;</span></div><div class="line">  </div><div class="line">	<span class="tag">&lt;<span class="title">properties</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="title">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="title">project.build.sourceEncoding</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="title">project.reporting.outputEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="title">project.reporting.outputEncoding</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="title">properties</span>&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="title">dependencies</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="title">dependency</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">version</span>&gt;</span>3.8.1<span class="tag">&lt;/<span class="title">version</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="title">scope</span>&gt;</span></div><div class="line">		<span class="tag">&lt;/<span class="title">dependency</span>&gt;</span></div><div class="line"></div><div class="line">		<span class="tag">&lt;<span class="title">dependency</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>hadoop-common<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">version</span>&gt;</span>2.2.0<span class="tag">&lt;/<span class="title">version</span>&gt;</span></div><div class="line">		<span class="tag">&lt;/<span class="title">dependency</span>&gt;</span></div><div class="line"></div><div class="line">		<span class="tag">&lt;<span class="title">dependency</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.hadoop<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>hadoop-mapreduce-client-common<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span></div><div class="line">			<span class="tag">&lt;<span class="title">version</span>&gt;</span>2.2.0<span class="tag">&lt;/<span class="title">version</span>&gt;</span></div><div class="line">		<span class="tag">&lt;/<span class="title">dependency</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="title">dependencies</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">project</span>&gt;</span></div></pre></figure>
 
 <h2 id="Commands">Commands</h2>
 <p>Package:</p>
-<pre><code>mvn <span class="built_in">package</span>
+<pre><code>mvn <span class="keyword">package</span>
 </code></pre><p>Compile:</p>
-<pre><code>mvn compile
+<pre><code>mvn <span class="keyword">compile</span>
 </code></pre><p>Compile and test:</p>
-<pre><code>mvn test
+<pre><code>mvn <span class="keyword">test</span>
 </code></pre><p>Clean ./target:</p>
-<pre><code>mvn clean
+<pre><code><span class="title">mvn</span> clean
 </code></pre><p>Change project to Eclipse project:</p>
 <pre><code><span class="tag">mvn</span> <span class="tag">eclipse</span><span class="pseudo">:eclipse</span>
 </code></pre><p>Undo previous command:</p>

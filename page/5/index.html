@@ -80,6 +80,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -889,8 +891,8 @@
 <p><strong>Action：</strong>模块控制器类，你暂时可以理解为一个Action文件代表着一个应用模块，Action文件中的每一个方法(function)代表着一个操作，操作分为有输出到模板的操作和只具执行不需要输出的操作。对于有输出的操作，则代表了你的项目中一个展示给用户应用的web页面。（注意：这不是正统的术语解释）</p>
 <pre><code>//IndexAction.class.php
 <span class="php"><span class="preprocessor">&lt;?php</span>
-<span class="class"><span class="keyword">class</span> <span class="title">IndexAction</span> <span class="keyword">extends</span> <span class="title">Action</span>{</span>
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span><span class="params">()</span>{</span>
+<span class="class"><span class="keyword">class</span> <span class="title">IndexAction</span> <span class="keyword">extends</span> <span class="title">Action</span></span>{
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span><span class="params">()</span></span>{
         ....
     }
 }
@@ -899,7 +901,7 @@
 <pre><code>//UserModel.class.php
 <span class="php"><span class="preprocessor">&lt;?php</span>
     <span class="class"><span class="keyword">class</span> <span class="title">UserModel</span> <span class="keyword">extends</span> <span class="title">Model</span>
-    {</span>}
+    </span>{}
 <span class="preprocessor">?&gt;</span></span>
 </code></pre><p>Action目录放置命名为xxxAction.class.php的控制器文件，Model目录放置对应数据库表的命名为xxxModel.class.php的类文件。</p>
 <p>1 在TP开发中，要增加一个应用模块，就在Action文件夹里建立一个类，类的文件命名格式是模块名称+Action.class.php。例如我们这里的应用模块是Index，所以定义文件名为IndexAction.class.php</p>
@@ -948,15 +950,15 @@ $this-&gt;;display();
 <span class="strong">__SELF__</span>       当前 URL 地址
 </code></pre><p><strong>dump($var, $echo=true,$label=null, $strict=true)</strong>函数。浏览器友好的变量输出。</p>
 <p>连贯操作:所谓连贯操作，是TP利用__call方法来实现的一些特殊的Model类方法，可以对数据对象连续调用数个方法(参数)来设定特定的条件，然后执行最终所指定的操作，这类特定方法的命名都很直观易记：<br>用于查询表达式的</p>
-<pre><code><span class="string">'field'</span><span class="comment">//要查询的字段名</span>
-<span class="string">'table'</span><span class="comment">//数据表名称 不指定时，默认为当前数据对象所对应的表</span>
-<span class="string">'where'</span><span class="comment">//查询条件</span>
-<span class="string">'order'</span><span class="comment">// 排序</span>
-<span class="string">'limit'</span><span class="comment">//结果限制</span>
-<span class="string">'having'</span><span class="comment">//having支持</span>
-<span class="string">'group'</span><span class="comment">//group支持</span>
-<span class="string">'distinct'</span><span class="comment">//distinct筛选支持</span>
-<span class="string">'lazy'</span><span class="comment">//惰性查询支持</span>
+<pre><code>'field'//要查询的字段名
+'table'//数据表名称 不指定时，默认为当前数据对象所对应的表
+'where'//查询条件
+'order'// 排序
+'limit'//结果限制
+'having'//having支持
+'group'//group支持
+'<span class="keyword">distinct</span>'//<span class="keyword">distinct</span>筛选支持
+'lazy'//惰性查询支持
 </code></pre><p>用于统计查询的</p>
 <pre><code><span class="string">'count'</span><span class="comment">//统计满足条件的记录个数</span>
 <span class="string">'sum'</span><span class="comment">//统计某个字段的总和</span>
@@ -964,8 +966,8 @@ $this-&gt;;display();
 <span class="string">'max'</span><span class="comment">//取得某个字段的最大值</span>
 <span class="string">'avg'</span><span class="comment">//统计某个字段的平均值</span>
 </code></pre><p><strong>获取单条记录：</strong></p>
-<pre><code>find(<span class="variable">$options</span>=array());
-<span class="regexp">//</span><span class="variable">$options</span>=array()是查询条件表达式。
+<pre><code><span class="keyword">find</span>($<span class="keyword">options</span>=array());
+//$<span class="keyword">options</span>=array()是查询条件表达式。
 </code></pre><p>利用find方法进行查询，会自动加上limit=1来得到指定条件的一条记录。</p>
 <pre><code>//SELECT * FROM <span class="string">`think_form`</span> WHERE id=<span class="string">'2'</span> LIMIT <span class="number">1</span>
 <span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;find(<span class="number">2</span>);
@@ -981,10 +983,10 @@ $this-&gt;;display();
 <span class="keyword">dump</span>( <span class="variable">$Form</span>-&gt;;getLastSql() );
 <span class="keyword">exit</span>;
 </code></pre><p>但是这样未免麻烦了些，这时我们可以使用连贯操作，结果是一样的。不过这样就直观了很多</p>
-<pre><code><span class="variable">$where</span>[<span class="string">'email'</span>] = <span class="string">'abcdefg'</span>; <span class="regexp">//</span>多个条件时同样如此设置
-<span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;where(<span class="variable">$where</span>)-&gt;find();
-<span class="keyword">dump</span> ( <span class="variable">$data</span> );
-<span class="keyword">dump</span>( <span class="variable">$Form</span>-&gt;getLastSql() );
+<pre><code><span class="variable">$where</span>[<span class="string">'email'</span>] = <span class="string">'abcdefg'</span>; <span class="comment">//多个条件时同样如此设置</span>
+<span class="variable">$data</span> = <span class="variable">$Form</span><span class="variable">-&gt;where</span>(<span class="variable">$where</span>)<span class="variable">-&gt;find</span>();
+dump ( <span class="variable">$data</span> );
+dump( <span class="variable">$Form</span><span class="variable">-&gt;getLastSql</span>() );
 <span class="keyword">exit</span>;
 </code></pre><p><strong>2 getField($field,$condition=’’) 获取一条记录的某个字段的值</strong></p>
 <pre><code>//SELECT <span class="string">`email`</span> AS <span class="string">`abcdefg`</span> FROM <span class="string">`think_form`</span> LIMIT <span class="number">1</span>
@@ -992,20 +994,20 @@ $this-&gt;;display();
 <span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;getField(<span class="variable">$where</span>);
 </code></pre><p>注意：这里如果我们使用<code>$data = $Form-&gt;where($where)-&gt;getField();</code><br>返回的将会是这个条件的id值<br>sql将会是<code>SELECT * FROM <code>think_form</code> WHERE ( <code>email</code> = ‘abcdefg’ ) LIMIT 1</code></p>
 <p><strong>3 getFields($field,$condition=’’,$sepa=’ ‘)获取数据集的个别字段值</strong></p>
-<pre><code><span class="variable">$data</span> <span class="subst">=</span> <span class="variable">$Form</span><span class="subst">-&gt;</span>getFields(<span class="string">'email'</span>);
+<pre><code><span class="variable">$data</span> = <span class="variable">$Form</span><span class="variable">-&gt;getFields</span>(<span class="string">'email'</span>);
 <span class="comment">// SELECT `email` FROM `think_form</span>
 </code></pre><p><strong>4 getby字段名(‘字段值’) —动态根据指定字段获取一条数据</strong></p>
 <pre><code><span class="variable">$data</span> = <span class="variable">$Form</span>-&gt;getbyemail(<span class="string">'abcdefg'</span>);
-<span class="regexp">//</span><span class="constant">SELECT</span> * <span class="constant">FROM</span> `think_form` <span class="constant">WHERE</span> email=<span class="string">'abcdefg'</span> <span class="constant">LIMIT</span> <span class="number">1</span>
+<span class="regexp">//</span><span class="constant">SELECT </span>* <span class="constant">FROM </span>`think_form` <span class="constant">WHERE </span>email=<span class="string">'abcdefg'</span> <span class="constant">LIMIT </span><span class="number">1</span>
 </code></pre><p><strong>5 获取多条记录select($options=array()) 或 findAll($options=array())</strong></p>
 <p>$option 参数设定的是查询表达式，不设置时，默认是获取全部数据.参数支持如下键名</p>
-<pre><code>table 指定表名称，可以跨表访问，若不填则是当前DAO
+<pre><code>table 指定表名称，可以跨表访问，若不填则是当前<span class="type">DAO</span>
 <span class="keyword">distinct</span> 指定是否只列出不重复数据，如果想列出不重复数据，则为<span class="literal">true</span>，不填则无此功能
 field 指定要搜索的字段，不填则为*
-<span class="keyword">join</span> 填写<span class="keyword">join</span>，可以支持数组或者直接使用字符串，如果是字符串，那么只支持LEFT <span class="keyword">JOIN</span>，
-       如果想使用RIGHT <span class="keyword">JOIN</span>，那么只能使用数组定义，并且必须写清RIGHT <span class="keyword">JOIN</span>
-<span class="keyword">where</span> 指定查询条件&lt;/pre&gt;
-<span class="keyword">where</span>可以多说点，功能很多。
+join 填写join，可以支持数组或者直接使用字符串，如果是字符串，那么只支持<span class="type">LEFT</span> <span class="type">JOIN</span>，
+       如果想使用<span class="type">RIGHT</span> <span class="type">JOIN</span>，那么只能使用数组定义，并且必须写清<span class="type">RIGHT</span> <span class="type">JOIN</span>
+where 指定查询条件&lt;/pre&gt;
+where可以多说点，功能很多。
 </code></pre><p>首先说最简单的字符串查询，直接执行就OK了。<br>使用数组指定查询条件。</p>
 <pre><code><span class="variable">$whereArr</span>=<span class="keyword">array</span>(
     <span class="string">"account"</span>=&gt;<span class="string">"tdweb"</span>,
@@ -1014,10 +1016,10 @@ field 指定要搜索的字段，不填则为*
 <span class="variable">$options</span>=<span class="keyword">array</span>(
     <span class="string">"where"</span>=&gt;<span class="variable">$whereArr</span>
 );
-<span class="variable">$Dao</span>-&gt;select(<span class="variable">$options</span>);
+<span class="variable">$Dao</span><span class="variable">-&gt;select</span>(<span class="variable">$options</span>);
 </code></pre><p>这样默认是查询<code>SELECT * FROM <code>test</code> WHERE ( <code>account</code> = ‘tdweb’ ) AND ( <code>home</code> = ‘China’ )</code>是查询相等条件的。<br>那如果我想查询like条件怎么办？<br>解决方法之一是定义LIKE_MATCH_FIELDS配置，这里指明要进行like查询的字段。现在我们稍微改下程序。</p>
 <pre><code><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testDb</span><span class="params">()</span>  
-{</span>  
+</span>{  
     C(<span class="string">'LIKE_MATCH_FIELDS'</span>,<span class="string">"account"</span>);  
     <span class="variable">$Dao</span>=D(<span class="string">"Test"</span>);  
     <span class="variable">$whereArr</span>=<span class="keyword">array</span>(  
@@ -1027,13 +1029,13 @@ field 指定要搜索的字段，不填则为*
 <span class="variable">$options</span>=<span class="keyword">array</span>(  
 
 );  
-dump(<span class="variable">$Dao</span>-&gt;select(<span class="variable">$options</span>));  
-<span class="keyword">echo</span> <span class="variable">$Dao</span>-&gt;getLastSql();  
+dump(<span class="variable">$Dao</span><span class="variable">-&gt;select</span>(<span class="variable">$options</span>));  
+<span class="keyword">echo</span> <span class="variable">$Dao</span><span class="variable">-&gt;getLastSql</span>();  
 }  
 </code></pre><p>得到的SQL就是<code>SELECT * FROM <code>test</code> WHERE ( <code>account</code> LIKE ‘%tdweb%’ ) AND ( <code>home</code> = ‘China’ )</code></p>
 <p>接着，可以看如下代码</p>
 <pre><code><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testDb</span><span class="params">()</span>  
-{</span>  
+</span>{  
     <span class="variable">$Dao</span>=D(<span class="string">"Test"</span>);  
     <span class="variable">$whereArr</span>=<span class="keyword">array</span>(  
     <span class="string">"account"</span>=&gt;<span class="keyword">array</span>(<span class="string">"eq"</span>,<span class="string">"tdweb"</span>),  
@@ -1043,8 +1045,8 @@ dump(<span class="variable">$Dao</span>-&gt;select(<span class="variable">$optio
 <span class="variable">$options</span>=<span class="keyword">array</span>(  
     <span class="string">"where"</span>=&gt;<span class="variable">$whereArr</span>  
 );  
-dump(<span class="variable">$Dao</span>-&gt;select(<span class="variable">$options</span>));  
-<span class="keyword">echo</span> <span class="variable">$Dao</span>-&gt;getLastSql();  
+dump(<span class="variable">$Dao</span><span class="variable">-&gt;select</span>(<span class="variable">$options</span>));  
+<span class="keyword">echo</span> <span class="variable">$Dao</span><span class="variable">-&gt;getLastSql</span>();  
 }  
 </code></pre><p>这里的$whereArr定义为一个二级数组，没一个字段都定义了一个数组，这样可以支持更高级复杂的查询。<br>其中支持的关键字：</p>
 <pre><code><span class="literal">EQ</span> 相等  

@@ -94,6 +94,8 @@ During the installation, let us create a admin user ‘hadoop’.">
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -139,13 +141,13 @@ During the installation, let us create a admin user ‘hadoop’.">
 
 <p>First, you need to change the hostname for every node so that you can identify them easily in terminal. </p>
 <p>Edit <code>/etc/hostname</code> to change the hostname:</p>
-<pre><code>$ <span class="built_in">sudo</span> vi /etc/hostname
+<pre><code>$ sudo <span class="keyword">vi</span> /etc/<span class="built_in">hostname</span>
 </code></pre><p>You may also need to add this line in <code>/etc/sysconfig/network</code> :</p>
 <pre><code><span class="attribute">HOSTNAME</span>=<span class="string">master</span>
 </code></pre><p>Edit <code>/etc/hosts</code> :</p>
-<pre><code>192.168.0.2 <span class="tag">&lt;<span class="title">tab</span>&gt;</span> master
-192.168.0.3 <span class="tag">&lt;<span class="title">tab</span>&gt;</span> slave1
-192.168.0.4 <span class="tag">&lt;<span class="title">tab</span>&gt;</span> slave2
+<pre><code><span class="input"><span class="prompt">192.168.0.2 &lt;tab&gt;</span> master</span>
+<span class="input"><span class="prompt">192.168.0.3 &lt;tab&gt;</span> slave1</span>
+<span class="input"><span class="prompt">192.168.0.4 &lt;tab&gt;</span> slave2</span>
 </code></pre><p>Do the above operations on every node with corresponding data.</p>
 <h2 id="3-_SSH_without_password">3. SSH without password</h2>
 <p>Namenode manages every datanode by secure shell (SSH), you need to configure SSH with public key authentication so that each node can access each other without password.</p>
@@ -155,15 +157,15 @@ $ <span class="built_in">sudo</span> systemctl disable firewalld
 $ <span class="built_in">sudo</span> systemctl stop iptables
 $ <span class="built_in">sudo</span> systemctl disable iptables
 </code></pre><p>On master, generate public key:</p>
-<pre><code>$ ssh<span class="attribute">-keygen</span> <span class="attribute">-t</span> rsa <span class="attribute">-P</span> ‘’
+<pre><code><span class="variable">$ </span>ssh-keygen -t rsa -<span class="constant">P</span> ‘’
 </code></pre><p>Press Enter all the way to the end and the key pair id_rsa (private key) and id_rsa.pub (public key) will be stored in <code>~/.ssh/</code> .</p>
 <p>Add public key to authorized keys:</p>
-<pre><code><span class="variable">$ </span>cat ~<span class="regexp">/.ssh/id</span>_rsa.pub &gt;&gt; ~<span class="regexp">/.ssh/authorized</span>_keys
+<pre><code><span class="input"><span class="prompt">$ cat ~/.ssh/id_rsa.pub &gt;&gt;</span> ~<span class="regexp">/.ssh/authorized</span>_keys</span>
 </code></pre><p>Make sure the permission of this file is correct:</p>
 <pre><code><span class="variable">$ </span>chmod <span class="number">600</span> authorized_keys
 </code></pre><p>You may need some SSH configurations. Edit file /etc/ssh/sshd_config, check if the the ‘#’ before the following items are deleted. If not, delete the ‘#’ before these items (this step needs to be done on every node).</p>
-<pre><code>RSAAuthentication <span class="literal">yes</span>
-PubkeyAuthentication <span class="literal">yes</span>
+<pre><code><span class="title">RSAAuthentication</span> <span class="built_in">yes</span>
+PubkeyAuthentication <span class="built_in">yes</span>
 </code></pre><p>Restart SSH service:</p>
 <pre><code>$ <span class="built_in">sudo</span> systemctl restart sshd
 </code></pre><p>Now, use scp command to copy authorized_keys to every node (if dir ~/.ssh doesn’t exist, create it at first, and chmod it to 755):</p>
@@ -173,102 +175,36 @@ PubkeyAuthentication <span class="literal">yes</span>
 </code></pre><p>Next you need to config every datanode to access namenode without password. It is the same as in namenode, just generate public key and add it to authorized_keys on namenode.</p>
 <h2 id="4-_Hadoop_package_and_related_packages_installation">4. Hadoop package and related packages installation</h2>
 <p>Using Fedora 20, you don’t have to config Java, Hadoop, etc. by yourself. You can use the following command to install and config everything.</p>
-<pre><code>$ yum install hadoop<span class="attribute">-common</span> hadoop<span class="attribute">-common</span><span class="attribute">-native</span> hadoop<span class="attribute">-hdfs</span> hadoop<span class="attribute">-mapreduce</span> hadoop<span class="attribute">-mapreduce</span><span class="attribute">-examples</span> hadoop<span class="attribute">-yarn</span>
+<pre><code>$ yum install hadoop-<span class="built_in">common</span> hadoop-<span class="built_in">common</span>-native hadoop-hdfs hadoop-mapreduce hadoop-mapreduce-examples hadoop-yarn
 </code></pre><p>Do it on every node. This may take a while on commodity machines. Go and get a cup of coffee and wait for the process to finish. </p>
 <h2 id="5-_Hadoop_configuration">5. Hadoop configuration</h2>
 <p>Now you need to config Hadoop. All the files are located at /etc/hadoop.</p>
 <p>Edit <code>core-site.xml</code>:</p>
 <p>You need to change item <code>‘fs.default.name’</code> to the address of your namenode and port. Here is a sample file:</p>
-<figure class="highlight xml"><pre><span class="pi">&lt;?xml version="1.0"?&gt;</span>
-<span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span>
- 
-<span class="tag">&lt;<span class="title">configuration</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>fs.default.name<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>hdfs://master:9000<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
- 
-  <span class="comment">&lt;!-- HTTPFS proxy user setting --&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hadoop.proxyuser.tomcat.hosts<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>*<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hadoop.proxyuser.tomcat.groups<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>*<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">configuration</span>&gt;</span>
-</pre></figure>
+<figure class="highlight xml"><pre><div class="line"><span class="pi">&lt;?xml version="1.0"?&gt;</span></div><div class="line"><span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span></div><div class="line"> </div><div class="line"><span class="tag">&lt;<span class="title">configuration</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">name</span>&gt;</span>fs.default.name<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">value</span>&gt;</span>hdfs://master:9000<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line"> </div><div class="line">  <span class="comment">&lt;!-- HTTPFS proxy user setting --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hadoop.proxyuser.tomcat.hosts<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">value</span>&gt;</span>*<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hadoop.proxyuser.tomcat.groups<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">value</span>&gt;</span>*<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">configuration</span>&gt;</span></div></pre></figure>
 
 <p>Edit <code>mapred-site.xml</code>:</p>
 <p>You need to change item <code>‘mapred.job.tracker’</code> to the address of job tracker node address and port.  Normally, job tracker and namenode are the same machine.</p>
 <p>Here is a sample file:</p>
-<figure class="highlight xml"><pre>
-<span class="pi">&lt;?xml version="1.0"?&gt;</span>
-<span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span>
- 
-<span class="tag">&lt;<span class="title">configuration</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>mapred.job.tracker<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>http://master:9001<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
- 
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
- 
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">description</span>&gt;</span>To set the value of tmp directory for map and reduce tasks.<span class="tag">&lt;/<span class="title">description</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>mapreduce.task.tmp.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>/var/cache/hadoop-mapreduce/${user.name}/tasks<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">configuration</span>&gt;</span>
-</pre></figure>
+<figure class="highlight xml"><pre><div class="line"></div><div class="line"><span class="pi">&lt;?xml version="1.0"?&gt;</span></div><div class="line"><span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span></div><div class="line"> </div><div class="line"><span class="tag">&lt;<span class="title">configuration</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">name</span>&gt;</span>mapred.job.tracker<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">value</span>&gt;</span>http://master:9001<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line"> </div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line"> </div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">description</span>&gt;</span>To set the value of tmp directory for map and reduce tasks.<span class="tag">&lt;/<span class="title">description</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">name</span>&gt;</span>mapreduce.task.tmp.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">value</span>&gt;</span>/var/cache/hadoop-mapreduce/${user.name}/tasks<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">configuration</span>&gt;</span></div></pre></figure>
 
 <p>Edit <code>hdfs-site.xml</code>:</p>
 <p>You may need to delete some items as the inside instruction. Here is a sample file:</p>
-<figure class="highlight xml"><pre>
-<span class="pi">&lt;?xml version="1.0"?&gt;</span>
-<span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span>
- 
-<span class="tag">&lt;<span class="title">configuration</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>1<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-     <span class="tag">&lt;<span class="title">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-     <span class="tag">&lt;<span class="title">value</span>&gt;</span>/var/cache/hadoop-hdfs/${user.name}<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-     <span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.namenode.name.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-     <span class="tag">&lt;<span class="title">value</span>&gt;</span>file:///var/cache/hadoop-hdfs/${user.name}/dfs/namenode<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-     <span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.namenode.checkpoint.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-     <span class="tag">&lt;<span class="title">value</span>&gt;</span>file:///var/cache/hadoop-hdfs/${user.name}/dfs/secondarynamenode<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">property</span>&gt;</span>
-     <span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.datanode.data.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-     <span class="tag">&lt;<span class="title">value</span>&gt;</span>file:///var/cache/hadoop-hdfs/${user.name}/dfs/datanode<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">configuration</span>&gt;</span>
-</pre></figure>
+<figure class="highlight xml"><pre><div class="line"></div><div class="line"><span class="pi">&lt;?xml version="1.0"?&gt;</span></div><div class="line"><span class="pi">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span></div><div class="line"> </div><div class="line"><span class="tag">&lt;<span class="title">configuration</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="title">value</span>&gt;</span>1<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="title">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="title">value</span>&gt;</span>/var/cache/hadoop-hdfs/${user.name}<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.namenode.name.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="title">value</span>&gt;</span>file:///var/cache/hadoop-hdfs/${user.name}/dfs/namenode<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.namenode.checkpoint.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="title">value</span>&gt;</span>file:///var/cache/hadoop-hdfs/${user.name}/dfs/secondarynamenode<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="title">property</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.datanode.data.dir<span class="tag">&lt;/<span class="title">name</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="title">value</span>&gt;</span>file:///var/cache/hadoop-hdfs/${user.name}/dfs/datanode<span class="tag">&lt;/<span class="title">value</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="title">property</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="title">configuration</span>&gt;</span></div></pre></figure>
 
 <p>Now you need to tell Hadoop which node is namenode and which node is datanode. Create two files if they don’t exist:</p>
 <pre><code>$ <span class="built_in">sudo</span> touch masters; <span class="built_in">sudo</span> touch slaves
 </code></pre><p>In the file masters, list all the namenodes you have. Do the same for the file slaves. For example, here is a sample of file slaves:</p>
-<pre><code>slave1
+<pre><code><span class="title">slave1</span>
 slave2
 </code></pre><p>Now you need to distribute all these files to all the nodes in cluster. Use scp to do it. Later we will use some tools to distribute them automatically. </p>
 <pre><code><span class="variable">$ </span>scp -r /etc/hadoop/* root<span class="variable">@slave1</span><span class="symbol">:/etc/hadoop/</span>
 </code></pre><p>All the configurations are done.</p>
 <h2 id="6-_Start_the_cluster">6. Start the cluster</h2>
 <p>To start the cluster, you need to initialize the HDFS directories at first. On namenode, run the following command:</p>
-<pre><code>$ sudo hdfs<span class="attribute">-create</span><span class="attribute">-dirs</span>
+<pre><code>$ <span class="built_in">sudo</span> hdfs-create-dirs
 </code></pre><p>Then, use the following command to start all services we need:</p>
-<pre><code>$ sudo systemctl start hadoop<span class="attribute">-namenode</span> hadoop<span class="attribute">-datanode</span> hadoop<span class="attribute">-nodemanager</span> hadoop<span class="attribute">-resourcemanager</span>
+<pre><code>$ <span class="built_in">sudo</span> systemctl start hadoop-namenode hadoop-datanode hadoop-nodemanager hadoop-resourcemanager
 </code></pre><p>And also, you need to run the following command on every datanode:</p>
 <pre><code>$ <span class="built_in">sudo</span> systemctl start hadoop-datanode
 </code></pre><p>(Also, you can use $ sudo start-all.sh to start the whole cluster, then you don’t need to run anything on datanode.)</p>

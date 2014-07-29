@@ -94,6 +94,8 @@ Interleaved Addressing的核心思想在于交错寻址，即典型的树状模�
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -134,29 +136,29 @@ Interleaved Addressing的核心思想在于交错寻址，即典型的树状模�
 <a id="more"></a>
 
 
-<pre><code><span class="comment">/* This reduction interleaves which threads are active by using the modulo
-   operator.  This operator is very expensive on GPUs, and the interleaved
-   inactivity means that no whole warps are active, which is also very
+<pre><code>/* <span class="type">This</span> reduction interleaves which threads are active by <span class="keyword">using</span> the modulo
+   operator.  <span class="type">This</span> operator <span class="keyword">is</span> very expensive on <span class="type">GPUs</span>, <span class="keyword">and</span> the interleaved
+   inactivity means that no whole warps are active, which <span class="keyword">is</span> also very
    inefficient 
-*/</span>
-<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
-__global__ <span class="keyword">void</span>
-reduce0(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)
+*/
+<span class="keyword">template</span> &lt;class T&gt;
+__global__ <span class="type">void</span>
+reduce0(T *g_idata, T *g_odata, unsigned <span class="type">int</span> n)
 {
-    T *sdata = SharedMemory&lt;T&gt;();
+    T *sdata = <span class="type">SharedMemory</span>&lt;T&gt;();
 
-    <span class="comment">// load shared mem</span>
-    <span class="keyword">unsigned</span> <span class="keyword">int</span> tid = threadIdx.x;
-    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = blockIdx.x*blockDim.x + threadIdx.x;
+    // load <span class="literal">shared</span> mem
+    unsigned <span class="type">int</span> tid = threadIdx.x;
+    unsigned <span class="type">int</span> i = blockIdx.x*blockDim.x + threadIdx.x;
 
     sdata[tid] = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
     __syncthreads();
 
-    <span class="comment">// do reduction in shared mem</span>
-    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> s=<span class="number">1</span>; s &lt; blockDim.x; s *= <span class="number">2</span>)
+    // <span class="keyword">do</span> reduction <span class="keyword">in</span> <span class="literal">shared</span> mem
+    <span class="keyword">for</span> (unsigned <span class="type">int</span> s=<span class="number">1</span>; s &lt; blockDim.x; s *= <span class="number">2</span>)
     {
-        <span class="comment">// modulo arithmetic is slow!</span>
+        // modulo arithmetic <span class="keyword">is</span> slow!
         <span class="keyword">if</span> ((tid % (<span class="number">2</span>*s)) == <span class="number">0</span>)
         {
             sdata[tid] += sdata[tid + s];
@@ -165,7 +167,7 @@ reduce0(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span clas
         __syncthreads();
     }
 
-    <span class="comment">// write result for this block to global mem</span>
+    // write <span class="literal">result</span> <span class="keyword">for</span> this <span class="keyword">block</span> to global mem
     <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p><strong>存在的问题：</strong></p>
@@ -179,38 +181,38 @@ divergent branching)
 </code></pre><p>注意：Block Size = 128 threads for all tests.</p>
 <h3 id="Reduction_#2:_Interleaved_Addressing">Reduction #2: Interleaved Addressing</h3>
 <p>为了尽量减少1中的线程束的分化，我们这一步将分化的分支替换为跨步寻址（strided index）：</p>
-<pre><code>/* This version uses contiguous threads, but its interleaved
-   addressing results in many shared memory bank conflicts.
-<span class="variable">*/</span>
-template &lt;class T&gt;
-__global_<span class="number">_</span> void
-reduce1(T <span class="variable">*g_idata</span>, T <span class="variable">*g_odata</span>, unsigned <span class="keyword">int</span> n)
+<pre><code>/* <span class="type">This</span> version uses contiguous threads, but its interleaved
+   addressing results <span class="keyword">in</span> many <span class="literal">shared</span> memory bank conflicts.
+*/
+<span class="keyword">template</span> &lt;class T&gt;
+__global__ <span class="type">void</span>
+reduce1(T *g_idata, T *g_odata, unsigned <span class="type">int</span> n)
 {
-    T <span class="variable">*sdata</span> = SharedMemory&lt;T&gt;();
+    T *sdata = <span class="type">SharedMemory</span>&lt;T&gt;();
 
-    <span class="regexp">//</span> load shared mem
-    unsigned <span class="keyword">int</span> tid = threadIdx.<span class="keyword">x</span>;
-    unsigned <span class="keyword">int</span> i = blockIdx.<span class="keyword">x</span><span class="variable">*blockDim</span>.<span class="keyword">x</span> + threadIdx.<span class="keyword">x</span>;
+    // load <span class="literal">shared</span> mem
+    unsigned <span class="type">int</span> tid = threadIdx.x;
+    unsigned <span class="type">int</span> i = blockIdx.x*blockDim.x + threadIdx.x;
 
     sdata[tid] = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
     __syncthreads();
 
-    <span class="regexp">//</span> <span class="keyword">do</span> reduction in shared mem
-    <span class="keyword">for</span> (unsigned <span class="keyword">int</span> <span class="keyword">s</span>=<span class="number">1</span>; <span class="keyword">s</span> &lt; blockDim.<span class="keyword">x</span>; <span class="keyword">s</span> <span class="variable">*=</span> <span class="number">2</span>)
+    // <span class="keyword">do</span> reduction <span class="keyword">in</span> <span class="literal">shared</span> mem
+    <span class="keyword">for</span> (unsigned <span class="type">int</span> s=<span class="number">1</span>; s &lt; blockDim.x; s *= <span class="number">2</span>)
     {
-        <span class="keyword">int</span> <span class="keyword">index</span> = <span class="number">2</span> * <span class="keyword">s</span> * tid;
+        <span class="type">int</span> index = <span class="number">2</span> * s * tid;
 
-        <span class="keyword">if</span> (<span class="keyword">index</span> &lt; blockDim.<span class="keyword">x</span>)
+        <span class="keyword">if</span> (index &lt; blockDim.x)
         {
-            sdata[<span class="keyword">index</span>] += sdata[<span class="keyword">index</span> + <span class="keyword">s</span>];
+            sdata[index] += sdata[index + s];
         }
 
         __syncthreads();
     }
 
-    // <span class="keyword">write</span> result <span class="keyword">for</span> this block to global mem
-    <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.<span class="keyword">x</span>] = sdata[<span class="number">0</span>];
+    // write <span class="literal">result</span> <span class="keyword">for</span> this <span class="keyword">block</span> to global mem
+    <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p>示意图如下（注意下图与上图中Thread ID的区别）：</p>
 <p><a href="/images/2013/04/Interleaved_Addressing2.png"><img src="/images/2013/04/Interleaved_Addressing2.png" alt=""></a></p>
@@ -229,25 +231,25 @@ Kernel 2
 bank conflicts)
 </code></pre><h3 id="Reduction_#3:_Sequential_Addressing">Reduction #3: Sequential Addressing</h3>
 <p>我们知道，CUDA中对数据的连续读取效率要比其它方式高。因此我们这一步优化主要是将取址方式变为连续的。我们只需要将2中跨步寻址（strided index）替换为基于threadID的逆向for循环即可。</p>
-<pre><code><span class="comment">/*
-    This version uses sequential addressing -- no divergence or bank conflicts.
-*/</span>
-<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
-__global__ <span class="keyword">void</span>
-reduce2(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)
+<pre><code>/*
+    <span class="type">This</span> version uses sequential addressing -- no divergence <span class="keyword">or</span> bank conflicts.
+*/
+<span class="keyword">template</span> &lt;class T&gt;
+__global__ <span class="type">void</span>
+reduce2(T *g_idata, T *g_odata, unsigned <span class="type">int</span> n)
 {
-    T *sdata = SharedMemory&lt;T&gt;();
+    T *sdata = <span class="type">SharedMemory</span>&lt;T&gt;();
 
-    <span class="comment">// load shared mem</span>
-    <span class="keyword">unsigned</span> <span class="keyword">int</span> tid = threadIdx.x;
-    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = blockIdx.x*blockDim.x + threadIdx.x;
+    // load <span class="literal">shared</span> mem
+    unsigned <span class="type">int</span> tid = threadIdx.x;
+    unsigned <span class="type">int</span> i = blockIdx.x*blockDim.x + threadIdx.x;
 
     sdata[tid] = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
     __syncthreads();
 
-    <span class="comment">// do reduction in shared mem</span>
-    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">0</span>; s&gt;&gt;=<span class="number">1</span>)
+    // <span class="keyword">do</span> reduction <span class="keyword">in</span> <span class="literal">shared</span> mem
+    <span class="keyword">for</span> (unsigned <span class="type">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">0</span>; s&gt;&gt;=<span class="number">1</span>)
     {
         <span class="keyword">if</span> (tid &lt; s)
         {
@@ -257,7 +259,7 @@ reduce2(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span clas
         __syncthreads();
     }
 
-    <span class="comment">// write result for this block to global mem</span>
+    // write <span class="literal">result</span> <span class="keyword">for</span> this <span class="keyword">block</span> to global mem
     <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p>示意图如下：</p>
@@ -281,20 +283,20 @@ Kernel 3
 </code></pre><h3 id="Reduction_#4:_First_Add_During_Load">Reduction #4: First Add During Load</h3>
 <p>在以前的所有版本中，我们都是事先将global的数据读入共享内存 <code>sdata[tid] = (i &lt; n) ? g_idata[i] : 0;</code> ，我们可不可以在这一步进行优化呢？当然，我们这一步优化的目的是在将数据读入到共享内存时同时进行第一次(第一层)规约。</p>
 <pre><code>:::C
-<span class="comment">/*
-    This version uses n/2 threads --
-    it performs the first level of reduction when reading from global memory.
-*/</span>
-<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;
-__global__ <span class="keyword">void</span>
-reduce3(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)
+/*
+    <span class="type">This</span> version uses n/<span class="number">2</span> threads --
+    it performs the first level <span class="keyword">of</span> reduction <span class="keyword">when</span> reading <span class="keyword">from</span> global memory.
+*/
+<span class="keyword">template</span> &lt;class T&gt;
+__global__ <span class="type">void</span>
+reduce3(T *g_idata, T *g_odata, unsigned <span class="type">int</span> n)
 {
-    T *sdata = SharedMemory&lt;T&gt;();
+    T *sdata = <span class="type">SharedMemory</span>&lt;T&gt;();
 
-    <span class="comment">// perform first level of reduction,</span>
-    <span class="comment">// reading from global memory, writing to shared memory</span>
-    <span class="keyword">unsigned</span> <span class="keyword">int</span> tid = threadIdx.x;
-    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = blockIdx.x*(blockDim.x*<span class="number">2</span>) + threadIdx.x;
+    // perform first level <span class="keyword">of</span> reduction,
+    // reading <span class="keyword">from</span> global memory, writing to <span class="literal">shared</span> memory
+    unsigned <span class="type">int</span> tid = threadIdx.x;
+    unsigned <span class="type">int</span> i = blockIdx.x*(blockDim.x*<span class="number">2</span>) + threadIdx.x;
 
     T mySum = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
@@ -304,8 +306,8 @@ reduce3(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span clas
     sdata[tid] = mySum;
     __syncthreads();
 
-    <span class="comment">// do reduction in shared mem</span>
-    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">0</span>; s&gt;&gt;=<span class="number">1</span>)
+    // <span class="keyword">do</span> reduction <span class="keyword">in</span> <span class="literal">shared</span> mem
+    <span class="keyword">for</span> (unsigned <span class="type">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">0</span>; s&gt;&gt;=<span class="number">1</span>)
     {
         <span class="keyword">if</span> (tid &lt; s)
         {
@@ -315,7 +317,7 @@ reduce3(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span clas
         __syncthreads();
     }
 
-    <span class="comment">// write result for this block to global mem</span>
+    // write <span class="literal">result</span> <span class="keyword">for</span> this <span class="keyword">block</span> to global mem
     <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p>本次运行结果如下(4M element)：</p>
@@ -341,24 +343,24 @@ global load)
 <p>这时我们的数据带宽已经达到了17 GB/s，而我们清楚Reduction的算术强度（arithmetic intensity）很低，因此系统的瓶颈可能是由于Parallel Slowdown，即系统对于指令、调度的花费超过了实际数据处理的花费。在本例中即address arithmetic and loop overhead。</p>
 <p>我们的解决办法是将for循环展开（Unroll the loop）。我们知道，在Reduce的过程中，活动的线程数是越来越少的，当活动的线程数少于32个时，我们将只有一个线程束（Warp）。在单个Warp中，指令的执行遵循SIMD（Single Instruction Multiple Data）模式，也就是说在活动线程数少于32个时，我么不需要进行同步控制，即我们不需要 <code>if (tid &lt; s)</code> 。</p>
 <pre><code>:::C
-<span class="comment">/*
-    This version unrolls the last warp to avoid synchronization where it
+/*
+    <span class="type">This</span> version unrolls the last warp to avoid synchronization where it
     isn't needed.
 
-    Note, this kernel needs a minimum of 64*sizeof(T) bytes of shared memory.
-    In other words if blockSize &lt;= 32, allocate 64*sizeof(T) bytes.
-    If blockSize &gt; 32, allocate blockSize*sizeof(T) bytes.
-*/</span>
-<span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">unsigned</span> <span class="keyword">int</span> blockSize&gt;
-__global__ <span class="keyword">void</span>
-reduce4(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span class="keyword">int</span> n)
+    <span class="type">Note</span>, this kernel needs a minimum <span class="keyword">of</span> <span class="number">64</span>*sizeof(T) bytes <span class="keyword">of</span> <span class="literal">shared</span> memory.
+    <span class="type">In</span> other words <span class="keyword">if</span> blockSize &lt;= <span class="number">32</span>, allocate <span class="number">64</span>*sizeof(T) bytes.
+    <span class="type">If</span> blockSize &gt; <span class="number">32</span>, allocate blockSize*sizeof(T) bytes.
+*/
+<span class="keyword">template</span> &lt;class T, unsigned <span class="type">int</span> blockSize&gt;
+__global__ <span class="type">void</span>
+reduce4(T *g_idata, T *g_odata, unsigned <span class="type">int</span> n)
 {
-    T *sdata = SharedMemory&lt;T&gt;();
+    T *sdata = <span class="type">SharedMemory</span>&lt;T&gt;();
 
-    <span class="comment">// perform first level of reduction,</span>
-    <span class="comment">// reading from global memory, writing to shared memory</span>
-    <span class="keyword">unsigned</span> <span class="keyword">int</span> tid = threadIdx.x;
-    <span class="keyword">unsigned</span> <span class="keyword">int</span> i = blockIdx.x*(blockDim.x*<span class="number">2</span>) + threadIdx.x;
+    // perform first level <span class="keyword">of</span> reduction,
+    // reading <span class="keyword">from</span> global memory, writing to <span class="literal">shared</span> memory
+    unsigned <span class="type">int</span> tid = threadIdx.x;
+    unsigned <span class="type">int</span> i = blockIdx.x*(blockDim.x*<span class="number">2</span>) + threadIdx.x;
 
     T mySum = (i &lt; n) ? g_idata[i] : <span class="number">0</span>;
 
@@ -368,8 +370,8 @@ reduce4(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span clas
     sdata[tid] = mySum;
     __syncthreads();
 
-    <span class="comment">// do reduction in shared mem</span>
-    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">32</span>; s&gt;&gt;=<span class="number">1</span>)
+    // <span class="keyword">do</span> reduction <span class="keyword">in</span> <span class="literal">shared</span> mem
+    <span class="keyword">for</span> (unsigned <span class="type">int</span> s=blockDim.x/<span class="number">2</span>; s&gt;<span class="number">32</span>; s&gt;&gt;=<span class="number">1</span>)
     {
         <span class="keyword">if</span> (tid &lt; s)
         {
@@ -381,10 +383,10 @@ reduce4(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span clas
 
     <span class="keyword">if</span> (tid &lt; <span class="number">32</span>)
     {
-        <span class="comment">// now that we are using warp-synchronous programming (below)</span>
-        <span class="comment">// we need to declare our shared memory volatile so that the compiler</span>
-        <span class="comment">// doesn't reorder stores to it and induce incorrect behavior.</span>
-        <span class="keyword">volatile</span> T *smem = sdata;
+        // now that we are <span class="keyword">using</span> warp-synchronous programming (below)
+        // we need to declare our <span class="literal">shared</span> memory volatile so that the compiler
+        // doesn't reorder stores to it <span class="keyword">and</span> induce incorrect behavior.
+        volatile T *smem = sdata;
 
         <span class="keyword">if</span> (blockSize &gt;=  <span class="number">64</span>)
         {
@@ -417,7 +419,7 @@ reduce4(T *g_idata, T *g_odata, <span class="keyword">unsigned</span> <span clas
         }
     }
 
-    <span class="comment">// write result for this block to global mem</span>
+    // write <span class="literal">result</span> <span class="keyword">for</span> this <span class="keyword">block</span> to global mem
     <span class="keyword">if</span> (tid == <span class="number">0</span>) g_odata[blockIdx.x] = sdata[<span class="number">0</span>];
 }
 </code></pre><p>注意，这在所有的warps中都省去了无用过的过程，不只是最后一个warp。如果不进行循环展开，则所有的warps都会执行for中的每一次循环和每一次if判断。</p>

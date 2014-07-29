@@ -80,6 +80,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -149,10 +151,10 @@
 <p>Command:</p>
 <pre><code><span class="tag">mvn</span> <span class="tag">archetype</span><span class="pseudo">:generate</span>
 </code></pre><p>In the interactive mode, here are some examples to show what they mean:</p>
-<pre><code><span class="label">groupId:</span> <span class="keyword">com</span><span class="preprocessor">.hackecho</span><span class="preprocessor">.hadoop</span>
-<span class="label">artifactId:</span> WordCount
-<span class="label">version:</span> <span class="number">1.0</span>
-<span class="label">package:</span> <span class="keyword">com</span><span class="preprocessor">.hackecho</span><span class="preprocessor">.hadoop</span><span class="preprocessor">.example</span>
+<pre><code><span class="attribute">groupId</span>: <span class="string">com.hackecho.hadoop</span>
+<span class="attribute">artifactId</span>: <span class="string">WordCount</span>
+<span class="attribute">version</span>: <span class="string">1.0</span>
+<span class="attribute">package</span>: <span class="string">com.hackecho.hadoop.example</span>
 </code></pre><p>You’ll get following project structure:</p>
 
       
@@ -337,12 +339,12 @@
 <p>在MPI中，数据被显式由从一个进程发送给另一个进程，一个称为发送方，一个称为接收方。</p>
 <h3 id="Hello_World">Hello World</h3>
 <p>让我们从一个最简单的MPI Hello World程序开始。</p>
-<pre><code><span class="preprocessor">#include "mpi.h"</span>
-<span class="preprocessor">#include &lt;stdio.h&gt;</span>
+<pre><code><span class="preprocessor">#<span class="keyword">include</span> "mpi.h"</span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;stdio.h&gt;</span>
 <span class="keyword">int</span> main( <span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[] )
 {
     MPI_Init( &amp;argc, &amp;argv );
-    printf( <span class="string">"Hello, world!\n"</span> );
+    <span class="built_in">printf</span>( <span class="string">"Hello, world!\n"</span> );
     MPI_Finalize();
     <span class="keyword">return</span> <span class="number">0</span>;
 }
@@ -492,8 +494,8 @@ gcc test.o -o test
 <h3 id="线程创建">线程创建</h3>
 <p>相关类为 <code>boost::thread</code> ，定义在 <code>boost/thread.hpp</code> 中，用于创建一个新线程。</p>
 <pre><code>:::CPP
-<span class="preprocessor">#include &lt;boost/thread.hpp&gt; </span>
-<span class="preprocessor">#include &lt;iostream&gt; </span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;boost/thread.hpp&gt; </span>
+<span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt; </span>
 
 <span class="keyword">void</span> wait(<span class="keyword">int</span> seconds) 
 { 
@@ -505,7 +507,7 @@ gcc test.o -o test
     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; ++i) 
     { 
         wait(<span class="number">1</span>); 
-        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="built_in">std</span>::endl; 
+        std::<span class="built_in">cout</span> &lt;&lt; i &lt;&lt; std::endl; 
     } 
 } 
 

@@ -87,6 +87,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -126,30 +128,30 @@
 <p>A、之前不能使用CBitmapButton::LoadBitmaps装载各种状态的图片，否则会出错。</p>
 <p>B、AutoLoad函数完成的关联和改变按钮大小的CBitmapButton::SizeToContent函数的功能。</p>
 <p>C、CBitmapButton::AutoLoad使用的位图是默认资源ID的，即它会自动装载相关资源位图。位图的资源ID格式为：”按钮Caption+U”、”按钮Caption+D”、”按钮Caption+F”、”按钮Caption+X”，分别代表Up、Down、Focus、Disable状态。如资源编辑时，希望关联的按钮的Caption为Test，那么其默认装载的位图资源的ID为：”TestU”/“TestD”/“TestF”/“TestX”，注意分号””也是其ID的一部分。<br>最后，将按钮的MouseMove消息在PreTranslateMessage中处理即可，代码如下：</p>
-<pre><code>BOOL Cyrt30Dlg<span class="tag">::PreTranslateMessage</span>(MSG<span class="subst">*</span> pMsg)
+<pre><code>BOOL Cyrt30Dlg::PreTranslateMessage(MSG* pMsg)
 {
-    <span class="keyword">if</span>(WM_MOUSEMOVE <span class="subst">==</span> pMsg<span class="subst">-&gt;</span>message)
+    <span class="keyword">if</span>(WM_MOUSEMOVE == pMsg-&gt;message)
     {
         POINT p;
-        GetCursorPos(<span class="subst">&amp;</span>p);
+        GetCursorPos(&amp;p);
         CString s;
-        CWnd <span class="subst">*</span>hwnd<span class="subst">=</span>GetDlgItem(IDC_TabNav);
-        s<span class="built_in">.</span>Format(<span class="string">"%d"</span>,hwnd<span class="subst">=</span>WindowFromPoint(p));
+        CWnd *hwnd=GetDlgItem(IDC_TabNav);
+        s.Format(<span class="string">"%d"</span>,hwnd=WindowFromPoint(p));
 
-        CWnd <span class="subst">*</span>hwndTabNav<span class="subst">=</span>GetDlgItem(IDC_TabNav);
-                <span class="keyword">if</span> (hwndTabNav <span class="subst">==</span> hwnd)
+        CWnd *hwndTabNav=GetDlgItem(IDC_TabNav);
+                <span class="keyword">if</span> (hwndTabNav == hwnd)
         {
-            <span class="keyword">if</span> (GetFocus()<span class="subst">!=</span>hwndTabNav)
-                hwndTabNav<span class="subst">-&gt;</span>SetFocus();
+            <span class="keyword">if</span> (GetFocus()!=hwndTabNav)
+                hwndTabNav-&gt;SetFocus();
         }
         <span class="keyword">else</span>
         {
-            <span class="keyword">if</span> (GetFocus() <span class="subst">==</span> hwndTabNav )
-                GetDlgItem(IDC_NULL)<span class="subst">-&gt;</span>SetFocus();
+            <span class="keyword">if</span> (GetFocus() == hwndTabNav )
+                GetDlgItem(IDC_NULL)-&gt;SetFocus();
 
         }
     }
-    <span class="keyword">return</span> CDialogEx<span class="tag">::PreTranslateMessage</span>(pMsg);
+    <span class="keyword">return</span> CDialogEx::PreTranslateMessage(pMsg);
 }
 </code></pre><p>这样，就可以完美实现四态按钮了。</p>
 

@@ -80,6 +80,8 @@
     
       <li><a href="/about" data-no-instant>About</a></li>
     
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions/commits/master" data-no-instant>LeetCode</a></li>
+    
       <li><a href="/bigdata" data-no-instant>BigData</a></li>
     
   </ul>
@@ -124,23 +126,23 @@
 <p>Under the UNIX shell, make is a command generator. The makefile is a description file which creates a sequence of commands for execution by the UNIX shell.</p>
 <p>Generally, a program is built from one or more files and each of these files may have other files as prerequisites in turn. In a makefile, the prerequisites should be carefully stated. There are two important types of lines in a description file. A dependency line or rule line contains a colon, and a command line always starts <strong>with a tab</strong>.</p>
 <p>To the left of the colon on the dependency line is a target; to the right of the colon are the target’s prerequisites. If myprog has prerequisites a.c and b.c, we have</p>
-<pre><code> myprog :  a<span class="preprocessor">.c</span>  b<span class="preprocessor">.c</span>
+<pre><code> myprog :  a.<span class="built_in">c</span>  b.<span class="built_in">c</span>
 </code></pre><p>The command lines just tells make how to make the target. For example,</p>
-<pre><code> myprog : a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
-      gcc -o myprog a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
+<pre><code> myprog : a.<span class="built_in">c</span> b.<span class="built_in">c</span>
+      gcc -o myprog a.<span class="built_in">c</span> b.<span class="built_in">c</span>
 </code></pre><p>Then, type <code>make</code>, the UNIX prompt will excute the command as you typed.</p>
 <h3 id="Generating_Multiple_Targets">Generating Multiple Targets</h3>
 <p>If we want to generate more than one programs, for example, let program prog01 depend on a.c and b.c, prog02 depend on m.c and n.c, and prog03 depend on u.c, v.c and w.c. </p>
 <pre><code> all : prog01 prog02 prog03
 
- prog01 : a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
-      gcc -o prog01 a<span class="preprocessor">.c</span> b<span class="preprocessor">.c</span>
+ prog01 : a.<span class="built_in">c</span> b.<span class="built_in">c</span>
+      gcc -o prog01 a.<span class="built_in">c</span> b.<span class="built_in">c</span>
 
- prog02 : m<span class="preprocessor">.c</span> n<span class="preprocessor">.c</span>
-      gcc -o prog02 m<span class="preprocessor">.c</span> n<span class="preprocessor">.c</span>
+ prog02 : m.<span class="built_in">c</span> n.<span class="built_in">c</span>
+      gcc -o prog02 m.<span class="built_in">c</span> n.<span class="built_in">c</span>
 
- prog03 : u<span class="preprocessor">.c</span> v<span class="preprocessor">.c</span> w<span class="preprocessor">.c</span>
-      gcc -o prog03 u<span class="preprocessor">.c</span> v<span class="preprocessor">.c</span> w<span class="preprocessor">.c</span>
+ prog03 : u.<span class="built_in">c</span> v.<span class="built_in">c</span> w.<span class="built_in">c</span>
+      gcc -o prog03 u.<span class="built_in">c</span> v.<span class="built_in">c</span> w.<span class="built_in">c</span>
 </code></pre><p>Thus, if one of these three programs is not up-to-date, <code>all</code> will be generated which in turn causes all programs compiled. If the dependency line defining <code>all</code> is the first line of your Makefile, just type <code>make</code> will be the same as typing <code>make all</code>.</p>
 <h3 id="Macros">Macros</h3>
 <p>A macro definition is a line containing an equal sign (=). When make encounters a name that appears to the left of the equal sign, that name is replaced by the contents to the right of the equal sign. It is not necessary to delimit the text string with double quote (“) or single quote (‘). If they are used, they become part of the text string.</p>
@@ -171,25 +173,25 @@
       done
 </code></pre><p>Let’s see another example. Suppose you are provided with two files, MyThreads.h and MyThreads.o. The former is a header file that has to be included into your source files and the latter is a library of functions for you to use. In other words, your source files in which multithreaded capability is used depend on MyThreads.h and your executable depends on MyThreads.o.</p>
 <p>Suppose your assignment has the following files, prog01.c (the main function), and abc.c, def.c and xyz.c. All of these files contain access to multithread functions defined in MyThreads.h. You also designed some utility functions collected in files ut1.c and ut2.c. None of these two have access to the multithread capability. However, in your judgment, you believe any change made to ut1.c and ut2.c requires recompilation of abc.c and xyz.c. Therefore, on the source level, prog01.c, abc.c, def.c and xyz.c depend on MyThreads.h, and abc.c and xyz.c also depend on ut1.c and ut2.c. Suppose the final executable is to be called prog01.</p>
-<pre><code> CC = gcc -ansi
+<pre><code> <span class="type">CC</span> = gcc -ansi
 
- prog01 : prog01<span class="preprocessor">.o</span> abc<span class="preprocessor">.o</span> def<span class="preprocessor">.o</span> xyz<span class="preprocessor">.o</span> ut1<span class="preprocessor">.o</span> ut2<span class="preprocessor">.o</span> MyThreads<span class="preprocessor">.o</span>
-      ${CC} -o prog01 prog01<span class="preprocessor">.o</span> abc<span class="preprocessor">.o</span> def<span class="preprocessor">.o</span> xyz<span class="preprocessor">.o</span> ut1<span class="preprocessor">.o</span> ut2<span class="preprocessor">.o</span> MyThreads<span class="preprocessor">.o</span> -lthread
+ prog01 : prog01.o abc.o def.o xyz.o ut1.o ut2.o <span class="type">MyThreads</span>.o
+      ${<span class="type">CC</span>} -o prog01 prog01.o abc.o def.o xyz.o ut1.o ut2.o <span class="type">MyThreads</span>.o -lthread
 
- prog01<span class="preprocessor">.o</span> : prog01<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
-      ${CC} -c prog01<span class="preprocessor">.c</span>
+ prog01.o : prog01.<span class="built_in">c</span> <span class="type">MyThreads</span>.h
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> prog01.<span class="built_in">c</span>
 
- abc<span class="preprocessor">.o</span> : abc<span class="preprocessor">.c</span> c ut2<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
-      ${CC} -c abc<span class="preprocessor">.c</span>
- def<span class="preprocessor">.o</span> : def<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
-      ${CC} -c def<span class="preprocessor">.c</span>
- xyz<span class="preprocessor">.o</span> : xyz<span class="preprocessor">.c</span> ut1<span class="preprocessor">.c</span> ut2<span class="preprocessor">.c</span> MyThreads<span class="preprocessor">.h</span>
-      ${CC} -c xyz<span class="preprocessor">.c</span>
+ abc.o : abc.<span class="built_in">c</span> <span class="built_in">c</span> ut2.<span class="built_in">c</span> <span class="type">MyThreads</span>.h
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> abc.<span class="built_in">c</span>
+ def.o : def.<span class="built_in">c</span> <span class="type">MyThreads</span>.h
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> def.<span class="built_in">c</span>
+ xyz.o : xyz.<span class="built_in">c</span> ut1.<span class="built_in">c</span> ut2.<span class="built_in">c</span> <span class="type">MyThreads</span>.h
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> xyz.<span class="built_in">c</span>
 
- ut1<span class="preprocessor">.o</span> : ut1<span class="preprocessor">.c</span>
-      ${CC} -c ut1<span class="preprocessor">.c</span>
- ut2<span class="preprocessor">.o</span> : ut2<span class="preprocessor">.c</span>
-      ${CC} -c ut2<span class="preprocessor">.c</span>
+ ut1.o : ut1.<span class="built_in">c</span>
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> ut1.<span class="built_in">c</span>
+ ut2.o : ut2.<span class="built_in">c</span>
+      ${<span class="type">CC</span>} -<span class="built_in">c</span> ut2.<span class="built_in">c</span>
 </code></pre><p>Above is the basic concepts of Makefile. If you want to be more expert, try the offcial documents.</p>
 
       
