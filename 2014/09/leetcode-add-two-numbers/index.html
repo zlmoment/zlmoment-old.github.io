@@ -1,0 +1,376 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Leetcode - Add Two Numbers | Hackecho</title>
+  <meta name="author" content="Zhaoyu Li">
+  
+  <meta name="description" content="Add Two Numbers 解题报告。Github代码地址：LINK
+题目
+You are given two linked lists representing two non-negative numbers. 
+The digits are stored in reverse order and each of their nodes contain 
+a single digit. Add the two numbers and return it as a linked list.
+
+Input: (2 -&amp;gt; 4 -&amp;gt; 3) + (5 -&amp;gt; 6 -&amp;gt; 4)
+Output: 7 -&amp;gt; 0 -&amp;gt; 8
+原题地址: LINK
+解题思路
+首先注意几点：
+
+逆序：链表存的整数是逆序，比如例子中 (2 -&amp;gt; 4 -&amp;gt; 3) 表示整数 342。输出的答案也是逆序。
+长度：两个链表的长度可能不一样，这个情况要格外处理。
+进位：两个对应的数位相加如果大于10，会向前进一位，这个情况要格外处理。
+最后，如果相加完还需要进位，要在结果上加1.">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Leetcode - Add Two Numbers"/>
+  <meta property="og:site_name" content="Hackecho"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-37227120-1', 'hackecho.com');
+      ga('send', 'pageview');
+
+    </script>
+
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Hackecho</a></h1>
+  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/" data-no-instant>Home</a></li>
+    
+      <li><a href="/archives" data-no-instant>Archives</a></li>
+    
+      <li><a href="/about" data-no-instant>About</a></li>
+    
+      <li><a href="https://github.com/zlmoment/Leetcode-Solutions" data-no-instant>LeetCode</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-09-11T04:27:35.000Z"><a href="/2014/09/leetcode-add-two-numbers/">Sep 10 2014</a></time>
+      
+      
+  
+    <h1 class="title">Leetcode - Add Two Numbers</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>Add Two Numbers 解题报告。Github代码地址：<a href="https://github.com/zlmoment/Leetcode-Solutions/tree/master/Add%20Two%20Numbers" target="_blank" rel="external">LINK</a></p>
+<h2 id="题目">题目</h2>
+<pre><code>You are given <span class="constant">two</span> linked lists representing <span class="constant">two</span> non-negative numbers. 
+The digits are stored <span class="operator">in</span> reverse order <span class="operator">and</span> <span class="keyword">each</span> <span class="operator">of</span> their nodes contain 
+<span class="operator">a</span> single digit. Add <span class="operator">the</span> <span class="constant">two</span> numbers <span class="operator">and</span> <span class="constant">return</span> <span class="keyword">it</span> <span class="keyword">as</span> <span class="operator">a</span> linked list.
+
+Input: (<span class="number">2</span> -&gt; <span class="number">4</span> -&gt; <span class="number">3</span>) + (<span class="number">5</span> -&gt; <span class="number">6</span> -&gt; <span class="number">4</span>)
+Output: <span class="number">7</span> -&gt; <span class="number">0</span> -&gt; <span class="number">8</span>
+</code></pre><p>原题地址: <a href="https://oj.leetcode.com/problems/add-two-numbers/" target="_blank" rel="external">LINK</a></p>
+<h2 id="解题思路">解题思路</h2>
+<p>首先注意几点：</p>
+<ul>
+<li>逆序：链表存的整数是逆序，比如例子中 (2 -&gt; 4 -&gt; 3) 表示整数 342。输出的答案也是逆序。</li>
+<li>长度：两个链表的长度可能不一样，这个情况要格外处理。</li>
+<li>进位：两个对应的数位相加如果大于10，会向前进一位，这个情况要格外处理。</li>
+<li>最后，如果相加完还需要进位，要在结果上加1.</li>
+</ul>
+<a id="more"></a>
+
+<p>我们先来整理一下大体的思路，我们首先想到的可能就是对于l1和l2，分别从头开始扫描，并对相应数位上的数相加，如果大于10，则下次相加要进位1。当l1或l2之中有一个已经扫描完毕而另一个没有时，我们应该把另一个余下的数全部加到结果后面，同时也要注意进位的问题。最后，在此判断仍否需要进位，如果需要，则在结果最后加上1。框架的代码表示如下：</p>
+<figure class="highlight java"><figcaption><span>AddTwoNumbers.java </span></figcaption><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>{</div><div class="line">    <span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span>(ListNode l1, ListNode l2) {</div><div class="line">        <span class="keyword">if</span> (l1 == <span class="keyword">null</span> || l2 == <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        }</div><div class="line">        ListNode rtn = <span class="keyword">new</span> ListNode(<span class="number">0</span>), pointer = rtn;</div><div class="line">        <span class="keyword">boolean</span> flag_carry = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">while</span> (l1 != <span class="keyword">null</span> &amp;&amp; l2 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (l1.val + l2.val &gt;= <span class="number">10</span>) {</div><div class="line">            	...</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                ...</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(...);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l1 = l1.next;</div><div class="line">            l2 = l2.next;</div><div class="line">        }</div><div class="line">        <span class="keyword">while</span> (l1 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (flag_carry) {</div><div class="line">                ...</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                ...</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(temp);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l1 = l1.next;</div><div class="line">        }</div><div class="line">        <span class="keyword">while</span> (l2 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (flag_carry) {</div><div class="line">                ...</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                ...</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(temp);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l2 = l2.next;</div><div class="line">        }</div><div class="line">        <span class="keyword">if</span> (flag_carry) {</div><div class="line">            ...</div><div class="line">        }</div><div class="line">        <span class="keyword">return</span> rtn.next;</div><div class="line">    }</div><div class="line">}</div></pre></figure>
+
+<p>有了上面的框架，我们就可以细化每一步了。</p>
+<h2 id="解法1">解法1</h2>
+<p>首先看第一个while循环，如果两个数相加大于等于10，说明需要进位，这时候我们的结果值就应该是l1.val+l2.val-10，并且设置flag_carry为true，但这里有个问题，如果之前的操作也需要进位呢，这一步就应该加上之前进的一位。所以代码变成了这样：</p>
+<figure class="highlight java"><figcaption><span>AddTwoNumbers.java </span></figcaption><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>{</div><div class="line">    <span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span>(ListNode l1, ListNode l2) {</div><div class="line">        <span class="keyword">if</span> (l1 == <span class="keyword">null</span> || l2 == <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        }</div><div class="line">        ListNode rtn = <span class="keyword">new</span> ListNode(<span class="number">0</span>), pointer = rtn;</div><div class="line">        <span class="keyword">boolean</span> flag_carry = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">while</span> (l1 != <span class="keyword">null</span> &amp;&amp; l2 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (l1.val + l2.val &gt;= <span class="number">10</span>) {</div><div class="line">            	temp = flag_carry ? l1.val + l2.val - <span class="number">10</span> + <span class="number">1</span> : l1.val + l2.val - <span class="number">10</span>;</div><div class="line">                flag_carry = <span class="keyword">true</span>;</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                ...</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(...);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l1 = l1.next;</div><div class="line">            l2 = l2.next;</div><div class="line">        }</div><div class="line">        ...</div><div class="line">    }</div><div class="line">}</div></pre></figure>
+
+<p>我们再看else分支，如果这次相加不需要进位，我们则需要将两个值相加，然后flag_carry设置为false。同样，也有之前那个问题，如果之前的操作也需要进位，这一步就应该加上之前进的一位，而且如果进位之后大于等于10，则下次操作需要进位。</p>
+<figure class="highlight java"><figcaption><span>AddTwoNumbers.java </span></figcaption><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>{</div><div class="line">    <span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span>(ListNode l1, ListNode l2) {</div><div class="line">        <span class="keyword">if</span> (l1 == <span class="keyword">null</span> || l2 == <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        }</div><div class="line">        ListNode rtn = <span class="keyword">new</span> ListNode(<span class="number">0</span>), pointer = rtn;</div><div class="line">        <span class="keyword">boolean</span> flag_carry = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">while</span> (l1 != <span class="keyword">null</span> &amp;&amp; l2 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (l1.val + l2.val &gt;= <span class="number">10</span>) {</div><div class="line">            	temp = flag_carry ? l1.val + l2.val - <span class="number">10</span> + <span class="number">1</span> : l1.val + l2.val - <span class="number">10</span>;</div><div class="line">                flag_carry = <span class="keyword">true</span>;</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                temp = flag_carry ? l1.val + l2.val + <span class="number">1</span> : l1.val + l2.val;</div><div class="line">                <span class="keyword">if</span> (temp &gt;= <span class="number">10</span>) {</div><div class="line">                    flag_carry = <span class="keyword">true</span>;</div><div class="line">                    temp -= <span class="number">10</span>;</div><div class="line">                } <span class="keyword">else</span> {</div><div class="line">                    flag_carry = <span class="keyword">false</span>;</div><div class="line">                }</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(...);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l1 = l1.next;</div><div class="line">            l2 = l2.next;</div><div class="line">        }</div><div class="line">        ...</div><div class="line">    }</div><div class="line">}</div></pre></figure>
+
+<p>下面我们看第二个和第三个while，这两个while的逻辑一模一样，唯一的区别就是一个是针对l1，另一个针对l2。我们以l1为例。首先判断是否需要进位，如果需要，则l1.val需要加1，徐国不需要，则直接l1.val。此时还需要判断进位之后是否大于等于10，如果大于等于10，则需要将加1后的值减去10并且设置flag_cary为true。代码如下：</p>
+<figure class="highlight java"><figcaption><span>AddTwoNumbers.java </span></figcaption><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>{</div><div class="line">    <span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span>(ListNode l1, ListNode l2) {</div><div class="line">        ...</div><div class="line">        <span class="keyword">while</span> (l1 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">             <span class="keyword">if</span> (flag_carry) {</div><div class="line">                <span class="keyword">if</span> (l1.val + <span class="number">1</span> &gt;= <span class="number">10</span>) {</div><div class="line">                    temp = l1.val + <span class="number">1</span> - <span class="number">10</span>;</div><div class="line">                    flag_carry = <span class="keyword">true</span>;</div><div class="line">                } <span class="keyword">else</span> {</div><div class="line">                    temp = l1.val + <span class="number">1</span>;</div><div class="line">                    flag_carry = <span class="keyword">false</span>;</div><div class="line">                }</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                temp = l1.val;</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(temp);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l1 = l1.next;</div><div class="line">        }</div><div class="line">        ...</div><div class="line">    }</div><div class="line">}</div></pre></figure>
+
+<p>同样的道理，我们可以得到l2的写法。</p>
+<p>最后，我们看最后一个if判断，这个就很简单了，只需要加1就可以：</p>
+<figure class="highlight java"><figcaption><span>AddTwoNumbers.java </span></figcaption><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>{</div><div class="line">    <span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span>(ListNode l1, ListNode l2) {</div><div class="line">        ...</div><div class="line">        <span class="keyword">if</span> (flag_carry) {</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(<span class="number">1</span>);</div><div class="line">            pointer.next = newNode;</div><div class="line">        }</div><div class="line">        <span class="keyword">return</span> rtn.next;</div><div class="line">    }</div><div class="line">}</div></pre></figure>
+
+<p>完整解法1如下：</p>
+<figure class="highlight java"><figcaption><span>AddTwoNumbers.java </span></figcaption><pre><div class="line"></div><div class="line"><span class="javadoc">/**</span></div><div class="line"> * Definition for singly-linked list.</div><div class="line"> * public class ListNode {</div><div class="line"> *     int val;</div><div class="line"> *     ListNode next;</div><div class="line"> *     ListNode(int x) {</div><div class="line"> *         val = x;</div><div class="line"> *         next = null;</div><div class="line"> *     }</div><div class="line"> * }</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>{</div><div class="line">    <span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span>(ListNode l1, ListNode l2) {</div><div class="line">        <span class="keyword">if</span> (l1 == <span class="keyword">null</span> || l2 == <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        }</div><div class="line">        ListNode rtn = <span class="keyword">new</span> ListNode(<span class="number">0</span>), pointer = rtn;</div><div class="line">        <span class="keyword">boolean</span> flag_carry = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">while</span> (l1 != <span class="keyword">null</span> &amp;&amp; l2 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (l1.val + l2.val &gt;= <span class="number">10</span>) {</div><div class="line">                temp = flag_carry ? l1.val + l2.val - <span class="number">10</span> + <span class="number">1</span> : l1.val + l2.val - <span class="number">10</span>;</div><div class="line">                flag_carry = <span class="keyword">true</span>;</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                temp = flag_carry ? l1.val + l2.val + <span class="number">1</span> : l1.val + l2.val;</div><div class="line">                <span class="keyword">if</span> (temp &gt;= <span class="number">10</span>) {</div><div class="line">                    flag_carry = <span class="keyword">true</span>;</div><div class="line">                    temp -= <span class="number">10</span>;</div><div class="line">                } <span class="keyword">else</span> {</div><div class="line">                    flag_carry = <span class="keyword">false</span>;</div><div class="line">                }</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(temp);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l1 = l1.next;</div><div class="line">            l2 = l2.next;</div><div class="line">        }</div><div class="line">        <span class="keyword">while</span> (l1 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (flag_carry) {</div><div class="line">                <span class="keyword">if</span> (l1.val + <span class="number">1</span> &gt;= <span class="number">10</span>) {</div><div class="line">                    temp = l1.val + <span class="number">1</span> - <span class="number">10</span>;</div><div class="line">                    flag_carry = <span class="keyword">true</span>;</div><div class="line">                } <span class="keyword">else</span> {</div><div class="line">                    temp = l1.val + <span class="number">1</span>;</div><div class="line">                    flag_carry = <span class="keyword">false</span>;</div><div class="line">                }</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                temp = l1.val;</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(temp);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l1 = l1.next;</div><div class="line">        }</div><div class="line">        <span class="keyword">while</span> (l2 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">int</span> temp = <span class="number">0</span>;</div><div class="line">            <span class="keyword">if</span> (flag_carry) {</div><div class="line">                <span class="keyword">if</span> (l2.val + <span class="number">1</span> &gt;= <span class="number">10</span>) {</div><div class="line">                    temp = l2.val + <span class="number">1</span> - <span class="number">10</span>;</div><div class="line">                    flag_carry = <span class="keyword">true</span>;</div><div class="line">                } <span class="keyword">else</span> {</div><div class="line">                    temp = l2.val + <span class="number">1</span>;</div><div class="line">                    flag_carry = <span class="keyword">false</span>;</div><div class="line">                }</div><div class="line">            } <span class="keyword">else</span> {</div><div class="line">                temp = l2.val;</div><div class="line">            }</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(temp);</div><div class="line">            pointer.next = newNode;</div><div class="line">            pointer = newNode;</div><div class="line">            l2 = l2.next;</div><div class="line">        }</div><div class="line">        <span class="keyword">if</span> (flag_carry) {</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(<span class="number">1</span>);</div><div class="line">            pointer.next = newNode;</div><div class="line">        }</div><div class="line">        <span class="keyword">return</span> rtn.next;</div><div class="line">    }</div><div class="line">}</div></pre></figure>
+
+<h2 id="解法2">解法2</h2>
+<p>上面的解法我们称之为Naive的，虽然逻辑正确，但代码太冗余，而且可读性差，我们在上面的代码基础上优化一下，可以得到如下的解法：</p>
+<figure class="highlight java"><figcaption><span>AddTwoNumbers.java </span></figcaption><pre><div class="line"></div><div class="line"><span class="javadoc">/**</span></div><div class="line"> * Definition for singly-linked list.</div><div class="line"> * public class ListNode {</div><div class="line"> *     int val;</div><div class="line"> *     ListNode next;</div><div class="line"> *     ListNode(int x) {</div><div class="line"> *         val = x;</div><div class="line"> *         next = null;</div><div class="line"> *     }</div><div class="line"> * }</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>{</div><div class="line">    <span class="keyword">public</span> ListNode <span class="title">addTwoNumbers</span>(ListNode l1, ListNode l2) {</div><div class="line">        <span class="keyword">if</span> (l1 == <span class="keyword">null</span> || l2 == <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        }</div><div class="line">        ListNode rtn = <span class="keyword">new</span> ListNode(<span class="number">0</span>), pointer = rtn;</div><div class="line">        <span class="keyword">int</span> carry = <span class="number">0</span>;</div><div class="line">        <span class="keyword">while</span> (l1 != <span class="keyword">null</span> || l2 != <span class="keyword">null</span>) {</div><div class="line">            <span class="keyword">if</span> (l1 != <span class="keyword">null</span>) {</div><div class="line">                carry += l1.val;</div><div class="line">                l1 = l1.next;</div><div class="line">            }</div><div class="line">            <span class="keyword">if</span> (l2 != <span class="keyword">null</span>) {</div><div class="line">                carry += l2.val;</div><div class="line">                l2 = l2.next;</div><div class="line">            }</div><div class="line">            pointer.next = <span class="keyword">new</span> ListNode(carry % <span class="number">10</span>); <span class="comment">// get the remainder</span></div><div class="line">            pointer = pointer.next;</div><div class="line">            carry = carry / <span class="number">10</span>; <span class="comment">// get the carry flag</span></div><div class="line">        }</div><div class="line">        <span class="keyword">if</span> (carry == <span class="number">1</span>) {</div><div class="line">            ListNode newNode = <span class="keyword">new</span> ListNode(<span class="number">1</span>);</div><div class="line">            pointer.next = newNode;</div><div class="line">        }</div><div class="line">        <span class="keyword">return</span> rtn.next;</div><div class="line">    }</div><div class="line">}</div></pre></figure>
+
+<p>欢迎轻拍。</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Leetcode/">Leetcode</a>
+  </div>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:hackecho.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/09/leetcode-add-two-numbers/">Leetcode - Add Two Numbers</a>
+      </li>
+    
+      <li>
+        <a href="/2014/05/connecting-to-emr-masternode-via-ssh/">Connecting to EMR masternode via SSH</a>
+      </li>
+    
+      <li>
+        <a href="/2014/04/notes-about-maven/">Notes about Maven</a>
+      </li>
+    
+      <li>
+        <a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Hadoop Cluster Setup Instruction with Fedora 20</a>
+      </li>
+    
+      <li>
+        <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
+      </li>
+    
+      <li>
+        <a href="/2013/04/basics-of-mpi/">MPI 并行程序设计基础</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+	<li><a href="http://vicdory.com/" target="_blank" title="Kailun Shi">Kailun Shi</a></li>
+	<li><a href="http://guo-min-zhi.github.io/" target="_blank" title="远方">远方</a></li>
+	<li><a href="http://mingplusplus.com/blog/" target="_blank" title="Ming++">Ming++</a></li>
+	<li><a href="http://ruiwu.me/" target="_blank" title="RuiWu">RuiWu</a></li>
+</ul>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Android/">Android</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
+  
+    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
+  
+    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
+  
+    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
+  
+    <li><a href="/tags/EMR/">EMR</a><small>1</small></li>
+  
+    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
+  
+    <li><a href="/tags/Git/">Git</a><small>1</small></li>
+  
+    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
+  
+    <li><a href="/tags/Hadoop/">Hadoop</a><small>1</small></li>
+  
+    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Leetcode/">Leetcode</a><small>1</small></li>
+  
+    <li><a href="/tags/Life/">Life</a><small>1</small></li>
+  
+    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
+  
+    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
+  
+    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
+  
+    <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
+  
+    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
+  
+    <li><a href="/tags/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
+  
+    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
+  
+    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
+  
+    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
+  
+    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
+  
+    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
+  
+    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
+  
+    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
+  
+    <li><a href="/tags/life/">life</a><small>1</small></li>
+  
+    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
+  
+    <li><a href="/tags/movie/">movie</a><small>1</small></li>
+  
+    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
+  
+    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
+  
+    <li><a href="/tags/web/">web</a><small>1</small></li>
+  
+    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
+  
+    <li><a href="/tags/极客/">极客</a><small>1</small></li>
+  
+    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Zhaoyu Li
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+var disqus_shortname = 'zlmoment';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<!-- InstantClick makes following links in your website instant. http://instantclick.io -->
+<script src="/js/instantclick.min.js" data-no-instant></script>
+<script data-no-instant>InstantClick.init();</script>
+</body>
+</html>
