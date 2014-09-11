@@ -1,442 +1,280 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  
-  <title>ipc,semaphores | Hackecho</title>
-  <meta name="author" content="Zhaoyu Li">
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-  
-  <meta property="og:site_name" content="Hackecho"/>
+    
 
-  
-    <meta property="og:image" content="undefined"/>
-  
+    <title>
+      Tag: ipc,semaphores 
+    </title>
 
-  <link href="/favicon.png" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Hackecho" type="application/atom+xml">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+      <meta name="author" content="Zhaoyu Li">
+    
+    
 
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tag: ipc,semaphores">
+<meta property="og:url" content="http://hackecho.com/tags/ipc,semaphores/">
+<meta property="og:site_name" content="Hackecho">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tag: ipc,semaphores">
+<meta name="twitter:description">
 
-      ga('create', 'UA-37227120-1', 'hackecho.com');
-      ga('send', 'pageview');
+    
+    
+    
+      <link rel="icon" type="image/x-icon" href="/favicon.png">
+    
+    <link rel="stylesheet" href="/css/uno.css" type="text/css">
 
+
+    <script src="/js/jquery.min.js"></script>
+
+</head>
+<body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="icon icon-list btn-mobile-menu__icon"></i>
+        <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+
+<header class="panel-cover panel-cover--collapsed">
+
+
+
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        
+
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">Hackecho</a></h1>
+
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">
+          Blog by Zhaoyu Li
+        </p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+
+              
+                
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">Blog</a></li>
+              
+                
+                <li class="navigation__item"><a href="/about" title="" class="">About</a></li>
+              
+                
+                <li class="navigation__item"><a href="https://github.com/zlmoment/Leetcode-Solutions" title="" class="">LeetCode</a></li>
+              
+
+            </ul>
+          </nav>
+
+          <!-- ----------------------------
+To add a new social icon simply duplicate one of the list items from below
+and change the class in the <i> tag to match the desired social network
+and then add your link to the <a>. Here is a full list of social network
+classes that you can use:
+
+    icon-social-500px
+    icon-social-behance
+    icon-social-delicious
+    icon-social-designer-news
+    icon-social-deviant-art
+    icon-social-digg
+    icon-social-dribbble
+    icon-social-facebook
+    icon-social-flickr
+    icon-social-forrst
+    icon-social-foursquare
+    icon-social-github
+    icon-social-google-plus
+    icon-social-hi5
+    icon-social-instagram
+    icon-social-lastfm
+    icon-social-linkedin
+    icon-social-medium
+    icon-social-myspace
+    icon-social-path
+    icon-social-pinterest
+    icon-social-rdio
+    icon-social-reddit
+    icon-social-skype
+    icon-social-spotify
+    icon-social-stack-overflow
+    icon-social-steam
+    icon-social-stumbleupon
+    icon-social-treehouse
+    icon-social-tumblr
+    icon-social-twitter
+    icon-social-vimeo
+    icon-social-xbox
+    icon-social-yelp
+    icon-social-youtube
+    icon-social-zerply
+    icon-mail
+
+------------------------------ -->
+
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/zlmoment" title="Zhaoyu Li on GitHub">
+      <i class='icon icon-social-github'></i>
+      <span class="label">GitHub</span>
+    </a>
+  </li>
+  <li class="navigation__item">
+    <a href="http://www.linkedin.com/pub/zhaoyu-li/63/65/950/" title="Zhaoyu Li on LinkedIn">
+      <i class='icon icon-social-linkedin'></i>
+      <span class="label">LinkedIn</span>
+    </a>
+  </li>
+
+  </ul>
+</nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner entry">
+            
+
+
+  <h1 class="archive-title">Tag: ipc,semaphores</h1>
+  <hr class="post-list__divider" />
+
+
+<div class="main-post-list">
+    <ol class="post-list">
+    
+    
+    <li>
+
+      <h2 class="post-list__post-title post-title"><a href="/2013/02/ipc-semaphores/" title="link to IPC Semaphores">IPC Semaphores</a></h2>
+
+      <div class="post-list__meta">
+
+        <time datetime="Feb 11 2013" class="post-list__meta--date date">Feb 11 2013</time> &#8226; 
+
+        <span class="post-list__meta--tags tags">
+          <font class="categories">
+            
+          </font>
+          
+            <font class="tags">
+              <a class="tags-link" href="/tags/ipc,semaphores/">ipc,semaphores</a>
+            </font>
+          
+
+        </span>
+      </div>
+
+    </li>
+    
+  </ol>
+
+  <hr class="post-list__divider " />
+
+<nav class="pagination" role="navigation">
+    
+
+    <span class="pagination__page-number">Page 1 of 1</span>
+    
+    
+</nav>
+
+
+</div>
+            <footer class="footer">
+    <span class="footer__copyright">&copy; 2014. All rights reserved.</span>
+    <span class="footer__copyright"><a href="http://uno.daleanthony.com" title="link to page for Uno Ghost theme">Uno theme</a> by <a href="http://daleanthony.com" title="link to website for Dale-Anthony">Dale-Anthony</a> | Redesign by <a href="http://letiantian.me" title="">樂天</a></span>
+</footer>
+        </div>
+    </div>
+
+    <!-- The main JavaScript file for Casper -->
+    <script src="/js/main.js"></script>
+    <script src="/js/scale.fix.js"></script>
+    <script src="/js/jquery.imagesloaded.min.js"></script>
+    <script src="/js/gallery.js"></script>
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config"> 
+      MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    }); 
     </script>
 
-  <!-- mathjax config similar to math.stackexchange -->
+    <!--kill ie6 -->
+    <!--[if IE 6]>
+      <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+    <![endif]-->
 
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
-    }
-  });
-</script>
+    <!--  google analytics -->
+    <script>
+      // add your google analytics code here
+    </script>
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-      }
-    });
-</script>
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-</head>
-
-
-<body>
-  <header id="header" class="inner"><div class="alignleft">
-  <h1><a href="/">Hackecho</a></h1>
-  <h2><a href="/">Blog by Zhaoyu Li</a></h2>
-</div>
-<nav id="main-nav" class="alignright">
-  <ul>
-    
-      <li><a href="/" data-no-instant>Home</a></li>
-    
-      <li><a href="/archives" data-no-instant>Archives</a></li>
-    
-      <li><a href="/about" data-no-instant>About</a></li>
-    
-      <li><a href="https://github.com/zlmoment/Leetcode-Solutions" data-no-instant>LeetCode</a></li>
-    
-  </ul>
-  <div class="clearfix"></div>
-</nav>
-<div class="clearfix"></div></header>
-  <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title tag">ipc,semaphores</h2>
-
-
-  
-    <article class="post">
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2013-02-12T03:48:00.000Z"><a href="/2013/02/ipc-semaphores/">Feb 11 2013</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2013/02/ipc-semaphores/">IPC Semaphores</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <h3 id="Initializing_a_Semaphore_Set">Initializing a Semaphore Set</h3>
-<p>The function <code>semget()</code> initializes or gains access to a semaphore.</p>
-<pre><code><span class="attribute">:::C</span>
-int semget(key<span class="emphasis">_t key, int nsems, int semflg);</span>
-</code></pre><ul>
-<li><p>The <code>key</code> argument is a access value associated with the semaphore ID.</p>
-</li>
-<li><p>The <code>nsems</code> argument specifies the number of elements in a semaphore array. The call fails when nsems is greater than the number of elements in an existing array; when the correct count is not known, supplying 0 for this argument ensures that it will succeed.</p>
-</li>
-<li><p>The <code>semflg</code> argument specifies the initial access permissions and creation control flags.</p>
-</li>
-</ul>
-<p>When the call succeeds, it returns the semaphore ID (semid).</p>
-<pre><code>:::C
-<span class="comment">#include &lt;sys/types.h&gt; </span>
-<span class="comment">#include &lt;sys/ipc.h&gt; </span>
-<span class="comment">#include &lt;sys/sem.h&gt; </span>
-
-<span class="keyword">...</span> 
-key_t key; /* key to pass to semget() */ 
-int semflg; /* semflg to pass tosemget() */ 
-int nsems; /* nsems to pass to semget() */ 
-int semid; /* <span class="keyword">return</span> value from semget() */ 
-
-<span class="keyword">...</span> 
-
-key = <span class="number">123456</span>; 
-nsems = <span class="number">1</span>;
-semflg = IPC_CREAT | <span class="number">0666</span>; // Flag to create with rw permissions
-// Create the semaphore
-// The <span class="keyword">return</span> value is the semaphore set identifier
-<span class="keyword">if</span> ((semid = semget(key, nsems, semflg)) == -<span class="number">1</span>) {
-    perror(<span class="string">"semget: semget failed"</span>); 
-     exit(<span class="number">1</span>); 
-} 
-<span class="keyword">else</span> 
-   <span class="keyword">...</span>
-</code></pre><h3 id="Controlling_Semaphores">Controlling Semaphores</h3>
-<p><code>semctl()</code> changes permissions and other characteristics of a semaphore set. It is prototyped as follows:</p>
-<pre><code><span class="attribute">:::C</span>
-int semctl(int semid, int semnum, int cmd, union semun arg);
-</code></pre><p>It must be called with a valid semaphore ID, semid. The <code>semnum</code> value selects a semaphore within an array by its index. The <code>cmd</code> argument is one of the following control flags:</p>
-<p>GETVAL<br>— Return the value of a single semaphore.</p>
-<p>SETVAL<br>— Set the value of a single semaphore. In this case, arg is taken as arg.val, an int.</p>
-<p>GETPID<br>— Return the PID of the process that performed the last operation on the semaphore or array.</p>
-<p>GETNCNT<br>— Return the number of processes waiting for the value of a semaphore to increase.</p>
-<p>GETZCNT<br>— Return the number of processes waiting for the value of a particular semaphore to reach zero.</p>
-<p>GETALL<br>— Return the values for all semaphores in a set. In this case, arg is taken as arg.array, a pointer to an array of unsigned shorts (see below).</p>
-<p>SETALL<br>— Set values for all semaphores in a set. In this case, arg is taken as arg.array, a pointer to an array of unsigned shorts.</p>
-<p>IPC_STAT<br>— Return the status information from the control structure for the semaphore set and place it in the data structure pointed to by arg.buf, a pointer to a buffer of type semid_ds.</p>
-<p>IPC_SET<br>— Set the effective user and group identification and permissions. In this case, arg is taken as arg.buf.</p>
-<p>IPC_RMID<br>— Remove the specified semaphore set.</p>
-<p>The fourth argument <code>union semun</code> arg is optional, depending upon the operation requested. If required it is of type union semun, which must be explicitly declared by the application program as:</p>
-<pre><code>:::C
-union semun {
-   int val;
-   struct semid_ds *buf;
-   ushort *array;
-} arg;
-
-:::C
-<span class="comment">#include &lt;sys/types.h&gt; </span>
-<span class="comment">#include &lt;sys/ipc.h&gt;</span>
-<span class="comment">#include &lt;sys/sem.h&gt; </span>
-
-// Initialize the semaphore
-union semun {
-   int val;
-   struct semid_ds *buf;
-   ushort *array;
-} arg;
-
-int semnum = ....;
-int cmd = GETALL;   /* get value */
-
-<span class="keyword">...</span> 
-<span class="keyword">if</span> (semctl(semid, semnum, cmd, arg) &lt; <span class="number">0</span>) { 
-    perror(<span class="string">"semctl: semctl failed"</span>); 
-    exit(<span class="number">1</span>); 
-}
-<span class="keyword">else</span>
-    <span class="keyword">...</span>
-</code></pre><h3 id="Semaphore_Operations">Semaphore Operations</h3>
-<p><code>semop()</code> performs operations on a semaphore set.</p>
-<pre><code><span class="attribute">:::C</span>
-int semop(int semid, struct sembuf <span class="strong">*sops, size_t nsops);</span>
-</code></pre><p>The <code>sops</code> argument is a pointer to an array of structures, each containing the following information about a semaphore operation:</p>
-<pre><code><span class="attribute">:::C</span>
-The semaphore number
-The operation to be performed
-Control flags, if any.
-</code></pre><p>The <code>sembuf</code> structure specifies a semaphore operation, as defined in <code>sys/sem.h</code>.</p>
-<pre><code><span class="attribute">:::C</span>
-struct sembuf {
-<span class="code">    ushort_t    sem_num;        /* semaphore number */</span>
-<span class="code">    short       sem_op;         /* semaphore operation */</span>
-<span class="code">    short       sem_flg;        /* operation flags */</span>
-};
-</code></pre><p>The operation to be performed is determined as follows:</p>
-<pre><code>:::C
-A positive integer increments the semaphore value by that amount.
-A negative integer decrements the semaphore value by that amount. An attempt to set a semaphore to a value less than zero fails or blocks, depending on whether IPC_NOWAIT is <span class="keyword">in</span> effect.
-A value of zero means to wait <span class="keyword">for</span> the semaphore value to reach zero.
-
-
-:::C
-<span class="comment">#include &lt;sys/types.h&gt; </span>
-<span class="comment">#include &lt;sys/ipc.h&gt; </span>
-<span class="comment">#include &lt;sys/sem.h&gt; </span>
-
-<span class="keyword">...</span> 
-int i; 
-int nsops; /* number of operations to do */ 
-int semid; /* semid of semaphore set */ 
-struct sembuf *sops; /* ptr to operations to perform */ 
-
-<span class="keyword">...</span> 
-// semop performs the operations on the semaphore:
-<span class="keyword">if</span> ((semid = semop(semid, sops, nsops)) == -<span class="number">1</span>) 
-{ 
-    perror(<span class="string">"semop: semop failed"</span>); 
-    exit(<span class="number">1</span>);
-} 
-<span class="keyword">else</span> 
-    (void) fprintf(stderr, <span class="string">"semop: returned %d\n"</span>, i); 
-    <span class="keyword">...</span>
-</code></pre><h3 id="补充">补充</h3>
-<p>以一个停车场的运作为例。简单起见，假设停车场只有三个车位，一开始三个车位都是空的。这时如果同时来了五辆车，看门人允许其中三辆直接进入，然后放下车拦，剩下的车则必须在入口等待，此后来的车也都不得不在入口处等待。这时，有一辆车离开停车场，看门人得知后，打开车拦，放入外面的一辆进去，如果又离开两辆，则又可以放入两辆，如此往复。</p>
-<p>在这个停车场系统中，车位是公共资源，每辆车好比一个线程，看门人起的就是信号量的作用。</p>
-<p>抽象的来讲，信号量的特性如下：信号量是一个非负整数（车位数），所有通过它的线程/进程（车辆）都会将该整数减一（通过它当然是为了使用资源），当该整数值为零时，所有试图通过它的线程都将处于等待状态。在信号量上我们定义两种操作： Wait（等待） 和 Release（释放）。当一个线程调用Wait操作时，它要么得到资源然后将信号量减一，要么一直等下去（指放入阻塞队列），直到信号量大于等于一时。Release（释放）实际上是在信号量上执行加操作，对应于车辆离开停车场，该操作之所以叫做“释放”是因为释放了由信号量守护的资源。</p>
-
-      
+    <!-- totop -->
+    <div id="totop" style="position:fixed;bottom:50px;right:30px;cursor: pointer;">
+    <a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"/></a>
     </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
+    <script>
+    (function($) { 
+      var upperLimit = 100;
+      var scrollElem = $('#totop');
+      var scrollSpeed = 500; 
+      scrollElem.hide();
+      $(window).scroll(function () {            
+        var scrollTop = $(document).scrollTop();       
+        if ( scrollTop > upperLimit ) {
+          $(scrollElem).stop().fadeTo(300, 1); // fade back in           
+        }else{       
+          $(scrollElem).stop().fadeTo(300, 0); // fade out
+        }
+      });
+      $(scrollElem).click(function(){
+        $('html, body').animate({scrollTop:0}, scrollSpeed); return false;
+      });
+    })(jQuery);
+    </script>
 
-
-
-  
-
-  <nav id="pagination">
-  
-  
-  <div class="clearfix"></div>
-</nav>
-</div></div>
-    <aside id="sidebar" class="alignright">
-  <div class="search">
-  <form action="//google.com/search" method="get" accept-charset="utf-8">
-    <input type="search" name="q" results="0" placeholder="Search">
-    <input type="hidden" name="q" value="site:hackecho.com">
-  </form>
-</div>
-
-  
-
-  
-<div class="widget tag">
-  <h3 class="title">Recent Posts</h3>
-  <ul class="entry">
+    <!-- fancybox -->
     
-      <li>
-        <a href="/2014/09/leetcode-add-two-numbers/">Leetcode - Add Two Numbers</a>
-      </li>
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+    <script src="/fancybox/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript">
+      (function($){
+        $('.fancybox').fancybox();
+      })(jQuery);
+    </script>
     
-      <li>
-        <a href="/2014/05/connecting-to-emr-masternode-via-ssh/">Connecting to EMR masternode via SSH</a>
-      </li>
-    
-      <li>
-        <a href="/2014/04/notes-about-maven/">Notes about Maven</a>
-      </li>
-    
-      <li>
-        <a href="/2014/04/hadoop-cluster-setup-instruction-with-fedora-20/">Hadoop Cluster Setup Instruction with Fedora 20</a>
-      </li>
-    
-      <li>
-        <a href="/2013/10/real-time-emotion-analysis-on-twitter/">Real-time Emotion Analysis On Twitter</a>
-      </li>
-    
-      <li>
-        <a href="/2013/04/cuda-parallel-reduction/">CUDA中并行规约（Parallel Reduction）的优化</a>
-      </li>
-    
-      <li>
-        <a href="/2013/04/basics-of-mpi/">MPI 并行程序设计基础</a>
-      </li>
-    
-  </ul>
-</div>
 
-
-  <div class="widget tag">
-<h3 class="title">Links</h3>
-<ul class="entry">
-	<li><a href="http://vicdory.com/" target="_blank" title="Kailun Shi">Kailun Shi</a></li>
-	<li><a href="http://guo-min-zhi.github.io/" target="_blank" title="远方">远方</a></li>
-	<li><a href="http://mingplusplus.com/blog/" target="_blank" title="Ming++">Ming++</a></li>
-	<li><a href="http://ruiwu.me/" target="_blank" title="RuiWu">RuiWu</a></li>
-</ul>
-</div>
-
-  
-<div class="widget tag">
-  <h3 class="title">Tags</h3>
-  <ul class="entry">
-  
-    <li><a href="/tags/Android/">Android</a><small>1</small></li>
-  
-    <li><a href="/tags/Android,AsyncTask/">Android,AsyncTask</a><small>1</small></li>
-  
-    <li><a href="/tags/Android,SharedPreferences/">Android,SharedPreferences</a><small>1</small></li>
-  
-    <li><a href="/tags/BidData/">BidData</a><small>1</small></li>
-  
-    <li><a href="/tags/Decorator,Python/">Decorator,Python</a><small>1</small></li>
-  
-    <li><a href="/tags/EMR/">EMR</a><small>1</small></li>
-  
-    <li><a href="/tags/GBK,Mac,UTF8/">GBK,Mac,UTF8</a><small>1</small></li>
-  
-    <li><a href="/tags/Git/">Git</a><small>1</small></li>
-  
-    <li><a href="/tags/Google+/">Google+</a><small>1</small></li>
-  
-    <li><a href="/tags/Hadoop/">Hadoop</a><small>1</small></li>
-  
-    <li><a href="/tags/JSON,XML,PHP/">JSON,XML,PHP</a><small>1</small></li>
-  
-    <li><a href="/tags/Leetcode/">Leetcode</a><small>1</small></li>
-  
-    <li><a href="/tags/Life/">Life</a><small>1</small></li>
-  
-    <li><a href="/tags/Linux,HFS/">Linux,HFS</a><small>1</small></li>
-  
-    <li><a href="/tags/MPI/">MPI</a><small>1</small></li>
-  
-    <li><a href="/tags/MVC,-PHP/">MVC, PHP</a><small>1</small></li>
-  
-    <li><a href="/tags/Maven/">Maven</a><small>1</small></li>
-  
-    <li><a href="/tags/PHP,Socket/">PHP,Socket</a><small>1</small></li>
-  
-    <li><a href="/tags/Python/">Python</a><small>1</small></li>
-  
-    <li><a href="/tags/ThinkPHP/">ThinkPHP</a><small>1</small></li>
-  
-    <li><a href="/tags/WebSocket,HTML5/">WebSocket,HTML5</a><small>1</small></li>
-  
-    <li><a href="/tags/Wordpress/">Wordpress</a><small>2</small></li>
-  
-    <li><a href="/tags/boost,thread/">boost,thread</a><small>1</small></li>
-  
-    <li><a href="/tags/cuda,parallel,reduction/">cuda,parallel,reduction</a><small>1</small></li>
-  
-    <li><a href="/tags/fly-of-promgrammer/">fly-of-promgrammer</a><small>1</small></li>
-  
-    <li><a href="/tags/gcc/">gcc</a><small>1</small></li>
-  
-    <li><a href="/tags/ipc,semaphores/">ipc,semaphores</a><small>1</small></li>
-  
-    <li><a href="/tags/life/">life</a><small>1</small></li>
-  
-    <li><a href="/tags/makefile/">makefile</a><small>1</small></li>
-  
-    <li><a href="/tags/movie/">movie</a><small>1</small></li>
-  
-    <li><a href="/tags/open-source/">open source</a><small>1</small></li>
-  
-    <li><a href="/tags/pthread/">pthread</a><small>1</small></li>
-  
-    <li><a href="/tags/web/">web</a><small>1</small></li>
-  
-    <li><a href="/tags/websocket/">websocket</a><small>1</small></li>
-  
-    <li><a href="/tags/极客/">极客</a><small>1</small></li>
-  
-    <li><a href="/tags/程序员/">程序员</a><small>2</small></li>
-  
-  </ul>
-</div>
-
-</aside>
-    <div class="clearfix"></div>
-  </div>
-  <footer id="footer" class="inner"><div class="alignleft">
-  
-  &copy; 2014 Zhaoyu Li
-  
-</div>
-<div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-
-
-<script type="text/javascript">
-var disqus_shortname = 'zlmoment';
-
-(function(){
-  var dsq = document.createElement('script');
-  dsq.type = 'text/javascript';
-  dsq.async = true;
-  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-}());
-</script>
-
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
-</script>
-
-
-<!-- InstantClick makes following links in your website instant. http://instantclick.io -->
-<script src="/js/instantclick.min.js" data-no-instant></script>
-<script data-no-instant>InstantClick.init();</script>
 </body>
 </html>
